@@ -18,4 +18,3 @@ chmod 705 servercode/* # directory needs to be executable???
 
 # Run server on registered instance
 java -Djava.security.policy=servercode/java.policy -Djava.rmi.server.codebase=file:`pwd`/servercode/ ResImpl.ResourceManagerImpl 1099
-
