@@ -1,5 +1,3 @@
-grant codeBase "file:PUT-THE-RIGHT-PATH-HERE" {
+grant codeBase "file:/home/2016/amaple1/521/521_1/servercode" {
     permission java.security.AllPermission;
 };
-
-
