@@ -6,7 +6,7 @@ import java.rmi.RMISecurityManager;
 import java.util.*;
 import java.io.*;
 
-    
+
 public class client
 {
     static String message = "blank";
@@ -45,13 +45,13 @@ public class client
             System.out.println ("Usage: java client [rmihost [rmiport]]");
             System.exit(1);
         }
-        
-        try 
+
+        try
         {
             // get a reference to the rmiregistry
             Registry registry = LocateRegistry.getRegistry(server, port);
             // get the proxy and the remote reference by rmiregistry lookup
-            rm = (ResourceManager) registry.lookup("MyGroupResourceManager");
+            rm = (ResourceManager) registry.lookup("group_21");
             if(rm!=null)
             {
                 System.out.println("Successful");
@@ -62,20 +62,20 @@ public class client
                 System.out.println("Unsuccessful");
             }
             // make call on remote method
-        } 
-        catch (Exception e) 
-        {    
+        }
+        catch (Exception e)
+        {
             System.err.println("Client exception: " + e.toString());
             e.printStackTrace();
         }
-        
-        
-        
+
+
+
         if (System.getSecurityManager() == null) {
             //System.setSecurityManager(new RMISecurityManager());
         }
 
-        
+
         System.out.println("\n\n\tClient Interface");
         System.out.println("Type \"help\" for list of supported commands");
         while(true){
@@ -91,7 +91,7 @@ public class client
         //remove heading and trailing white space
         command=command.trim();
         arguments=obj.parse(command);
-        
+
         //decide which of the commands this was
         switch(obj.findChoice((String)arguments.elementAt(0))){
         case 1: //help section
@@ -102,7 +102,7 @@ public class client
             else  //wrong use of help command
             System.out.println("Improper use of help command. Type help or help, <commandname>");
             break;
-            
+
         case 2:  //new flight
             if(arguments.size()!=5){
             obj.wrongNumber();
@@ -112,7 +112,7 @@ public class client
             System.out.println("Flight number: "+arguments.elementAt(2));
             System.out.println("Add Flight Seats: "+arguments.elementAt(3));
             System.out.println("Set Flight Price: "+arguments.elementAt(4));
-            
+
             try{
             Id = obj.getInt(arguments.elementAt(1));
             flightNum = obj.getInt(arguments.elementAt(2));
@@ -129,7 +129,7 @@ public class client
             e.printStackTrace();
             }
             break;
-            
+
         case 3:  //new Car
             if(arguments.size()!=5){
             obj.wrongNumber();
@@ -155,7 +155,7 @@ public class client
             e.printStackTrace();
             }
             break;
-            
+
         case 4:  //new Room
             if(arguments.size()!=5){
             obj.wrongNumber();
@@ -181,7 +181,7 @@ public class client
             e.printStackTrace();
             }
             break;
-            
+
         case 5:  //new Customer
             if(arguments.size()!=2){
             obj.wrongNumber();
@@ -199,7 +199,7 @@ public class client
             e.printStackTrace();
             }
             break;
-            
+
         case 6: //delete Flight
             if(arguments.size()!=3){
             obj.wrongNumber();
@@ -221,7 +221,7 @@ public class client
             e.printStackTrace();
             }
             break;
-            
+
         case 7: //delete Car
             if(arguments.size()!=3){
             obj.wrongNumber();
@@ -232,7 +232,7 @@ public class client
             try{
             Id = obj.getInt(arguments.elementAt(1));
             location = obj.getString(arguments.elementAt(2));
-            
+
             if(rm.deleteCars(Id,location))
                 System.out.println("Cars Deleted");
             else
@@ -244,7 +244,7 @@ public class client
             e.printStackTrace();
             }
             break;
-            
+
         case 8: //delete Room
             if(arguments.size()!=3){
             obj.wrongNumber();
@@ -266,7 +266,7 @@ public class client
             e.printStackTrace();
             }
             break;
-            
+
         case 9: //delete Customer
             if(arguments.size()!=3){
             obj.wrongNumber();
@@ -288,7 +288,7 @@ public class client
             e.printStackTrace();
             }
             break;
-            
+
         case 10: //querying a flight
             if(arguments.size()!=3){
             obj.wrongNumber();
@@ -308,7 +308,7 @@ public class client
             e.printStackTrace();
             }
             break;
-            
+
         case 11: //querying a Car Location
             if(arguments.size()!=3){
             obj.wrongNumber();
@@ -328,7 +328,7 @@ public class client
             e.printStackTrace();
             }
             break;
-            
+
         case 12: //querying a Room location
             if(arguments.size()!=3){
             obj.wrongNumber();
@@ -348,7 +348,7 @@ public class client
             e.printStackTrace();
             }
             break;
-            
+
         case 13: //querying Customer Information
             if(arguments.size()!=3){
             obj.wrongNumber();
@@ -367,8 +367,8 @@ public class client
             System.out.println(e.getMessage());
             e.printStackTrace();
             }
-            break;               
-            
+            break;
+
         case 14: //querying a flight Price
             if(arguments.size()!=3){
             obj.wrongNumber();
@@ -388,7 +388,7 @@ public class client
             e.printStackTrace();
             }
             break;
-            
+
         case 15: //querying a Car Price
             if(arguments.size()!=3){
             obj.wrongNumber();
@@ -406,7 +406,7 @@ public class client
             System.out.println("EXCEPTION:");
             System.out.println(e.getMessage());
             e.printStackTrace();
-            }                
+            }
             break;
 
         case 16: //querying a Room price
@@ -428,7 +428,7 @@ public class client
             e.printStackTrace();
             }
             break;
-            
+
         case 17:  //reserve a flight
             if(arguments.size()!=4){
             obj.wrongNumber();
@@ -452,7 +452,7 @@ public class client
             e.printStackTrace();
             }
             break;
-            
+
         case 18:  //reserve a car
             if(arguments.size()!=4){
             obj.wrongNumber();
@@ -461,12 +461,12 @@ public class client
             System.out.println("Reserving a car at a location using id: "+arguments.elementAt(1));
             System.out.println("Customer id: "+arguments.elementAt(2));
             System.out.println("Location: "+arguments.elementAt(3));
-            
+
             try{
             Id = obj.getInt(arguments.elementAt(1));
             int customer = obj.getInt(arguments.elementAt(2));
             location = obj.getString(arguments.elementAt(3));
-            
+
             if(rm.reserveCar(Id,customer,location))
                 System.out.println("Car Reserved");
             else
@@ -478,7 +478,7 @@ public class client
             e.printStackTrace();
             }
             break;
-            
+
         case 19:  //reserve a room
             if(arguments.size()!=4){
             obj.wrongNumber();
@@ -491,7 +491,7 @@ public class client
             Id = obj.getInt(arguments.elementAt(1));
             int customer = obj.getInt(arguments.elementAt(2));
             location = obj.getString(arguments.elementAt(3));
-            
+
             if(rm.reserveRoom(Id,customer,location))
                 System.out.println("Room Reserved");
             else
@@ -503,7 +503,7 @@ public class client
             e.printStackTrace();
             }
             break;
-            
+
         case 20:  //reserve an Itinerary
             if(arguments.size()<7){
             obj.wrongNumber();
@@ -525,7 +525,7 @@ public class client
             location = obj.getString(arguments.elementAt(arguments.size()-3));
             Car = obj.getBoolean(arguments.elementAt(arguments.size()-2));
             Room = obj.getBoolean(arguments.elementAt(arguments.size()-1));
-            
+
             if(rm.itinerary(Id,customer,flightNumbers,location,Car,Room))
                 System.out.println("Itinerary Reserved");
             else
@@ -537,7 +537,7 @@ public class client
             e.printStackTrace();
             }
             break;
-                        
+
         case 21:  //quit the client
             if(arguments.size()!=1){
             obj.wrongNumber();
@@ -545,8 +545,8 @@ public class client
             }
             System.out.println("Quitting client.");
             System.exit(1);
-            
-            
+
+
         case 22:  //new Customer given id
             if(arguments.size()!=3){
             obj.wrongNumber();
@@ -565,14 +565,14 @@ public class client
             e.printStackTrace();
             }
             break;
-            
+
         default:
             System.out.println("The interface does not support this command.");
             break;
         }//end of switch
         }//end of while(true)
     }
-        
+
     public Vector parse(String command)
     {
     Vector arguments = new Vector();
@@ -669,7 +669,7 @@ public class client
         System.out.println("\nUsage:");
         System.out.println("\tnewflight,<id>,<flightnumber>,<flightSeats>,<flightprice>");
         break;
-        
+
         case 3:  //new Car
         System.out.println("Adding a new Car.");
         System.out.println("Purpose:");
@@ -677,7 +677,7 @@ public class client
         System.out.println("\nUsage:");
         System.out.println("\tnewcar,<id>,<location>,<numberofcars>,<pricepercar>");
         break;
-        
+
         case 4:  //new Room
         System.out.println("Adding a new Room.");
         System.out.println("Purpose:");
@@ -685,7 +685,7 @@ public class client
         System.out.println("\nUsage:");
         System.out.println("\tnewroom,<id>,<location>,<numberofrooms>,<priceperroom>");
         break;
-        
+
         case 5:  //new Customer
         System.out.println("Adding a new Customer.");
         System.out.println("Purpose:");
@@ -693,8 +693,8 @@ public class client
         System.out.println("\nUsage:");
         System.out.println("\tnewcustomer,<id>");
         break;
-        
-        
+
+
         case 6: //delete Flight
         System.out.println("Deleting a flight");
         System.out.println("Purpose:");
@@ -702,7 +702,7 @@ public class client
         System.out.println("\nUsage:");
         System.out.println("\tdeleteflight,<id>,<flightnumber>");
         break;
-        
+
         case 7: //delete Car
         System.out.println("Deleting a Car");
         System.out.println("Purpose:");
@@ -710,7 +710,7 @@ public class client
         System.out.println("\nUsage:");
         System.out.println("\tdeletecar,<id>,<location>,<numCars>");
         break;
-        
+
         case 8: //delete Room
         System.out.println("Deleting a Room");
         System.out.println("\nPurpose:");
@@ -718,7 +718,7 @@ public class client
         System.out.println("Usage:");
         System.out.println("\tdeleteroom,<id>,<location>,<numRooms>");
         break;
-        
+
         case 9: //delete Customer
         System.out.println("Deleting a Customer");
         System.out.println("Purpose:");
@@ -726,7 +726,7 @@ public class client
         System.out.println("\nUsage:");
         System.out.println("\tdeletecustomer,<id>,<customerid>");
         break;
-        
+
         case 10: //querying a flight
         System.out.println("Querying flight.");
         System.out.println("Purpose:");
@@ -734,53 +734,53 @@ public class client
         System.out.println("\nUsage:");
         System.out.println("\tqueryflight,<id>,<flightnumber>");
         break;
-        
+
         case 11: //querying a Car Location
         System.out.println("Querying a Car location.");
         System.out.println("Purpose:");
         System.out.println("\tObtain number of cars at a certain car location.");
         System.out.println("\nUsage:");
-        System.out.println("\tquerycar,<id>,<location>");        
+        System.out.println("\tquerycar,<id>,<location>");
         break;
-        
+
         case 12: //querying a Room location
         System.out.println("Querying a Room Location.");
         System.out.println("Purpose:");
         System.out.println("\tObtain number of rooms at a certain room location.");
         System.out.println("\nUsage:");
-        System.out.println("\tqueryroom,<id>,<location>");        
+        System.out.println("\tqueryroom,<id>,<location>");
         break;
-        
+
         case 13: //querying Customer Information
         System.out.println("Querying Customer Information.");
         System.out.println("Purpose:");
         System.out.println("\tObtain information about a customer.");
         System.out.println("\nUsage:");
         System.out.println("\tquerycustomer,<id>,<customerid>");
-        break;               
-        
-        case 14: //querying a flight for price 
+        break;
+
+        case 14: //querying a flight for price
         System.out.println("Querying flight.");
         System.out.println("Purpose:");
         System.out.println("\tObtain price information about a certain flight.");
         System.out.println("\nUsage:");
         System.out.println("\tqueryflightprice,<id>,<flightnumber>");
         break;
-        
+
         case 15: //querying a Car Location for price
         System.out.println("Querying a Car location.");
         System.out.println("Purpose:");
         System.out.println("\tObtain price information about a certain car location.");
         System.out.println("\nUsage:");
-        System.out.println("\tquerycarprice,<id>,<location>");        
+        System.out.println("\tquerycarprice,<id>,<location>");
         break;
-        
+
         case 16: //querying a Room location for price
         System.out.println("Querying a Room Location.");
         System.out.println("Purpose:");
         System.out.println("\tObtain price information about a certain room location.");
         System.out.println("\nUsage:");
-        System.out.println("\tqueryroomprice,<id>,<location>");        
+        System.out.println("\tqueryroomprice,<id>,<location>");
         break;
 
         case 17:  //reserve a flight
@@ -790,7 +790,7 @@ public class client
         System.out.println("\nUsage:");
         System.out.println("\treserveflight,<id>,<customerid>,<flightnumber>");
         break;
-        
+
         case 18:  //reserve a car
         System.out.println("Reserving a Car.");
         System.out.println("Purpose:");
@@ -798,7 +798,7 @@ public class client
         System.out.println("\nUsage:");
         System.out.println("\treservecar,<id>,<customerid>,<location>,<nummberofCars>");
         break;
-        
+
         case 19:  //reserve a room
         System.out.println("Reserving a Room.");
         System.out.println("Purpose:");
@@ -806,7 +806,7 @@ public class client
         System.out.println("\nUsage:");
         System.out.println("\treserveroom,<id>,<customerid>,<location>,<nummberofRooms>");
         break;
-        
+
         case 20:  //reserve an Itinerary
         System.out.println("Reserving an Itinerary.");
         System.out.println("Purpose:");
@@ -814,7 +814,7 @@ public class client
         System.out.println("\nUsage:");
         System.out.println("\titinerary,<id>,<customerid>,<flightnumber1>....<flightnumberN>,<LocationToBookCarsOrRooms>,<NumberOfCars>,<NumberOfRoom>");
         break;
-        
+
 
         case 21:  //quit the client
         System.out.println("Quitting client.");
@@ -823,7 +823,7 @@ public class client
         System.out.println("\nUsage:");
         System.out.println("\tquit");
         break;
-        
+
         case 22:  //new customer with id
             System.out.println("Create new customer providing an id");
             System.out.println("Purpose:");
@@ -838,7 +838,7 @@ public class client
         break;
         }
     }
-    
+
     public void wrongNumber() {
     System.out.println("The number of arguments provided in this command are wrong.");
     System.out.println("Type help, <commandname> to check usage of this command.");
@@ -854,7 +854,7 @@ public class client
         throw e;
         }
     }
-    
+
     public boolean getBoolean(Object temp) throws Exception {
         try {
             return (new Boolean((String)temp)).booleanValue();
@@ -865,7 +865,7 @@ public class client
     }
 
     public String getString(Object temp) throws Exception {
-    try {    
+    try {
         return (String)temp;
         }
     catch (Exception e) {
