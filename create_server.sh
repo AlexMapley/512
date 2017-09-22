@@ -14,7 +14,8 @@ javac servercode/ResImpl/ResourceManagerImpl.java
 # Setting permissions
 chmod 704 servercode/ResInterface.jar
 chmod 704 servercode/ResInterface/*.class
-chmod 705 servercode # directory needs to be executable???
+chmod 705 servercode/* # directory needs to be executable???
 
 # Run server on registered instance
-java -Djava.security.policy=java.policy -Djava.rmi.server.codebase="`pwd`""/servercode" ResImpl.ResourceManagerImpl 1099
+java -Djava.security.policy=servercode/java.policy -Djava.rmi.server.codebase=file:`pwd`/servercode/ ResImpl.ResourceManagerImpl 1099
+
