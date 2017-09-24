@@ -1,5 +1,5 @@
 # Register RMI
-rmiregistry -J-Djava.rmi.server.useCodebaseOnly=false 1099 &
+rmiregistry -J-Djava.rmi.server.useCodebaseOnly=false 5959 &
 
 # Exporting Class Path
 ClassPath="`pwd`""/servercode"
@@ -17,4 +17,4 @@ chmod 704 servercode/ResInterface/*.class
 chmod 705 servercode/* # directory needs to be executable???
 
 # Run server on registered instance
-java -Djava.security.policy=servercode/java.policy -Djava.rmi.server.codebase=file:`pwd`/servercode/ ResImpl.ResourceManagerImpl 1099
+java -Djava.security.policy=servercode/java.policy -Djava.rmi.server.codebase=file:`pwd`/servercode/ ResImpl.ResourceManagerImpl 5959
