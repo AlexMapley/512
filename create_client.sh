@@ -24,6 +24,5 @@ echo
 # Compile client
 javac -cp  servercode/ResInterface/* clientsrc/client.java 
 
-# Modify policy to point to classpath
-grant codebase "file:`pwd`clientsrc/"
-echo "file:`pwd`clientsrc/" 
+# Run Client ON LOCAL INSTANCE
+java -Djava.security.policy=java.policy client 5959
