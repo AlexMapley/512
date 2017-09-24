@@ -22,4 +22,8 @@ echo $CLASSPATH
 echo
 
 # Compile client
-javac -cp  servercode/ResInterface/* clientsrc/client.java  
+javac -cp  servercode/ResInterface/* clientsrc/client.java 
+
+# Modify policy to point to classpath
+grant codebase "file:`pwd`clientsrc/"
+echo "file:`pwd`clientsrc/" 
