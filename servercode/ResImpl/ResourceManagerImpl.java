@@ -23,7 +23,7 @@ public class ResourceManagerImpl implements ResourceManager
     public static void main(String args[]) {
         // Figure out where server is running
         String server = "localhost";
-        int port = 1099;
+        int port = 5959;
 
         if (args.length == 1) {
             server = server + ":" + args[0];

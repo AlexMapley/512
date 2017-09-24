@@ -16,9 +16,13 @@ echo YEAR: $YEAR
 
 # Export classfile
 # From own machine!!!
-export CLASSPATH="`pwd`""/clientsrc:""`pwd`""/servercode/ResInterface.jar"
+cp servercode/ResInterface.jar clientsrc/ResInterface.jar
+export CLASSPATH=`pwd`/clientsrc:`pwd`/servercode/ResInterface.jar
 echo $CLASSPATH
 echo
 
 # Compile client
-javac clientsrc/client.java
+javac -cp  servercode/ResInterface/* clientsrc/client.java 
+
+# Run Client ON LOCAL INSTANCE
+java -Djava.security.policy=java.policy client 5959
