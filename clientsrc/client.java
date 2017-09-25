@@ -76,7 +76,7 @@ public class client
         }
 
 
-        System.out.println("\n\n\tClient Interface");
+        System.out.println("\n\n\tClient Interface: !@ <( 'o')> <('O' )> @! ");
         System.out.println("Type \"help\" for list of supported commands");
         while(true){
         System.out.print("\n>");
