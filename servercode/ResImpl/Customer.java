@@ -5,7 +5,7 @@
 
   private int m_nID;
   private RMHashtable m_Reservations;
-  
+
   Customer(int id) {
     super();
     m_Reservations = new RMHashtable();
@@ -50,7 +50,9 @@
   }
 
   public String toString()	{
-    return "--- BEGIN CUSTOMER key='" + getKey() + "', id='" + getID() + "', reservations=>\n" +	m_Reservations.toString() + "\n" +	"--- END   CUSTOMER ---";
+    return "--- BEGIN CUSTOMER key='" + getKey() + "', id='" + getID()
+    + "', reservations=>\n" +	m_Reservations.toString() + "\n"
+    + "--- END   CUSTOMER ---";
   }
 
   public static String getKey(int customerID) {
