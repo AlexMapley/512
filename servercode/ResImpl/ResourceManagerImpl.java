@@ -22,7 +22,7 @@ public class ResourceManagerImpl implements ResourceManager
 
     public static void main(String args[]) {
         // Figure out where server is running
-        String server = "localhost";
+        String server = "lab1-1";
         int port = 5959;
 
         if (args.length == 1) {
@@ -38,18 +38,15 @@ public class ResourceManagerImpl implements ResourceManager
             // create a new Server object
             ResourceManagerImpl obj = new ResourceManagerImpl();
             // dynamically generate the stub (client proxy)
-
             ResourceManager rm = (ResourceManager) UnicastRemoteObject.exportObject(obj, 0);
-
             // Bind the remote object's stub in the registry
             Registry registry = LocateRegistry.getRegistry(port);
             registry.rebind("group_21", rm);
-
             System.err.println("RM Server ready");
-        } catch (Exception e) {
+          } catch (Exception e) {
             System.err.println("RM Server exception: " + e.toString());
             e.printStackTrace();
-        }
+          }
 
         // Create and install a security manager
         if (System.getSecurityManager() == null) {
