@@ -38,16 +38,16 @@ public class ResourceManagerImpl implements ResourceManager
             // create a new Server object
             ResourceManagerImpl obj = new ResourceManagerImpl();
             // dynamically generate the stub (client proxy)
-            // dynamically generate the stub (client proxy)
+
             ResourceManager rm = (ResourceManager) UnicastRemoteObject.exportObject(obj, 0);
 
             // Bind the remote object's stub in the registry
             Registry registry = LocateRegistry.getRegistry(port);
             registry.rebind("group_21", rm);
 
-            System.err.println("Server ready");
+            System.err.println("RM Server ready");
         } catch (Exception e) {
-            System.err.println("Server exception: " + e.toString());
+            System.err.println("RM Server exception: " + e.toString());
             e.printStackTrace();
         }
 
