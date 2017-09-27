@@ -6,7 +6,8 @@ export CLASSPATH=`pwd`:`pwd`/ResInterface.jar
 echo $CLASSPATH
 
 # Compile client
-javac client.java 
+jar cvf ResInterface.jar ResInterface/*.class
+javac client.java
 
 # Run Client ON LOCAL INSTANCE
 java client
