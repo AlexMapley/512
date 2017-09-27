@@ -446,8 +446,6 @@ public class MiddleWareImpl implements ResourceManager
         } // if
     }
 
-
-
     /*
     // Frees flight reservation record. Flight reservation records help us make sure we
     // don't delete a flight if one or more customers are holding reservations
@@ -465,7 +463,6 @@ public class MiddleWareImpl implements ResourceManager
         return true;
     }
     */
-
 
     // Adds car reservation to this customer.
     public boolean reserveCar(int id, int customerID, String location)
