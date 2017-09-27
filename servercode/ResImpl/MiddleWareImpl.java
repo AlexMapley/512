@@ -60,7 +60,7 @@ public class MiddleWareImpl implements ResourceManager
         try
         {
             // get a reference to the rmiregistry
-            Registry registry = LocateRegistry.getRegistry("localhost", port);
+            Registry registry = LocateRegistry.getRegistry("lab2-1", port);
             // get the proxy and the remote reference by rmiregistry lookup
             rm = (ResourceManager) registry.lookup("group_21");
             if(rm!=null)
