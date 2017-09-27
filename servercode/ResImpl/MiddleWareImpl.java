@@ -48,7 +48,7 @@ public class MiddleWareImpl implements ResourceManager
         //         System.err.println("MiddleWare exception: " + e.toString());
         //         e.printStackTrace();
         //     }
- 
+
         // } else {
         //     System.err.println ("Wrong usage");
         //     System.out.println("Usage: java ResImpl.MiddleWareImpl [rmaddress:port] X 3 ");
@@ -60,7 +60,7 @@ public class MiddleWareImpl implements ResourceManager
         try
         {
             // get a reference to the rmiregistry
-            Registry registry = LocateRegistry.getRegistry("lab1-8", port);
+            Registry registry = LocateRegistry.getRegistry("localhost", port);
             // get the proxy and the remote reference by rmiregistry lookup
             rm = (ResourceManager) registry.lookup("group_21");
             if(rm!=null)
@@ -84,7 +84,7 @@ public class MiddleWareImpl implements ResourceManager
         try {
             // create a new Server object
             MiddleWareImpl obj = new MiddleWareImpl();
-            
+
             // dynamically generate the stub (client proxy)
             ResourceManager mw = (ResourceManager) UnicastRemoteObject.exportObject(obj, 0);
 
@@ -92,7 +92,7 @@ public class MiddleWareImpl implements ResourceManager
             Registry registry = LocateRegistry.getRegistry(port);
             registry.rebind("group_21", mw);
 
-            System.err.println("Server ready");
+            System.err.println("MiddleWare Server ready");
         } catch (Exception e) {
             System.err.println("Server exception: " + e.toString());
             e.printStackTrace();
@@ -190,7 +190,7 @@ public class MiddleWareImpl implements ResourceManager
 
         try {
             // if(FlightRM.addFlight(id,flightNum,flightSeats,flightPrice))
-            if(rm.addFlight(id,flightNum,flightSeats,flightPrice)) 
+            if(rm.addFlight(id,flightNum,flightSeats,flightPrice))
                 // call succesfull
                 Trace.info("RM::addFlight(" + id + ") created or modified flight " + flightNum + ", seats=" +
                     flightSeats + ", price=$" + flightPrice );
@@ -225,8 +225,8 @@ public class MiddleWareImpl implements ResourceManager
     {
         Trace.info("RM::addRooms(" + id + ", " + location + ", " + count + ", $" + price + ") called" );
         try {
-            // if(HotelRM.addRooms(id,location,count,price)) 
-            if(rm.addRooms(id,location,count,price)) 
+            // if(HotelRM.addRooms(id,location,count,price))
+            if(rm.addRooms(id,location,count,price))
                 // call succesfull
                 Trace.info("RM::addRooms(" + id + ") created or modified room location " + location + ", count=" + count + ", price=$" + price );
             else {
@@ -257,7 +257,7 @@ public class MiddleWareImpl implements ResourceManager
     {
         try {
             // if(CarRM.addCars(id,location,numCars,price))
-            if(rm.addCars(id,location,count,price)) 
+            if(rm.addCars(id,location,count,price))
                 // call succesfull
                 Trace.info("RM::addCars(" + id + ") created or modified location " + location + ", count=" + count + ", price=$" + price );
             else {
