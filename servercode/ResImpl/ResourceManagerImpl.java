@@ -34,7 +34,7 @@ public class ResourceManagerImpl implements ResourceManager
             System.exit(1);
         }
 
-        for(int i = 0; i < servers.length(); i++) {
+        for(int i = 0; i < servers.length; i++) {
           try {
               // create a new Server object
               ResourceManagerImpl obj = new ResourceManagerImpl();
