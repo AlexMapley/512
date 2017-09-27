@@ -78,8 +78,8 @@ public class client
 
         System.out.println("\n\nClient Interface: !@ <( 'o')> <('O' )> @! ");
         System.out.println("Type \"help\" for list of supported commands");
-        System.out.println("\n\nNOTE FROM ALEX: TESTING COMMAND:")
-        System.out.println("newflight,1,2,3,4\n\n")
+        System.out.println("\n\nNOTE FROM ALEX: TESTING COMMAND:");
+        System.out.println("newflight,1,2,3,4\n\n");
         while(true){
         System.out.print("\n>");
         try{
