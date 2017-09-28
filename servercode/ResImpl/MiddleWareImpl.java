@@ -21,6 +21,7 @@ public class MiddleWareImpl implements ResourceManager
 
     public static void main(String args[]) {
         int port = 5959;
+        String server = "lab2-1";
 
         // connect to RMs
         // ArrayList<ResourceManager> rms = new ArrayList<ResourceManager>();
@@ -60,7 +61,7 @@ public class MiddleWareImpl implements ResourceManager
         try
         {
             // get a reference to the rmiregistry
-            Registry registry = LocateRegistry.getRegistry("lab2-1", port);
+            Registry registry = LocateRegistry.getRegistry(server, port);
             // get the proxy and the remote reference by rmiregistry lookup
             rm = (ResourceManager) registry.lookup("group_21");
             if(rm!=null)
