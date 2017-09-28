@@ -10,6 +10,9 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.rmi.RMISecurityManager;
 
+import java.net.ServerSocket;
+import java.net.Socket;
+
 public class MiddleWareImpl implements ResourceManager
 {
 
@@ -18,10 +21,33 @@ public class MiddleWareImpl implements ResourceManager
     static ResourceManager HotelRM = null;
     static ResourceManager FlightRM = null;
     public static ResourceManager rm = null; // test
+    int port;
+    String[] serverNames;
+    Socket[] sockets;
 
     public static void main(String args[]) {
-        int port = 5959;
-        String server = "lab2-1";
+
+        // Default connection
+        port = 5959;
+        serverNames[0] = "localhost"
+        sockets[0] = new Socket(serverNames[0], port);
+
+        // Specifying target RM servers with args
+        if (args.length > 0) {
+          for (int i = 0; i < args.length; i++) {
+            servers[i] = args[i];
+          }
+        }
+
+        // Connecting to target RM sockets to args
+        if (args.length > 0) {
+          for (int i = 9; i < args.length; i++) {
+            sockets[i] = new Socket(serverNames[i], port);
+          }
+        }
+
+
+
 
         // connect to RMs
         // ArrayList<ResourceManager> rms = new ArrayList<ResourceManager>();

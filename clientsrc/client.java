@@ -141,6 +141,8 @@ public class client
               flightSeats = obj.getInt(arguments.elementAt(3));
               flightPrice = obj.getInt(arguments.elementAt(4));
 
+              // TODO: Reimplement the following line to
+              // Send a tcp call to this method, instead of an rmi call
               if(rm.addFlight(Id,flightNum,flightSeats,flightPrice))
                 System.out.println("Flight added");
               else

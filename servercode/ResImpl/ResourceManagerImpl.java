@@ -14,21 +14,27 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.rmi.RMISecurityManager;
 
+import java.net.ServerSocket;
+import java.net.Socket;
+
 public class ResourceManagerImpl implements ResourceManager
 {
 
     protected RMHashtable m_itemHT = new RMHashtable();
-
+    String server;
+    int port;
+    Socket socket;
 
     public static void main(String args[]) {
-        // Figure out where server is running
-        String server = "lab1-1";
-        int port = 5959;
+
+        // Default connection,
+        server = "localhost";
+        port = 5959;
 
         if (args.length == 1) {
-            server = server + ":" + args[0];
-            port = Integer.parseInt(args[0]);
-        } else if (args.length != 0 &&  args.length != 1) {
+          server = args[0] + ":" + port;
+        }
+        else if (args.length != 0 &&  args.length != 1) {
             System.err.println ("Wrong usage");
             System.out.println("Usage: java ResImpl.ResourceManagerImpl [port]");
             System.exit(1);
