@@ -1,3 +1,0 @@
-grant codeBase "file:/home/2015/gbryan/521_1/servercode/" {
-    permission java.security.AllPermission;
-};
