@@ -6,6 +6,8 @@ import java.rmi.RMISecurityManager;
 import java.util.*;
 import java.io.*;
 
+import java.net.ServerSocket;
+import java.net.Socket;
 
 public class client
 {
@@ -28,10 +30,16 @@ public class client
         int numRooms;
         int numCars;
         String location;
+        String serverName;
+        Socket socket;
+        int port;
 
 
-        String server = "localhost";
-        int port = 5959;
+        // Default server and port
+        serverName = "localhost";
+        port = 5959;
+
+        //Input Args for connecting to specific server
         if (args.length > 0)
         {
             server = args[0];
@@ -45,6 +53,8 @@ public class client
             System.out.println ("Usage: java client [rmihost [rmiport]]");
             System.exit(1);
         }
+
+        Socket socket= new Socket(serverName, port);
 
         try
         {
@@ -76,12 +86,22 @@ public class client
         }
 
 
+        // Declaring input/output buffers
+        PrintWriter outToServer= new PrintWriter(socket.getOutputStream(),true); // open an output stream to the server...
+        BufferedReader inFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream())); // open an input stream from the server...
+        BufferedReader bufferedReader =new java.io.BufferedReader(new InputStreamReader(System.in)); //to read user's input
+
+        // CLI Interface, help page
         System.out.println("\n\nClient Interface: !@ <( 'o')> <('O' )> @! ");
         System.out.println("Type \"help\" for list of supported commands");
         System.out.println("\n\nNOTE FROM ALEX: TESTING COMMAND:");
         System.out.println("newflight,1,2,3,4\n\n");
+
+        // Client Main Loop
         while(true){
+
         System.out.print("\n>");
+
         try{
             //read the next command
             command =stdin.readLine();
@@ -658,6 +678,8 @@ public class client
 
     }
 
+
+    // Everything below is just the help menu
     public void listCommands()
     {
     System.out.println("\nWelcome to the client interface provided to test your project.");
