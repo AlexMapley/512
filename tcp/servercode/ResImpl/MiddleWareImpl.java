@@ -4,12 +4,6 @@ import ResInterface.*;
 
 import java.util.*;
 
-import java.rmi.registry.Registry;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
-import java.rmi.RMISecurityManager;
-
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -41,94 +35,13 @@ public class MiddleWareImpl implements ResourceManager
 
         // Connecting to target RM sockets to args
         if (args.length > 0) {
-          for (int i = 9; i < args.length; i++) {
+          for (int i = 0; i < args.length; i++) {
             sockets[i] = new Socket(serverNames[i], port);
           }
         }
 
 
-
-
-        // connect to RMs
-        // ArrayList<ResourceManager> rms = new ArrayList<ResourceManager>();
-        // if (args.length == 3) {
-        //     //List of RM addresses, port hardcoded rn
-        //     try
-        //     {
-        //         for(int i=0; i<3;i++) {
-        //             // get a reference to the rmiregistry
-        //             Registry registry = LocateRegistry.getRegistry(args[i], port);
-        //             // get the proxy and the remote reference by rmiregistry lookup
-        //             rms.add((ResourceManager) registry.lookup("group_21"));
-        //             if(rms.get(i) != null)
-        //             {
-        //                 System.out.println("Successful Connection to RM " + i);
-        //             }
-        //             else
-        //             {
-        //                 System.out.println("Unsuccessful Connecting to RM" + i);
-        //             }
-        //         }
-        //     }
-        //     catch (Exception e)
-        //     {
-        //         System.err.println("MiddleWare exception: " + e.toString());
-        //         e.printStackTrace();
-        //     }
-
-        // } else {
-        //     System.err.println ("Wrong usage");
-        //     System.out.println("Usage: java ResImpl.MiddleWareImpl [rmaddress:port] X 3 ");
-        //     System.exit(1);
-        // }
-        // CarRM = rms.get(0); HotelRM = rms.get(1); FlightRM = rms.get(2);
-
-        //TEST 1 RM ON SPECIFIC MACHINE
-        try
-        {
-            // get a reference to the rmiregistry
-            Registry registry = LocateRegistry.getRegistry(server, port);
-            // get the proxy and the remote reference by rmiregistry lookup
-            rm = (ResourceManager) registry.lookup("group_21");
-            if(rm!=null)
-            {
-                System.out.println("Successful");
-                System.out.println("Connected to RM");
-            }
-            else
-            {
-                System.out.println("Unsuccessful");
-            }
-            // make call on remote method
-        }
-        catch (Exception e)
-        {
-            System.err.println("Client exception: " + e.toString());
-            e.printStackTrace();
-        }
-
         //Start middleware server
-        try {
-            // create a new Server object
-            MiddleWareImpl obj = new MiddleWareImpl();
-
-            // dynamically generate the stub (client proxy)
-            ResourceManager mw = (ResourceManager) UnicastRemoteObject.exportObject(obj, 0);
-
-            // Bind the remote object's stub in the registry
-            Registry registry = LocateRegistry.getRegistry(port);
-            registry.rebind("group_21", mw);
-
-            System.err.println("MiddleWare Server ready");
-        } catch (Exception e) {
-            System.err.println("Server exception: " + e.toString());
-            e.printStackTrace();
-        }
-
-        // Create and install a security manager
-        if (System.getSecurityManager() == null) {
-            System.setSecurityManager(new RMISecurityManager());
-        }
     }
 
     public MiddleWareImpl() throws RemoteException {

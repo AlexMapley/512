@@ -1,13 +1,9 @@
 import ResInterface.*;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import java.rmi.RMISecurityManager;
-
-import java.util.*;
-import java.io.*;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.*;
+import java.io.*;
 
 public class client
 {
@@ -54,40 +50,11 @@ public class client
             System.exit(1);
         }
 
+        // Establish Socket
         Socket socket= new Socket(serverName, port);
 
-        try
-        {
-            // get a reference to the rmiregistry
-            Registry registry = LocateRegistry.getRegistry(server, port);
-            // get the proxy and the remote reference by rmiregistry lookup
-            rm = (ResourceManager) registry.lookup("group_21");
-            if(rm!=null)
-            {
-                System.out.println("Successful");
-                System.out.println("Connected to RM");
-            }
-            else
-            {
-                System.out.println("Unsuccessful");
-            }
-            // make call on remote method
-        }
-        catch (Exception e)
-        {
-            System.err.println("Client exception: " + e.toString());
-            e.printStackTrace();
-        }
-
-
-
-        if (System.getSecurityManager() == null) {
-            //System.setSecurityManager(new RMISecurityManager());
-        }
-
-
         // Declaring input/output buffers
-        PrintWriter outToServer= new PrintWriter(socket.getOutputStream(),true); // open an output stream to the server...
+        PrintWriter outToServer= new PrintWriter(socket.getOutputStream(), true); // open an output stream to the server...
         BufferedReader inFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream())); // open an input stream from the server...
         BufferedReader bufferedReader =new java.io.BufferedReader(new InputStreamReader(System.in)); //to read user's input
 
@@ -103,18 +70,18 @@ public class client
         System.out.print("\n>");
 
         try{
-            //read the next command
-            command =stdin.readLine();
+            // Read the next command
+            String command = bufferedReader.readLine(); // read user's input
         }
         catch (IOException io){
             System.out.println("Unable to read from standard in");
             System.exit(1);
         }
-        //remove heading and trailing white space
-        command=command.trim();
-        arguments=obj.parse(command);
+        // Remove heading and trailing white space
+        command = command.trim();
+        arguments = obj.parse(command);
 
-        //decide which of the commands this was
+        // Decide which of the commands this was
         switch(obj.findChoice((String)arguments.elementAt(0))){
         case 1: //help section
             if(arguments.size()==1)   //command was "help"
@@ -140,13 +107,10 @@ public class client
               flightNum = obj.getInt(arguments.elementAt(2));
               flightSeats = obj.getInt(arguments.elementAt(3));
               flightPrice = obj.getInt(arguments.elementAt(4));
-
-              // TODO: Reimplement the following line to
               // Send a tcp call to this method, instead of an rmi call
-              if(rm.addFlight(Id,flightNum,flightSeats,flightPrice))
-                System.out.println("Flight added");
-              else
-                System.out.println("Flight could not be added");
+              outToServer.println(command);
+              String res = inFromServer.readLine();
+              System.out.println("Server Response: " + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -170,10 +134,10 @@ public class client
               location = obj.getString(arguments.elementAt(2));
               numCars = obj.getInt(arguments.elementAt(3));
               price = obj.getInt(arguments.elementAt(4));
-              if(rm.addCars(Id,location,numCars,price))
-                System.out.println("Cars added");
-              else
-                System.out.println("Cars could not be added");
+              // Send a tcp call to this method, instead of an rmi call
+              outToServer.println(command);
+              String res = inFromServer.readLine();
+              System.out.println("Server Response: " + res);
             }
 
             catch(Exception e){
@@ -198,10 +162,10 @@ public class client
               location = obj.getString(arguments.elementAt(2));
               numRooms = obj.getInt(arguments.elementAt(3));
               price = obj.getInt(arguments.elementAt(4));
-              if(rm.addRooms(Id,location,numRooms,price))
-                System.out.println("Rooms added");
-              else
-                System.out.println("Rooms could not be added");
+              // Send a tcp call to this method, instead of an rmi call
+              outToServer.println(command);
+              String res = inFromServer.readLine();
+              System.out.println("Server Response: " + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -219,8 +183,10 @@ public class client
 
             try{
               Id = obj.getInt(arguments.elementAt(1));
-              int customer=rm.newCustomer(Id);
-              System.out.println("new customer id:"+customer);
+              // Send a tcp call to this method, instead of an rmi call
+              outToServer.println(command);
+              String res = inFromServer.readLine();
+              System.out.println("Server Response: " + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -240,10 +206,10 @@ public class client
             try{
               Id = obj.getInt(arguments.elementAt(1));
               flightNum = obj.getInt(arguments.elementAt(2));
-              if(rm.deleteFlight(Id,flightNum))
-                System.out.println("Flight Deleted");
-              else
-                System.out.println("Flight could not be deleted");
+              // Send a tcp call to this method, instead of an rmi call
+              outToServer.println(command);
+              String res = inFromServer.readLine();
+              System.out.println("Server Response: " + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -263,11 +229,10 @@ public class client
             try{
               Id = obj.getInt(arguments.elementAt(1));
               location = obj.getString(arguments.elementAt(2));
-
-              if(rm.deleteCars(Id,location))
-                System.out.println("Cars Deleted");
-              else
-                System.out.println("Cars could not be deleted");
+              // Send a tcp call to this method, instead of an rmi call
+              outToServer.println(command);
+              String res = inFromServer.readLine();
+              System.out.println("Server Response: " + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -287,10 +252,10 @@ public class client
             try{
               Id = obj.getInt(arguments.elementAt(1));
               location = obj.getString(arguments.elementAt(2));
-              if(rm.deleteRooms(Id,location))
-                System.out.println("Rooms Deleted");
-              else
-                System.out.println("Rooms could not be deleted");
+              // Send a tcp call to this method, instead of an rmi call
+              outToServer.println(command);
+              String res = inFromServer.readLine();
+              System.out.println("Server Response: " + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -310,10 +275,10 @@ public class client
             try{
               Id = obj.getInt(arguments.elementAt(1));
               int customer = obj.getInt(arguments.elementAt(2));
-              if(rm.deleteCustomer(Id,customer))
-                System.out.println("Customer Deleted");
-              else
-                System.out.println("Customer could not be deleted");
+              // Send a tcp call to this method, instead of an rmi call
+              outToServer.println(command);
+              String res = inFromServer.readLine();
+              System.out.println("Server Response: " + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -333,8 +298,10 @@ public class client
             try{
               Id = obj.getInt(arguments.elementAt(1));
               flightNum = obj.getInt(arguments.elementAt(2));
-              int seats=rm.queryFlight(Id,flightNum);
-              System.out.println("Number of seats available:"+seats);
+              // Send a tcp call to this method, instead of an rmi call
+              outToServer.println(command);
+              String res = inFromServer.readLine();
+              System.out.println("Server Response: " + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -354,8 +321,10 @@ public class client
             try{
               Id = obj.getInt(arguments.elementAt(1));
               location = obj.getString(arguments.elementAt(2));
-              numCars=rm.queryCars(Id,location);
-              System.out.println("number of Cars at this location:"+numCars);
+              // Send a tcp call to this method, instead of an rmi call
+              outToServer.println(command);
+              String res = inFromServer.readLine();
+              System.out.println("Server Response: " + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -375,8 +344,10 @@ public class client
             try{
               Id = obj.getInt(arguments.elementAt(1));
               location = obj.getString(arguments.elementAt(2));
-              numRooms=rm.queryRooms(Id,location);
-              System.out.println("number of Rooms at this location:"+numRooms);
+              // Send a tcp call to this method, instead of an rmi call
+              outToServer.println(command);
+              String res = inFromServer.readLine();
+              System.out.println("Server Response: " + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -396,8 +367,10 @@ public class client
             try{
               Id = obj.getInt(arguments.elementAt(1));
               int customer = obj.getInt(arguments.elementAt(2));
-              String bill=rm.queryCustomerInfo(Id,customer);
-              System.out.println("Customer info:"+bill);
+              // Send a tcp call to this method, instead of an rmi call
+              outToServer.println(command);
+              String res = inFromServer.readLine();
+              System.out.println("Server Response: " + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -417,8 +390,10 @@ public class client
             try{
               Id = obj.getInt(arguments.elementAt(1));
               flightNum = obj.getInt(arguments.elementAt(2));
-              price=rm.queryFlightPrice(Id,flightNum);
-              System.out.println("Price of a seat:"+price);
+              // Send a tcp call to this method, instead of an rmi call
+              outToServer.println(command);
+              String res = inFromServer.readLine();
+              System.out.println("Server Response: " + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -438,8 +413,10 @@ public class client
             try{
               Id = obj.getInt(arguments.elementAt(1));
               location = obj.getString(arguments.elementAt(2));
-              price=rm.queryCarsPrice(Id,location);
-              System.out.println("Price of a car at this location:"+price);
+              // Send a tcp call to this method, instead of an rmi call
+              outToServer.println(command);
+              String res = inFromServer.readLine();
+              System.out.println("Server Response: " + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -459,8 +436,10 @@ public class client
             try{
               Id = obj.getInt(arguments.elementAt(1));
               location = obj.getString(arguments.elementAt(2));
-              price=rm.queryRoomsPrice(Id,location);
-              System.out.println("Price of Rooms at this location:"+price);
+              // Send a tcp call to this method, instead of an rmi call
+              outToServer.println(command);
+              String res = inFromServer.readLine();
+              System.out.println("Server Response: " + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -482,10 +461,10 @@ public class client
               Id = obj.getInt(arguments.elementAt(1));
               int customer = obj.getInt(arguments.elementAt(2));
               flightNum = obj.getInt(arguments.elementAt(3));
-              if(rm.reserveFlight(Id,customer,flightNum))
-                System.out.println("Flight Reserved");
-              else
-                System.out.println("Flight could not be reserved.");
+              // Send a tcp call to this method, instead of an rmi call
+              outToServer.println(command);
+              String res = inFromServer.readLine();
+              System.out.println("Server Response: " + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -507,10 +486,10 @@ public class client
               Id = obj.getInt(arguments.elementAt(1));
               int customer = obj.getInt(arguments.elementAt(2));
               location = obj.getString(arguments.elementAt(3));
-              if(rm.reserveCar(Id,customer,location))
-                System.out.println("Car Reserved");
-              else
-                System.out.println("Car could not be reserved.");
+              // Send a tcp call to this method, instead of an rmi call
+              outToServer.println(command);
+              String res = inFromServer.readLine();
+              System.out.println("Server Response: " + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -532,10 +511,10 @@ public class client
               Id = obj.getInt(arguments.elementAt(1));
               int customer = obj.getInt(arguments.elementAt(2));
               location = obj.getString(arguments.elementAt(3));
-              if(rm.reserveRoom(Id,customer,location))
-                System.out.println("Room Reserved");
-              else
-                System.out.println("Room could not be reserved.");
+              // Send a tcp call to this method, instead of an rmi call
+              outToServer.println(command);
+              String res = inFromServer.readLine();
+              System.out.println("Server Response: " + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -568,10 +547,10 @@ public class client
               Car = obj.getBoolean(arguments.elementAt(arguments.size()-2));
               Room = obj.getBoolean(arguments.elementAt(arguments.size()-1));
 
-              if(rm.itinerary(Id,customer,flightNumbers,location,Car,Room))
-                System.out.println("Itinerary Reserved");
-              else
-                System.out.println("Itinerary could not be reserved.");
+              // Send a tcp call to this method, instead of an rmi call
+              outToServer.println(command);
+              String res = inFromServer.readLine();
+              System.out.println("Server Response: " + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -599,8 +578,10 @@ public class client
             try{
               Id = obj.getInt(arguments.elementAt(1));
               Cid = obj.getInt(arguments.elementAt(2));
-              boolean customer=rm.newCustomer(Id,Cid);
-              System.out.println("new customer id:"+Cid);
+              // Send a tcp call to this method, instead of an rmi call
+              outToServer.println(command);
+              String res = inFromServer.readLine();
+              System.out.println("Server Response: " + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
