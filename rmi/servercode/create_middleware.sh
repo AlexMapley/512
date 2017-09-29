@@ -16,4 +16,4 @@ chmod 704 ResInterface/*.class
 chmod 705 * # directory needs to be executable???
 
 # Run server on registered instance
-java -Djava.security.policy=java.policy -Djava.rmi.server.codebase="file:`pwd`" ResImpl.MiddleWareImpl
+java -Djava.security.policy=java.policy  ResImpl.MiddleWareImpl
