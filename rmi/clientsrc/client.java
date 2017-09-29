@@ -30,7 +30,7 @@ public class client
         String location;
 
 
-        String server = "localhost";
+        String server = "lab1-1";
         int port = 5959;
         if (args.length > 0)
         {
