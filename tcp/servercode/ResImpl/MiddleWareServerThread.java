@@ -7,46 +7,43 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 
-public class serverSocketThread extends Thread {
+public class MiddleWareServerThread extends Thread {
   Socket socket;
-  serverSocketThread (Socket socket)
+  MiddleWareServerThread (Socket socket);
   {
-    this.socket=socket;
+    this.socket = socket;
   }
 
-public void run()
-{
+  public void run() {
 
-	try
-		{
-		BufferedReader inFromClient= new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		PrintWriter outToClient = new PrintWriter(socket.getOutputStream(), true);
-			String message = null;
-			while ((message = inFromClient.readLine())!=null)
-			{
+  	try {
+  		BufferedReader inFromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+  		PrintWriter outToClient = new PrintWriter(socket.getOutputStream(), true);
+  		String message = null;
 
-		System.out.println("message:"+message);
-		String result="Working!";
+      while ((message = inFromClient.readLine())!=null) {
 
-    // simpleMath sm=new simpleMath();
-		String[] params =  message.split(",");
-		//String command= Integer.parseInt(params[1]);
-		//int = Integer.parseInt(params[2]);
-		//int res=0;
-		System.out.println(params[0] +"--"+params[1]+"--"+params[2]);
-		// if (params[0].equals("mul"))
-		// 	 res=sm.mul(x,y);
-		// else if (params[0].equals("add"))
-		// 	 res=sm.add(x,y);
+    		System.out.println("message:"+message);
+    		String result="Working!";
 
-		 outToClient.println("hello client from server THREAD, your result is: " + res );
+        // simpleMath sm=new simpleMath();
+    		String[] params =  message.split(",");
+        String res = "LOLCAKES";
+    		//String command= Integer.parseInt(params[1]);
+    		//int = Integer.parseInt(params[2]);
+    		//int res=0;
+    		//System.out.println(params[0] +"--"+params[1]+"--"+params[2]);
+    		// if (params[0].equals("mul"))
+    		// 	 res=sm.mul(x,y);
+    		// else if (params[0].equals("add"))
+    		// 	 res=sm.add(x,y);
 
-			}
-	socket.close();
-		}
-	catch (IOException e)
-	{
+    		 outToClient.println("hello client from server THREAD, your result is: " + res );
+  		}
 
-	}
-
+    socket.close();
+  	}
+  	catch (IOException e) {
+  	}
+  }
 }
