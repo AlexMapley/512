@@ -21,7 +21,7 @@ public class MiddleWareImpl implements ResourceManager
 
     public static void main(String args[]) {
         int port = 5959;
-        String server = "lab2-1";
+        String server = "lab2-49";
 
         // connect to RMs
         // ArrayList<ResourceManager> rms = new ArrayList<ResourceManager>();
@@ -77,7 +77,7 @@ public class MiddleWareImpl implements ResourceManager
         }
         catch (Exception e)
         {
-            System.err.println("Client exception: " + e.toString());
+            System.err.println("MiddleWare exception: " + e.toString());
             e.printStackTrace();
         }
 
