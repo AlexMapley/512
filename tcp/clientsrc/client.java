@@ -133,7 +133,7 @@ public class client
             System.out.println("Add Number of Cars: "+arguments.elementAt(3));
             System.out.println("Set Price: "+arguments.elementAt(4));
 
-            try{
+            try {
               Id = obj.getInt(arguments.elementAt(1));
               location = obj.getString(arguments.elementAt(2));
               numCars = obj.getInt(arguments.elementAt(3));

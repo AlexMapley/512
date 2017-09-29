@@ -1,3 +1,5 @@
+package ResImpl;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
@@ -9,8 +11,7 @@ import java.io.InputStreamReader;
 
 public class MiddleWareServerThread extends Thread {
   Socket socket;
-  MiddleWareServerThread (Socket socket);
-  {
+  MiddleWareServerThread (Socket socket) {
     this.socket = socket;
   }
 

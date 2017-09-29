@@ -6,6 +6,7 @@ echo $CLASSPATH
 javac ResInterface/ResourceManager.java
 jar cvf ResInterface.jar ResInterface/*.class
 javac ResImpl/MiddleWareImpl.java
+javac ResImpl/MiddleWareServerThread.java
 
 # Setting permissions
 chmod 704 ResInterface.jar
