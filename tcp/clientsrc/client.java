@@ -29,6 +29,9 @@ public class client
         String serverName;
         Socket socket;
         int port;
+        PrintWriter outToServer;
+        BufferedReader inFromServer;
+        BufferedReader bufferedReader;
 
 
         // Default server and port
@@ -38,7 +41,7 @@ public class client
         //Input Args for connecting to specific server
         if (args.length > 0)
         {
-            server = args[0];
+            serverName = args[0];
         }
         if (args.length > 1)
         {
@@ -51,12 +54,13 @@ public class client
         }
 
         // Establish Socket
-        Socket socket= new Socket(serverName, port);
-
+        try {
+        socket = new Socket(serverName, port);
         // Declaring input/output buffers
-        PrintWriter outToServer= new PrintWriter(socket.getOutputStream(), true); // open an output stream to the server...
-        BufferedReader inFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream())); // open an input stream from the server...
-        BufferedReader bufferedReader =new java.io.BufferedReader(new InputStreamReader(System.in)); //to read user's input
+        outToServer = new PrintWriter(socket.getOutputStream(), true); // open an output stream to the server...
+        inFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream())); // open an input stream from the server...
+        bufferedReader = new java.io.BufferedReader(new InputStreamReader(System.in)); //to read user's input
+
 
         // CLI Interface, help page
         System.out.println("\n\nClient Interface: !@ <( 'o')> <('O' )> @! ");
@@ -71,7 +75,7 @@ public class client
 
         try{
             // Read the next command
-            String command = bufferedReader.readLine(); // read user's input
+            command = bufferedReader.readLine(); // read user's input
         }
         catch (IOException io){
             System.out.println("Unable to read from standard in");
@@ -594,7 +598,12 @@ public class client
             System.out.println("The interface does not support this command.");
             break;
         }//end of switch
-        }//end of while(true)
+      } //end of while(true)
+      }
+      catch (Exception e) {
+        System.out.println(e);
+        System.exit(1);
+      }
     }
 
     public Vector parse(String command)

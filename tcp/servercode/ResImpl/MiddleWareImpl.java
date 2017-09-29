@@ -23,17 +23,17 @@ public class MiddleWareImpl implements ResourceManager
 
         // Default connection
         port = 5959;
-        serverNames[0] = "localhost"
+        serverNames[0] = "localhost";
         sockets[0] = new Socket(serverNames[0], port);
 
-        // Specifying target RM servers with args
+        // Specifying target servers with args
         if (args.length > 0) {
           for (int i = 0; i < args.length; i++) {
             servers[i] = args[i];
           }
         }
 
-        // Connecting to target RM sockets to args
+        // Connecting to target sockets
         if (args.length > 0) {
           for (int i = 0; i < args.length; i++) {
             sockets[i] = new Socket(serverNames[i], port);
@@ -44,7 +44,7 @@ public class MiddleWareImpl implements ResourceManager
         //Start middleware server
     }
 
-    public MiddleWareImpl() throws RemoteException {
+    public MiddleWareImpl() throws IOException {
 
     }
 
@@ -124,7 +124,7 @@ public class MiddleWareImpl implements ResourceManager
     //  Create a new flight, or add seats to existing flight
     //  NOTE: if flightPrice <= 0 and the flight already exists, it maintains its current price
     public boolean addFlight(int id, int flightNum, int flightSeats, int flightPrice)
-        throws RemoteException
+        throws IOException
     {
         Trace.info("RM::addFlight(" + id + ", " + flightNum + ", $" + flightPrice + ", " + flightSeats + ") called" );
 
@@ -150,7 +150,7 @@ public class MiddleWareImpl implements ResourceManager
 
 
     public boolean deleteFlight(int id, int flightNum)
-        throws RemoteException
+        throws IOException
     {
         // return FlightRM.deleteFlight(id, flightNum);
         return rm.deleteFlight(id, flightNum);
@@ -161,7 +161,7 @@ public class MiddleWareImpl implements ResourceManager
     // Create a new room location or add rooms to an existing location
     //  NOTE: if price <= 0 and the room location already exists, it maintains its current price
     public boolean addRooms(int id, String location, int count, int price)
-        throws RemoteException
+        throws IOException
     {
         Trace.info("RM::addRooms(" + id + ", " + location + ", " + count + ", $" + price + ") called" );
         try {
@@ -183,7 +183,7 @@ public class MiddleWareImpl implements ResourceManager
 
     // Delete rooms from a location
     public boolean deleteRooms(int id, String location)
-        throws RemoteException
+        throws IOException
     {
         // return HotelRM.deleteRooms(id, location);
         return rm.deleteRooms(id, location);
@@ -193,7 +193,7 @@ public class MiddleWareImpl implements ResourceManager
     // Create a new car location or add cars to an existing location
     //  NOTE: if price <= 0 and the location already exists, it maintains its current price
     public boolean addCars(int id, String location, int count, int price)
-        throws RemoteException
+        throws IOException
     {
         try {
             // if(CarRM.addCars(id,location,numCars,price))
@@ -215,7 +215,7 @@ public class MiddleWareImpl implements ResourceManager
 
     // Delete cars from a location
     public boolean deleteCars(int id, String location)
-        throws RemoteException
+        throws IOException
     {
         // return CarRM.deleteCars(id, location);
         return rm.deleteCars(id, location);
@@ -225,7 +225,7 @@ public class MiddleWareImpl implements ResourceManager
 
     // Returns the number of empty seats on this flight
     public int queryFlight(int id, int flightNum)
-        throws RemoteException
+        throws IOException
     {
         // return FlightRM.queryFlight(id,flightNum);
         return rm.queryFlight(id,flightNum);
@@ -233,7 +233,7 @@ public class MiddleWareImpl implements ResourceManager
 
     // Returns the number of reservations for this flight.
 //    public int queryFlightReservations(int id, int flightNum)
-//        throws RemoteException
+//        throws IOException
 //    {
 //        Trace.info("RM::queryFlightReservations(" + id + ", #" + flightNum + ") called" );
 //        RMInteger numReservations = (RMInteger) readData( id, Flight.getNumReservationsKey(flightNum) );
@@ -247,7 +247,7 @@ public class MiddleWareImpl implements ResourceManager
 
     // Returns price of this flight
     public int queryFlightPrice(int id, int flightNum )
-        throws RemoteException
+        throws IOException
     {
         // return FlightRM.queryFlightPrice(id, flightNum);
         return rm.queryFlightPrice(id, flightNum);
@@ -256,7 +256,7 @@ public class MiddleWareImpl implements ResourceManager
 
     // Returns the number of rooms available at a location
     public int queryRooms(int id, String location)
-        throws RemoteException
+        throws IOException
     {
         // return HotelRM.queryRooms(id, location));
         return rm.queryRooms(id, location);
@@ -264,7 +264,7 @@ public class MiddleWareImpl implements ResourceManager
 
     // Returns room price at this location
     public int queryRoomsPrice(int id, String location)
-        throws RemoteException
+        throws IOException
     {
         // return HotelRM.queryRoomsPrice(id, location);
         return rm.queryRoomsPrice(id, location);
@@ -273,7 +273,7 @@ public class MiddleWareImpl implements ResourceManager
 
     // Returns the number of cars available at a location
     public int queryCars(int id, String location)
-        throws RemoteException
+        throws IOException
     {
         // return CarRM.queryCars(id, location);
         return rm.queryCars(id, location);
@@ -282,7 +282,7 @@ public class MiddleWareImpl implements ResourceManager
 
     // Returns price of cars at this location
     public int queryCarsPrice(int id, String location)
-        throws RemoteException
+        throws IOException
     {
         // return CarRM.queryCarsPrice(id, location);
         return rm.queryCarsPrice(id, location);
@@ -292,7 +292,7 @@ public class MiddleWareImpl implements ResourceManager
     //  customer doesn't exist. Returns empty RMHashtable if customer exists but has no
     //  reservations.
     public RMHashtable getCustomerReservations(int id, int customerID)
-        throws RemoteException
+        throws IOException
     {
         Trace.info("RM::getCustomerReservations(" + id + ", " + customerID + ") called" );
         Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
@@ -306,7 +306,7 @@ public class MiddleWareImpl implements ResourceManager
 
     // return a bill
     public String queryCustomerInfo(int id, int customerID)
-        throws RemoteException
+        throws IOException
     {
         Trace.info("RM::queryCustomerInfo(" + id + ", " + customerID + ") called" );
         Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
@@ -325,7 +325,7 @@ public class MiddleWareImpl implements ResourceManager
     // new customer just returns a unique customer identifier
 
     public int newCustomer(int id)
-        throws RemoteException
+        throws IOException
     {
         Trace.info("INFO: RM::newCustomer(" + id + ") called" );
         // Generate a globally unique ID for the new customer
@@ -340,7 +340,7 @@ public class MiddleWareImpl implements ResourceManager
 
     // I opted to pass in customerID instead. This makes testing easier
     public boolean newCustomer(int id, int customerID )
-        throws RemoteException
+        throws IOException
     {
         Trace.info("INFO: RM::newCustomer(" + id + ", " + customerID + ") called" );
         Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
@@ -358,7 +358,7 @@ public class MiddleWareImpl implements ResourceManager
 
     // Deletes customer from the database.
     public boolean deleteCustomer(int id, int customerID)
-        throws RemoteException
+        throws IOException
     {
         Trace.info("RM::deleteCustomer(" + id + ", " + customerID + ") called" );
         Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
@@ -390,7 +390,7 @@ public class MiddleWareImpl implements ResourceManager
     // Frees flight reservation record. Flight reservation records help us make sure we
     // don't delete a flight if one or more customers are holding reservations
     public boolean freeFlightReservation(int id, int flightNum)
-        throws RemoteException
+        throws IOException
     {
         Trace.info("RM::freeFlightReservations(" + id + ", " + flightNum + ") called" );
         RMInteger numReservations = (RMInteger) readData( id, Flight.getNumReservationsKey(flightNum) );
@@ -406,7 +406,7 @@ public class MiddleWareImpl implements ResourceManager
 
     // Adds car reservation to this customer.
     public boolean reserveCar(int id, int customerID, String location)
-        throws RemoteException
+        throws IOException
     {
         return reserveItem(id, customerID, Car.getKey(location), location);
     }
@@ -414,20 +414,20 @@ public class MiddleWareImpl implements ResourceManager
 
     // Adds room reservation to this customer.
     public boolean reserveRoom(int id, int customerID, String location)
-        throws RemoteException
+        throws IOException
     {
         return reserveItem(id, customerID, Hotel.getKey(location), location);
     }
     // Adds flight reservation to this customer.
     public boolean reserveFlight(int id, int customerID, int flightNum)
-        throws RemoteException
+        throws IOException
     {
         return reserveItem(id, customerID, Flight.getKey(flightNum), String.valueOf(flightNum));
     }
 
     // Reserve an itinerary
     public boolean itinerary(int id,int customer,Vector flightNumbers,String location,boolean Car,boolean Room)
-        throws RemoteException
+        throws IOException
     {
         return false;
     }
