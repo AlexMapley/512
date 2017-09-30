@@ -30,7 +30,7 @@ public class client
         String location;
 
 
-        String server = "lab1-1";
+        String server = "cs-4";
         int port = 5959;
         if (args.length > 0)
         {
@@ -537,7 +537,7 @@ public class client
             try{
               Id = obj.getInt(arguments.elementAt(1));
               int customer = obj.getInt(arguments.elementAt(2));
-              Vector flightNumbers = new Vector();
+              Vector flightNumbers = new Vector<>();
               for(int i=0;i<arguments.size()-6;i++)
                 flightNumbers.addElement(arguments.elementAt(3+i));
               location = obj.getString(arguments.elementAt(arguments.size()-3));

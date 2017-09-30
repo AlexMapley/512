@@ -17,69 +17,70 @@ public class MiddleWareImpl implements ResourceManager
     static ResourceManager CarRM = null;
     static ResourceManager HotelRM = null;
     static ResourceManager FlightRM = null;
-    public static ResourceManager rm = null; // test
+    // public static ResourceManager rm = null; // test
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         int port = 5959;
         String server = "cs-4";
 
         // connect to RMs
-        // ArrayList<ResourceManager> rms = new ArrayList<ResourceManager>();
-        // if (args.length == 3) {
-        //     //List of RM addresses, port hardcoded rn
-        //     try
-        //     {
-        //         for(int i=0; i<3;i++) {
-        //             // get a reference to the rmiregistry
-        //             Registry registry = LocateRegistry.getRegistry(args[i], port);
-        //             // get the proxy and the remote reference by rmiregistry lookup
-        //             rms.add((ResourceManager) registry.lookup("group_21"));
-        //             if(rms.get(i) != null)
-        //             {
-        //                 System.out.println("Successful Connection to RM " + i);
-        //             }
-        //             else
-        //             {
-        //                 System.out.println("Unsuccessful Connecting to RM" + i);
-        //             }
-        //         }
-        //     }
-        //     catch (Exception e)
-        //     {
-        //         System.err.println("MiddleWare exception: " + e.toString());
-        //         e.printStackTrace();
-        //     }
+        ArrayList<ResourceManager> rms = new ArrayList<ResourceManager>();
 
-        // } else {
-        //     System.err.println ("Wrong usage");
-        //     System.out.println("Usage: java ResImpl.MiddleWareImpl [rmaddress:port] X 3 ");
-        //     System.exit(1);
-        // }
-        // CarRM = rms.get(0); HotelRM = rms.get(1); FlightRM = rms.get(2);
+        if (args.length == 3) {
+            //List of RM addresses, port hardcoded rn
+            try
+            {
+                for(int i=0; i<3;i++) {
+                    // get a reference to the rmiregistry
+                    Registry registry = LocateRegistry.getRegistry(args[i], port);
+                    // get the proxy and the remote reference by rmiregistry lookup
+                    rms.add((ResourceManager) registry.lookup("group_21"));
+                    if(rms.get(i) != null)
+                    {
+                        System.out.println("Successful Connection to RM: " + i);
+                    }
+                    else
+                    {
+                        System.out.println("Unsuccessful Connecting to RM: " + i);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                System.err.println("MiddleWare exception: " + e.toString());
+                e.printStackTrace();
+            }
+
+        } else {
+            System.err.println ("Wrong usage");
+            System.out.println("Usage: java ResImpl.MiddleWareImpl [rmaddress] X 3 ");
+            System.exit(1);
+        }
+        CarRM = rms.get(0); HotelRM = rms.get(1); FlightRM = rms.get(2);
 
         //TEST 1 RM ON SPECIFIC MACHINE
-        try
-        {
-            // get a reference to the rmiregistry
-            Registry registry = LocateRegistry.getRegistry(server, port);
-            // get the proxy and the remote reference by rmiregistry lookup
-            rm = (ResourceManager) registry.lookup("group_21");
-            if(rm!=null)
-            {
-                System.out.println("Successful");
-                System.out.println("Connected to RM");
-            }
-            else
-            {
-                System.out.println("Unsuccessful");
-            }
-            // make call on remote method
-        }
-        catch (Exception e)
-        {
-            System.err.println("MiddleWare exception: " + e.toString());
-            e.printStackTrace();
-        }
+        // try
+        // {
+        //     // get a reference to the rmiregistry
+        //     Registry registry = LocateRegistry.getRegistry(server, port);
+        //     // get the proxy and the remote reference by rmiregistry lookup
+        //     rm = (ResourceManager) registry.lookup("group_21");
+        //     if(rm!=null)
+        //     {
+        //         System.out.println("Successful");
+        //         System.out.println("Connected to RM");
+        //     }
+        //     else
+        //     {
+        //         System.out.println("Unsuccessful");
+        //     }
+        //     // make call on remote method
+        // }
+        // catch (Exception e)
+        // {
+        //     System.err.println("MiddleWare exception: " + e.toString());
+        //     e.printStackTrace();
+        // }
 
         //Start middleware server
         try {
@@ -190,8 +191,8 @@ public class MiddleWareImpl implements ResourceManager
         Trace.info("RM::addFlight(" + id + ", " + flightNum + ", $" + flightPrice + ", " + flightSeats + ") called" );
 
         try {
-            // if(FlightRM.addFlight(id,flightNum,flightSeats,flightPrice))
-            if(rm.addFlight(id,flightNum,flightSeats,flightPrice))
+            if(FlightRM.addFlight(id,flightNum,flightSeats,flightPrice))
+            // if(rm.addFlight(id,flightNum,flightSeats,flightPrice))
                 // call succesfull
                 Trace.info("RM::addFlight(" + id + ") created or modified flight " + flightNum + ", seats=" +
                     flightSeats + ", price=$" + flightPrice );
@@ -213,8 +214,8 @@ public class MiddleWareImpl implements ResourceManager
     public boolean deleteFlight(int id, int flightNum)
         throws RemoteException
     {
-        // return FlightRM.deleteFlight(id, flightNum);
-        return rm.deleteFlight(id, flightNum);
+        return FlightRM.deleteFlight(id, flightNum);
+        // return rm.deleteFlight(id, flightNum);
     }
 
 
@@ -226,8 +227,8 @@ public class MiddleWareImpl implements ResourceManager
     {
         Trace.info("RM::addRooms(" + id + ", " + location + ", " + count + ", $" + price + ") called" );
         try {
-            // if(HotelRM.addRooms(id,location,count,price))
-            if(rm.addRooms(id,location,count,price))
+            if(HotelRM.addRooms(id,location,count,price))
+            // if(rm.addRooms(id,location,count,price))
                 // call succesfull
                 Trace.info("RM::addRooms(" + id + ") created or modified room location " + location + ", count=" + count + ", price=$" + price );
             else {
@@ -246,8 +247,8 @@ public class MiddleWareImpl implements ResourceManager
     public boolean deleteRooms(int id, String location)
         throws RemoteException
     {
-        // return HotelRM.deleteRooms(id, location);
-        return rm.deleteRooms(id, location);
+        return HotelRM.deleteRooms(id, location);
+        // return rm.deleteRooms(id, location);
 
     }
 
@@ -257,8 +258,8 @@ public class MiddleWareImpl implements ResourceManager
         throws RemoteException
     {
         try {
-            // if(CarRM.addCars(id,location,numCars,price))
-            if(rm.addCars(id,location,count,price))
+            if(CarRM.addCars(id,location,count,price))
+            // if(rm.addCars(id,location,count,price))
                 // call succesfull
                 Trace.info("RM::addCars(" + id + ") created or modified location " + location + ", count=" + count + ", price=$" + price );
             else {
@@ -278,8 +279,8 @@ public class MiddleWareImpl implements ResourceManager
     public boolean deleteCars(int id, String location)
         throws RemoteException
     {
-        // return CarRM.deleteCars(id, location);
-        return rm.deleteCars(id, location);
+        return CarRM.deleteCars(id, location);
+        // return rm.deleteCars(id, location);
     }
 
 
@@ -288,8 +289,8 @@ public class MiddleWareImpl implements ResourceManager
     public int queryFlight(int id, int flightNum)
         throws RemoteException
     {
-        // return FlightRM.queryFlight(id,flightNum);
-        return rm.queryFlight(id,flightNum);
+        return FlightRM.queryFlight(id,flightNum);
+        // return rm.queryFlight(id,flightNum);
     }
 
     // Returns the number of reservations for this flight.
@@ -310,8 +311,8 @@ public class MiddleWareImpl implements ResourceManager
     public int queryFlightPrice(int id, int flightNum )
         throws RemoteException
     {
-        // return FlightRM.queryFlightPrice(id, flightNum);
-        return rm.queryFlightPrice(id, flightNum);
+        return FlightRM.queryFlightPrice(id, flightNum);
+        // return rm.queryFlightPrice(id, flightNum);
     }
 
 
@@ -319,16 +320,16 @@ public class MiddleWareImpl implements ResourceManager
     public int queryRooms(int id, String location)
         throws RemoteException
     {
-        // return HotelRM.queryRooms(id, location));
-        return rm.queryRooms(id, location);
+        return HotelRM.queryRooms(id, location);
+        // return rm.queryRooms(id, location);
     }
 
     // Returns room price at this location
     public int queryRoomsPrice(int id, String location)
         throws RemoteException
     {
-        // return HotelRM.queryRoomsPrice(id, location);
-        return rm.queryRoomsPrice(id, location);
+        return HotelRM.queryRoomsPrice(id, location);
+        // return rm.queryRoomsPrice(id, location);
     }
 
 
@@ -336,8 +337,8 @@ public class MiddleWareImpl implements ResourceManager
     public int queryCars(int id, String location)
         throws RemoteException
     {
-        // return CarRM.queryCars(id, location);
-        return rm.queryCars(id, location);
+        return CarRM.queryCars(id, location);
+        // return rm.queryCars(id, location);
     }
 
 
@@ -345,8 +346,8 @@ public class MiddleWareImpl implements ResourceManager
     public int queryCarsPrice(int id, String location)
         throws RemoteException
     {
-        // return CarRM.queryCarsPrice(id, location);
-        return rm.queryCarsPrice(id, location);
+        return CarRM.queryCarsPrice(id, location);
+        // return rm.queryCarsPrice(id, location);
     }
 
     // Returns data structure containing customer reservation info. Returns null if the
@@ -375,10 +376,15 @@ public class MiddleWareImpl implements ResourceManager
             Trace.warn("RM::queryCustomerInfo(" + id + ", " + customerID + ") failed--customer doesn't exist" );
             return "";   // NOTE: don't change this--WC counts on this value indicating a customer does not exist...
         } else {
-                String s = cust.printBill();
-                Trace.info("RM::queryCustomerInfo(" + id + ", " + customerID + "), bill follows..." );
-                System.out.println( s );
-                return s;
+            // Do this for each RM and concat the strings for return
+            String c = CarRM.queryCustomerInfo(id, customerID);
+            String f = FlightRM.queryCustomerInfo(id, customerID);
+            String h = HotelRM.queryCustomerInfo(id, customerID);
+            Trace.info("RM::queryCustomerInfo(" + id + ", " + customerID + "), bill follows..." );
+            
+            // Could make this look nicer
+            System.out.println( c + f + h );
+            return c + f + h;
         } // if
     }
 
@@ -398,7 +404,16 @@ public class MiddleWareImpl implements ResourceManager
         Trace.info("RM::newCustomer(" + cid + ") returns ID=" + cid );
 
         // Create this customer on every rm but pass in the created cid
-        rm.newCustomer(id, cid);
+         try {
+                CarRM.newCustomer(id,cid);
+                FlightRM.newCustomer(id,cid);
+                HotelRM.newCustomer(id,cid);
+            }
+            catch(Exception e) {
+                System.out.println("EXCEPTION:");
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
         return cid;
     }
 
@@ -412,6 +427,19 @@ public class MiddleWareImpl implements ResourceManager
             cust = new Customer(customerID);
             writeData( id, cust.getKey(), cust );
             Trace.info("INFO: RM::newCustomer(" + id + ", " + customerID + ") created a new customer" );
+
+            try {
+                // If customer doesn't exist in middleware it won't exist in any rms
+                CarRM.newCustomer(id,customerID);
+                FlightRM.newCustomer(id,customerID);
+                HotelRM.newCustomer(id,customerID);
+            }
+            catch(Exception e) {
+                System.out.println("EXCEPTION:");
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+
             return true;
         } else {
             Trace.info("INFO: RM::newCustomer(" + id + ", " + customerID + ") failed--customer already exists");
@@ -431,18 +459,23 @@ public class MiddleWareImpl implements ResourceManager
             return false;
         } else {
             // Increase the reserved numbers of all reservable items which the customer reserved.
-            RMHashtable reservationHT = cust.getReservations();
-            for (Enumeration e = reservationHT.keys(); e.hasMoreElements();) {
-                String reservedkey = (String) (e.nextElement());
-                ReservedItem reserveditem = cust.getReservedItem(reservedkey);
-                Trace.info("RM::deleteCustomer(" + id + ", " + customerID + ") has reserved " + reserveditem.getKey() + " " +  reserveditem.getCount() +  " times"  );
-                ReservableItem item  = (ReservableItem) readData(id, reserveditem.getKey());
-                Trace.info("RM::deleteCustomer(" + id + ", " + customerID + ") has reserved " + reserveditem.getKey() + "which is reserved" +  item.getReserved() +  " times and is still available " + item.getCount() + " times"  );
-                item.setReserved(item.getReserved()-reserveditem.getCount());
-                item.setCount(item.getCount()+reserveditem.getCount());
-            }
+            // RMHashtable reservationHT = cust.getReservations();
+            // for (Enumeration e = reservationHT.keys(); e.hasMoreElements();) {
+            //     String reservedkey = (String) (e.nextElement());
+            //     ReservedItem reserveditem = cust.getReservedItem(reservedkey);
+            //     Trace.info("RM::deleteCustomer(" + id + ", " + customerID + ") has reserved " + reserveditem.getKey() + " " +  reserveditem.getCount() +  " times"  );
+            //     ReservableItem item  = (ReservableItem) readData(id, reserveditem.getKey());
+            //     Trace.info("RM::deleteCustomer(" + id + ", " + customerID + ") has reserved " + reserveditem.getKey() + "which is reserved" +  item.getReserved() +  " times and is still available " + item.getCount() + " times"  );
+            //     item.setReserved(item.getReserved()-reserveditem.getCount());
+            //     item.setCount(item.getCount()+reserveditem.getCount());
+            // }
 
-            // remove the customer from the storage
+            // remove customer info from all rms
+            CarRM.deleteCustomer(id, customerID);
+            FlightRM.deleteCustomer(id, customerID);
+            HotelRM.deleteCustomer(id, customerID);
+
+            // remove the customer from the middleware storage
             removeData(id, cust.getKey());
 
             Trace.info("RM::deleteCustomer(" + id + ", " + customerID + ") succeeded" );
@@ -472,7 +505,8 @@ public class MiddleWareImpl implements ResourceManager
     public boolean reserveCar(int id, int customerID, String location)
         throws RemoteException
     {
-        return reserveItem(id, customerID, Car.getKey(location), location);
+        return CarRM.reserveCar(id, customerID, location);
+        // return rm.reserveCar(id, customerID, location);
     }
 
 
@@ -480,20 +514,49 @@ public class MiddleWareImpl implements ResourceManager
     public boolean reserveRoom(int id, int customerID, String location)
         throws RemoteException
     {
-        return reserveItem(id, customerID, Hotel.getKey(location), location);
+        return HotelRM.reserveRoom(id, customerID, location);
+        // return rm.reserveRoom(id, customerID, location);
     }
+
     // Adds flight reservation to this customer.
     public boolean reserveFlight(int id, int customerID, int flightNum)
         throws RemoteException
     {
-        return reserveItem(id, customerID, Flight.getKey(flightNum), String.valueOf(flightNum));
+        return FlightRM.reserveFlight(id, customerID, flightNum);
+        // return rm.reserveFlight(id, customerID, flightNum);
     }
 
     // Reserve an itinerary
-    public boolean itinerary(int id,int customer,Vector flightNumbers,String location,boolean Car,boolean Room)
+    public boolean itinerary(int id,int customer,Vector<Integer> flightNumbers,String location,boolean Car,boolean Room)
         throws RemoteException
     {
-        return false;
+        Trace.info("RM::itinerary(" + id + ", " + customer + ") called" );
+        boolean f = true;
+        boolean c = false;
+        boolean r = false;
+        if(!flightNumbers.isEmpty()) {
+            Iterator<Integer> flights = flightNumbers.iterator();
+            while(flights.hasNext()) { 
+            // Reserve all flights
+                // System.out.println(flights.next());
+                int flightNum = flights.next();
+                f = f && FlightRM.reserveFlight(id, customer, flightNum);
+            }   
+
+            //Reserve Car
+            if(Car)
+                c = CarRM.reserveCar(id, customer, location);
+
+            //Reserve Room
+            if(Room) 
+                r = HotelRM.reserveRoom(id, customer, location);
+        }
+        else {
+            return false;
+        }
+
+
+        return f && c && r;
     }
 
 }
