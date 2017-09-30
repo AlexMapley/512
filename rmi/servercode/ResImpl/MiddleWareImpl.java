@@ -17,17 +17,16 @@ public class MiddleWareImpl implements ResourceManager
     static ResourceManager CarRM = null;
     static ResourceManager HotelRM = null;
     static ResourceManager FlightRM = null;
-    // public static ResourceManager rm = null; // test
+    // static ResourceManager rm = null;
 
     public static void main(String[] args) {
-        int port = 5959;
-        String server = "cs-4";
+        int port = 5959;  // hardcoded
+        String server = "localhost";  // creates middlware on current machine
 
-        // connect to RMs
+        // collect inputted RMs
         ArrayList<ResourceManager> rms = new ArrayList<ResourceManager>();
 
         if (args.length == 3) {
-            //List of RM addresses, port hardcoded rn
             try
             {
                 for(int i=0; i<3;i++) {
@@ -56,6 +55,7 @@ public class MiddleWareImpl implements ResourceManager
             System.out.println("Usage: java ResImpl.MiddleWareImpl [rmaddress] X 3 ");
             System.exit(1);
         }
+        // Associate inputted machines to respective RMs
         CarRM = rms.get(0); HotelRM = rms.get(1); FlightRM = rms.get(2);
 
         //TEST 1 RM ON SPECIFIC MACHINE
@@ -209,16 +209,12 @@ public class MiddleWareImpl implements ResourceManager
         return(true);
     }
 
-
-
     public boolean deleteFlight(int id, int flightNum)
         throws RemoteException
     {
         return FlightRM.deleteFlight(id, flightNum);
         // return rm.deleteFlight(id, flightNum);
     }
-
-
 
     // Create a new room location or add rooms to an existing location
     //  NOTE: if price <= 0 and the room location already exists, it maintains its current price
@@ -458,18 +454,6 @@ public class MiddleWareImpl implements ResourceManager
             Trace.warn("RM::deleteCustomer(" + id + ", " + customerID + ") failed--customer doesn't exist" );
             return false;
         } else {
-            // Increase the reserved numbers of all reservable items which the customer reserved.
-            // RMHashtable reservationHT = cust.getReservations();
-            // for (Enumeration e = reservationHT.keys(); e.hasMoreElements();) {
-            //     String reservedkey = (String) (e.nextElement());
-            //     ReservedItem reserveditem = cust.getReservedItem(reservedkey);
-            //     Trace.info("RM::deleteCustomer(" + id + ", " + customerID + ") has reserved " + reserveditem.getKey() + " " +  reserveditem.getCount() +  " times"  );
-            //     ReservableItem item  = (ReservableItem) readData(id, reserveditem.getKey());
-            //     Trace.info("RM::deleteCustomer(" + id + ", " + customerID + ") has reserved " + reserveditem.getKey() + "which is reserved" +  item.getReserved() +  " times and is still available " + item.getCount() + " times"  );
-            //     item.setReserved(item.getReserved()-reserveditem.getCount());
-            //     item.setCount(item.getCount()+reserveditem.getCount());
-            // }
-
             // remove customer info from all rms
             CarRM.deleteCustomer(id, customerID);
             FlightRM.deleteCustomer(id, customerID);
@@ -531,32 +515,36 @@ public class MiddleWareImpl implements ResourceManager
         throws RemoteException
     {
         Trace.info("RM::itinerary(" + id + ", " + customer + ") called" );
-        boolean f = true;
-        boolean c = false;
-        boolean r = false;
-        if(!flightNumbers.isEmpty()) {
-            Iterator<Integer> flights = flightNumbers.iterator();
-            while(flights.hasNext()) { 
-            // Reserve all flights
-                // System.out.println(flights.next());
-                int flightNum = flights.next();
-                f = f && FlightRM.reserveFlight(id, customer, flightNum);
-            }   
+        boolean success = true;
+        try {
+            if(!flightNumbers.isEmpty()) {
+                Iterator<Integer> flights = flightNumbers.iterator();
+                while(flights.hasNext()) { 
+                // Reserve all flights
+                    // System.out.println(flights.next());
+                    int flightNum = flights.next();
+                    success = success && FlightRM.reserveFlight(id, customer, flightNum);
+                }   
 
-            //Reserve Car
-            if(Car)
-                c = CarRM.reserveCar(id, customer, location);
+                //Reserve Car
+                if(Car)
+                    success = success && CarRM.reserveCar(id, customer, location);
 
-            //Reserve Room
-            if(Room) 
-                r = HotelRM.reserveRoom(id, customer, location);
+                //Reserve Room
+                if(Room) 
+                    success = success && HotelRM.reserveRoom(id, customer, location);
+            }
+            else {
+                return false;
+            }
+        } catch(Exception e) {
+            System.out.println("EXCEPTION:");
+            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
-        else {
-            return false;
-        }
 
 
-        return f && c && r;
+        return success;
     }
 
 }

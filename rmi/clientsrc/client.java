@@ -30,7 +30,7 @@ public class client
         String location;
 
 
-        String server = "cs-4";
+        String server = "localhost";
         int port = 5959;
         if (args.length > 0)
         {
@@ -537,9 +537,11 @@ public class client
             try{
               Id = obj.getInt(arguments.elementAt(1));
               int customer = obj.getInt(arguments.elementAt(2));
-              Vector flightNumbers = new Vector<>();
-              for(int i=0;i<arguments.size()-6;i++)
-                flightNumbers.addElement(arguments.elementAt(3+i));
+              Vector<Integer> flightNumbers = new Vector<>();
+              for(int i=0;i<arguments.size()-6;i++) {
+                flightNumbers.addElement(Integer.parseInt((String) arguments.elementAt(3+i)));
+
+              }
               location = obj.getString(arguments.elementAt(arguments.size()-3));
               Car = obj.getBoolean(arguments.elementAt(arguments.size()-2));
               Room = obj.getBoolean(arguments.elementAt(arguments.size()-1));
