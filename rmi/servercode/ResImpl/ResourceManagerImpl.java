@@ -22,7 +22,7 @@ public class ResourceManagerImpl implements ResourceManager
 
     public static void main(String args[]) {
         // Figure out where server is running
-        String server = "lab1-1";
+        String server = "localhost";
         int port = 5959;
 
         if (args.length == 1) {
@@ -135,7 +135,7 @@ public class ResourceManagerImpl implements ResourceManager
         // Read customer object if it exists (and read lock it)
         Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
         if ( cust == null ) {
-            Trace.warn("RM::reserveCar( " + id + ", " + customerID + ", " + key + ", "+location+")  failed--customer doesn't exist" );
+            Trace.warn("RM::reserveItem( " + id + ", " + customerID + ", " + key + ", "+location+")  failed--customer doesn't exist" );
             return false;
         }
 
@@ -464,7 +464,7 @@ public class ResourceManagerImpl implements ResourceManager
     }
 
     // Reserve an itinerary
-    public boolean itinerary(int id,int customer,Vector flightNumbers,String location,boolean Car,boolean Room)
+    public boolean itinerary(int id,int customer,Vector<Integer> flightNumbers,String location,boolean Car,boolean Room)
         throws RemoteException
     {
         return false;

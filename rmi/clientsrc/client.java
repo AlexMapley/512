@@ -72,14 +72,12 @@ public class client
 
 
         if (System.getSecurityManager() == null) {
-            //System.setSecurityManager(new RMISecurityManager());
+            System.setSecurityManager(new RMISecurityManager());
         }
 
 
         System.out.println("\n\nClient Interface: !@ <( 'o')> <('O' )> @! ");
         System.out.println("Type \"help\" for list of supported commands");
-        System.out.println("\n\nNOTE FROM ALEX: TESTING COMMAND:");
-        System.out.println("newflight,1,2,3,4\n\n");
         while(true){
         System.out.print("\n>");
         try{
@@ -539,9 +537,11 @@ public class client
             try{
               Id = obj.getInt(arguments.elementAt(1));
               int customer = obj.getInt(arguments.elementAt(2));
-              Vector flightNumbers = new Vector();
-              for(int i=0;i<arguments.size()-6;i++)
-                flightNumbers.addElement(arguments.elementAt(3+i));
+              Vector<Integer> flightNumbers = new Vector<>();
+              for(int i=0;i<arguments.size()-6;i++) {
+                flightNumbers.addElement(Integer.parseInt((String) arguments.elementAt(3+i)));
+
+              }
               location = obj.getString(arguments.elementAt(arguments.size()-3));
               Car = obj.getBoolean(arguments.elementAt(arguments.size()-2));
               Room = obj.getBoolean(arguments.elementAt(arguments.size()-1));
