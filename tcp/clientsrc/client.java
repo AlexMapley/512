@@ -55,23 +55,23 @@ public class client
 
         // Establish Socket
         try {
-        socket = new Socket(serverName, port);
-        // Declaring input/output buffers
-        outToServer = new PrintWriter(socket.getOutputStream(), true); // open an output stream to the server...
-        inFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream())); // open an input stream from the server...
-        bufferedReader = new java.io.BufferedReader(new InputStreamReader(System.in)); //to read user's input
+          socket = new Socket(serverName, port);
+          // Declaring input/output buffers
+          outToServer = new PrintWriter(socket.getOutputStream(), true); // open an output stream to the server...
+          inFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream())); // open an input stream from the server...
+          bufferedReader = new java.io.BufferedReader(new InputStreamReader(System.in)); //to read user's input
 
 
-        // CLI Interface, help page
-        System.out.println("\n\nClient Interface: !@ <( 'o')> <('O' )> @! ");
-        System.out.println("Type \"help\" for list of supported commands");
-        System.out.println("\n\nNOTE FROM ALEX: TESTING COMMAND:");
-        System.out.println("newflight,1,2,3,4\n\n");
+          // CLI Interface, help page
+          System.out.println("\n\nClient Interface: !@ <( 'o')> <('O' )> @! ");
+          System.out.println("Type \"help\" for list of supported commands");
+          System.out.println("\n\nNOTE FROM ALEX: TESTING COMMAND:");
+          System.out.println("newflight,1,2,3,4\n\n");
 
         // Client Main Loop
         while(true){
 
-        System.out.print("\n>");
+          System.out.print("\n>");
 
         try{
             // Read the next command

@@ -22,24 +22,12 @@ public class MiddleWareServerThread extends Thread {
   		PrintWriter outToClient = new PrintWriter(socket.getOutputStream(), true);
   		String message = null;
 
-      while ((message = inFromClient.readLine())!=null) {
-
+      while ((message = inFromClient.readLine())  != null) {
     		System.out.println("message:"+message);
     		String result="Working!";
-
-        // simpleMath sm=new simpleMath();
     		String[] params =  message.split(",");
         String res = "LOLCAKES";
-    		//String command= Integer.parseInt(params[1]);
-    		//int = Integer.parseInt(params[2]);
-    		//int res=0;
-    		//System.out.println(params[0] +"--"+params[1]+"--"+params[2]);
-    		// if (params[0].equals("mul"))
-    		// 	 res=sm.mul(x,y);
-    		// else if (params[0].equals("add"))
-    		// 	 res=sm.add(x,y);
-
-    		 outToClient.println("hello client from server THREAD, your result is: " + res );
+    		outToClient.println("hello client from server THREAD, your result is: " + res );
   		}
 
     socket.close();

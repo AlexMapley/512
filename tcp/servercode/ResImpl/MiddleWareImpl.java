@@ -32,46 +32,20 @@ public class MiddleWareImpl implements ResourceManager
       }
     }
 
-        // // Default connection
-        // serverNames[0] = "localhost";
-        // sockets[0] = new ServerSocket(serverNames[0], port);
-        //
-        // // Specifying target servers with args
-        // if (args.length == 0) {
-        //   System.out.println("Needs a target host");
-        //   System.exit(1);
-        // }
-        //
-        // // Connecting to target sockets
-        // if (args.length > 0) {
-        //   for (int i = 0; i < args.length; i++) {
-        //     serverNames[i] = args[i];
-        //     System.out.println("Target server " + i + ": " + args[i]);
-        //     sockets[i] = new Socket(serverNames[i], port);
-        //   }
-        // }
-
-        //Start middleware server
-      //}
-
-
     public void runServer() throws IOException {
 
-      ServerSocket serverSocket = new ServerSocket(5959); // establish a server socket to receive messages over the network from clients
+      ServerSocket serverSocket = new ServerSocket(5959);
       System.out.println("Server ready...");
 
       while (true) {
         String message = null;
-        Socket socket = serverSocket.accept(); // listen for a connection to be made to this socket and accept it
+        Socket socket = serverSocket.accept();
     	  try {
-    	      BufferedReader inFromClient = new BufferedReader(new InputStreamReader(socket.getInputStream())); // BufferedReader: reads text from a character-input stream
-    				PrintWriter outToClient = new PrintWriter(socket.getOutputStream(), true); //PrintWriter: Prints formatted representations of objects to a text-output stream
-
-    								//a carriage return ('\r'), or a carriage return followed immediately by a linefeed.
-
+    	      BufferedReader inFromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+    				PrintWriter outToClient = new PrintWriter(socket.getOutputStream(), true);
     		    while ((message = inFromClient.readLine())!=null) {
-    		        System.out.println("message:"+message); // print the message on the server screen
-    		        outToClient.println("hello client from server, your message is: " + message ); // send a result back to the client
+    		        System.out.println("message:"+message);
+    		        outToClient.println("hello client from server, your message is: " + message );
     		        }
     	  }
     	  catch (IOException e) {

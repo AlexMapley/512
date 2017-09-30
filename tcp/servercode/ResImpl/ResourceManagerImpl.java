@@ -5,12 +5,13 @@
 package ResImpl;
 
 import ResInterface.*;
-
 import java.util.*;
-import java.io.*;
-
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 public class ResourceManagerImpl implements ResourceManager
 {
@@ -18,41 +19,47 @@ public class ResourceManagerImpl implements ResourceManager
     protected RMHashtable m_itemHT = new RMHashtable();
     String server;
     int port;
-    Socket socket;
 
-    public static void main(String args[]) {
+    public static void main(String args[]) throws IOException {
 
-        // Default connection,
-        server = "localhost";
-        port = 5959;
+      ResourceManagerImpl server = new ResourceManagerImpl();
 
-        if (args.length == 1) {
-          server = args[0] + ":" + port;
-        }
-        else if (args.length != 0 &&  args.length != 1) {
-            System.err.println ("Wrong usage");
-            System.out.println("Usage: java ResImpl.ResourceManagerImpl [port]");
-            System.exit(1);
-        }
+      try  {
+        server.runServerThread();
+      }
+      catch (IOException e) {
+      }
+    }
 
+    public void runServer() throws IOException {
+
+      ServerSocket serverSocket = new ServerSocket(5959);
+      System.out.println("RM ready...");
+
+      while (true) {
+        String message = null;
+        Socket socket = serverSocket.accept();
         try {
-            // create a new Server object
-            ResourceManagerImpl obj = new ResourceManagerImpl();
-            // dynamically generate the stub (client proxy)
-            ResourceManager rm = (ResourceManager) UnicastRemoteObject.exportObject(obj, 0);
-            // Bind the remote object's stub in the registry
-            Registry registry = LocateRegistry.getRegistry(port);
-            registry.rebind("group_21", rm);
-            System.err.println("RM Server ready");
-          } catch (IOException e) {
-            System.err.println("RM Server IOException: " + e.toString());
-            e.printStackTrace();
-          }
+            BufferedReader inFromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            PrintWriter outToClient = new PrintWriter(socket.getOutputStream(), true);
 
-        // Create and install a security manager
-        if (System.getSecurityManager() == null) {
-            System.setSecurityManager(new RMISecurityManager());
+            while ((message = inFromClient.readLine())!=null) {
+                System.out.println("message:"+message);
+                outToClient.println("hello client from server, your message is: " + message );
+                }
         }
+        catch (IOException e) {
+        }
+      }
+    }
+
+    public void runServerThread() throws IOException {
+      ServerSocket serverSocket = new ServerSocket(5959);
+      System.out.println("Server ready...");
+      while (true) {
+        Socket socket = serverSocket.accept();
+        new MiddleWareServerThread(socket).start();
+      }
     }
 
     public ResourceManagerImpl() throws IOException {
