@@ -49,41 +49,18 @@ public class MiddleWareImpl
               }
           }
       };
-      Thread serverThread = new Thread(serverTask);
-      serverThread.start();
+    Thread serverThread = new Thread(serverTask);
+    serverThread.start();
 
-      }
+    }
+
+
+
+    public MiddleWareImpl() throws IOException {
+
+    }
+
 }
-    //
-    // public void runServer() throws IOException {
-    //
-    //   ServerSocket serverSocket = new ServerSocket(5959);
-    //   System.out.println("MiddleWare Server Ready...");
-    //
-    //   while (true) {
-    //     String message = null;
-    //     Socket socket = serverSocket.accept();
-    // 	  try {
-    // 	      BufferedReader inFromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-    // 				PrintWriter outToClient = new PrintWriter(socket.getOutputStream(), true);
-    // 		    while ((message = inFromClient.readLine())!=null) {
-    // 		        System.out.println("message:"+message);
-    // 		        outToClient.println("hello client from server, your message is: " + message );
-    // 		        }
-    // 	  }
-    // 	  catch (IOException e) {
-    // 	  }
-    //   }
-    // }
-
-
-
-
-//     public MiddleWareImpl() throws IOException {
-//
-//     }
-//
-//
 //     // Reads a data item
 //     private RMItem readData( int id, String key )
 //     {
@@ -505,5 +482,5 @@ public class MiddleWareImpl
 //     {
 //         return false;
 //     }
-
+//
 // }

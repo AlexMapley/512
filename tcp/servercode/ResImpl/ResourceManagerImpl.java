@@ -12,6 +12,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class ResourceManagerImpl implements ResourceManager
 {
@@ -27,25 +29,23 @@ public class ResourceManagerImpl implements ResourceManager
 
       ResourceManagerImpl server = new ResourceManagerImpl();
       String message;
-      System.out.println("Writing to stdout");
 
       // Currently Single Threaded Socket Communication...
       // TODO: Run this shit concurrent
       try {
 
-        System.out.println("test1");
+        System.out.println("\n\nRM online...");
         // Establish Socket
         ServerSocket serverSocket = new ServerSocket(port);
-        System.out.println("test2");
-        Socket clientSocket = serverSocket.accept();
-        System.out.println("test3");
-        BufferedReader inFromMW = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        System.out.println("test4");
-        PrintWriter outToMW = new PrintWriter(clientSocket.getOutputStream(), true);
-        System.out.println("Waiting for commands from Client-> MiddleWare-> Me ");
+        Socket MWSocket = serverSocket.accept();
+        System.out.println("MiddleWare and Client Servers Connected...");
+        BufferedReader inFromMW = new BufferedReader(new InputStreamReader(MWSocket.getInputStream()));
+        PrintWriter outToMW = new PrintWriter(MWSocket.getOutputStream(), true);
+        System.out.println("Waiting for commands from Client -> MiddleWare -> Me ");
 
         while ((message = inFromMW.readLine())  != null) {
           System.out.println("\nmessage from MW: " + message);
+          server.callMethod(message);
           outToMW.println("RM: We hear you loud and clear bud! Your message was " + message);
 
 
@@ -55,6 +55,26 @@ public class ResourceManagerImpl implements ResourceManager
           System.err.println("Unable to process client request");
           e.printStackTrace();
       }
+
+    }
+
+    // Takes a command as an input,
+    // in the form of something like "newflight,1,2,3,4"
+    // and executes that command on the ResourceManagerImpl instance
+    public void callMethod(String command) {
+       String[] args = command.split(",");
+
+       // Print Statements for Testing
+       for (int i = 0; i < args.length; i++) {
+         System.out.println("command arg " + i + " is " + args[i]);
+       }
+
+       // Uses method reflection to call instance methods by name
+       // - Pretty much just a higher level implementation
+       // of that whole dictionary pattern we talked about
+
+       Method m =
+
 
     }
 
