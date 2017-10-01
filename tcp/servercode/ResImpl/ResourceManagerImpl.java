@@ -55,7 +55,7 @@ public class ResourceManagerImpl implements ResourceManager
 
     public void runServerThread() throws IOException {
       ServerSocket serverSocket = new ServerSocket(5959);
-      System.out.println("Server ready...");
+      System.out.println("RM Server Ready...");
       while (true) {
         Socket socket = serverSocket.accept();
         new MiddleWareServerThread(socket).start();
