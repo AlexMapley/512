@@ -17,50 +17,49 @@ public class ResourceManagerImpl implements ResourceManager
 {
 
     protected RMHashtable m_itemHT = new RMHashtable();
-    String server;
-    int port;
+    static int port = 5959;
+
+
+
+
 
     public static void main(String args[]) throws IOException {
 
       ResourceManagerImpl server = new ResourceManagerImpl();
+      String message;
+      System.out.println("Writing to stdout");
 
-      try  {
-        server.runServerThread();
+      // Currently Single Threaded Socket Communication...
+      // TODO: Run this shit concurrent
+      try {
+
+        System.out.println("test1");
+        // Establish Socket
+        ServerSocket serverSocket = new ServerSocket(port);
+        System.out.println("test2");
+        Socket clientSocket = serverSocket.accept();
+        System.out.println("test3");
+        BufferedReader inFromMW = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        System.out.println("test4");
+        PrintWriter outToMW = new PrintWriter(clientSocket.getOutputStream(), true);
+        System.out.println("Waiting for commands from Client-> MiddleWare-> Me ");
+
+        while ((message = inFromMW.readLine())  != null) {
+          System.out.println("\nmessage from MW: " + message);
+          outToMW.println("RM: We hear you loud and clear bud! Your message was " + message);
+
+
+        }
       }
       catch (IOException e) {
+          System.err.println("Unable to process client request");
+          e.printStackTrace();
       }
+
     }
 
-    public void runServer() throws IOException {
 
-      ServerSocket serverSocket = new ServerSocket(5959);
-      System.out.println("RM ready...");
 
-      while (true) {
-        String message = null;
-        Socket socket = serverSocket.accept();
-        try {
-            BufferedReader inFromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            PrintWriter outToClient = new PrintWriter(socket.getOutputStream(), true);
-
-            while ((message = inFromClient.readLine())!=null) {
-                System.out.println("message:"+message);
-                outToClient.println("hello client from server, your message is: " + message );
-                }
-        }
-        catch (IOException e) {
-        }
-      }
-    }
-
-    public void runServerThread() throws IOException {
-      ServerSocket serverSocket = new ServerSocket(5959);
-      System.out.println("RM Server Ready...");
-      while (true) {
-        Socket socket = serverSocket.accept();
-        new MiddleWareServerThread(socket).start();
-      }
-    }
 
     public ResourceManagerImpl() throws IOException {
     }

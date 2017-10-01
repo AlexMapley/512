@@ -28,7 +28,7 @@ public class MiddleWareServerThread extends Thread {
   		PrintWriter outToClient = new PrintWriter(clientSocket.getOutputStream(), true);
 
       //Flights
-      Socket flightSocket = new Socket("lab1-3", 5959);
+      Socket flightSocket = new Socket("lab1-6", 5959);     // lab1-3 has a rogue Gaylen Proc running on port 5959 atm :(
       BufferedReader inFromFlightRM = new BufferedReader(new InputStreamReader(flightSocket.getInputStream()));
   		PrintWriter outToFlightRM = new PrintWriter(flightSocket.getOutputStream(), true);
 

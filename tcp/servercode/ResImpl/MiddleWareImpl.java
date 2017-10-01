@@ -42,7 +42,8 @@ public class MiddleWareImpl
                       Socket clientSocket = serverSocket.accept();
                       clientProcessingPool.submit(new MiddleWareServerThread(clientSocket));
                   }
-              } catch (IOException e) {
+              }
+              catch (IOException e) {
                   System.err.println("Unable to process client request");
                   e.printStackTrace();
               }
