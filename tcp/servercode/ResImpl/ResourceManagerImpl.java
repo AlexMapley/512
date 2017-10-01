@@ -25,7 +25,7 @@ public class ResourceManagerImpl implements ResourceManager
 
 
 
-    public static void main(String args[]) throws IOException {
+    public static void main(String args[]) throws Exception {
 
       ResourceManagerImpl server = new ResourceManagerImpl();
       String message;
@@ -61,20 +61,33 @@ public class ResourceManagerImpl implements ResourceManager
     // Takes a command as an input,
     // in the form of something like "newflight,1,2,3,4"
     // and executes that command on the ResourceManagerImpl instance
-    public void callMethod(String command) {
-       String[] args = command.split(",");
+    public void callMethod(String command) throws Exception{
+      String[] args = command.split(",");
+      Class params[] = {};
+      Object paramsObj[] = new Object[args.length - 1];
+      for (int i = 0; i < paramsObj.length; i++) {
+        paramsObj[i] = args[i+1];
+        System.out.println(paramsObj[i]);
+      }
 
        // Print Statements for Testing
-       for (int i = 0; i < args.length; i++) {
-         System.out.println("command arg " + i + " is " + args[i]);
-       }
+      for (int i = 0; i < args.length; i++) {
+        System.out.println("command arg " + i + " is " + args[i]);
+      }
 
        // Uses method reflection to call instance methods by name
        // - Pretty much just a higher level implementation
        // of that whole dictionary pattern we talked about
-
-       Method m =
-
+      try {
+        Class thisClass = Class.forName("ResImpl.ResourceManagerImpl");
+        Method m = thisClass.getDeclaredMethod(args[0], params);
+        System.out.println(m.invoke(this, paramsObj).toString());
+      }
+      catch(ClassNotFoundException e) {
+        System.out.println("EXCEPTION:");
+        System.out.println(e.getMessage());
+        e.printStackTrace();
+      }
 
     }
 

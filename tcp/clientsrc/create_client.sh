@@ -10,4 +10,4 @@ jar cvf ResInterface.jar ../servercode/ResInterface/*.class
 javac -cp ../servercode/ResInterface/* client.java
 
 # Run Client ON LOCAL INSTANCE
-java -Djava.security.policy=java.policy client lab2-51 # Connects to localhost
+java -Djava.security.policy=java.policy client lab2-48 # Connects to localhost
