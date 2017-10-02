@@ -21,10 +21,6 @@ public class ResourceManagerImpl implements ResourceManager
     protected RMHashtable m_itemHT = new RMHashtable();
     static int port = 5959;
 
-
-
-
-
     public static void main(String args[]) throws Exception {
 
       ResourceManagerImpl server = new ResourceManagerImpl();
@@ -61,26 +57,28 @@ public class ResourceManagerImpl implements ResourceManager
     // Takes a command as an input,
     // in the form of something like "newflight,1,2,3,4"
     // and executes that command on the ResourceManagerImpl instance
-    public void callMethod(String command) throws Exception{
+    public void callMethod(String command) throws Exception {
       String[] args = command.split(",");
-      Class params[] = {};
       Object paramsObj[] = new Object[args.length - 1];
       for (int i = 0; i < paramsObj.length; i++) {
         paramsObj[i] = args[i+1];
+        if (isInteger(paramsObj[i])) {
+          paramsObject[i] = Integer.parseInt(paramsObject[i]);
+        }
         System.out.println(paramsObj[i]);
       }
-
-       // Print Statements for Testing
-      for (int i = 0; i < args.length; i++) {
-        System.out.println("command arg " + i + " is " + args[i]);
+      Class params[] = new Class[paramsObj.length];
+      for (int i = 0; i < params.length; i++) {
+        params[i] = paramsObj[i].getClass();
       }
+
 
        // Uses method reflection to call instance methods by name
        // - Pretty much just a higher level implementation
        // of that whole dictionary pattern we talked about
       try {
         Class thisClass = Class.forName("ResImpl.ResourceManagerImpl");
-        Method m = thisClass.getDeclaredMethod(args[0], params);
+        Method m = thisClass.getDeclaredMethod(convertCommand(args[0]), params);
         System.out.println(m.invoke(this, paramsObj).toString());
       }
       catch(ClassNotFoundException e) {
@@ -89,6 +87,47 @@ public class ResourceManagerImpl implements ResourceManager
         e.printStackTrace();
       }
 
+    }
+
+
+    // Checks for String -> Integer Conversion
+    public boolean isInteger( String input ) {
+      try {
+          Integer.parseInt( input );
+          return true;
+      }
+      catch( Exception e ) {
+          return false;
+      }
+    }
+
+
+    public String convertCommand(String command) {
+
+      // Comand Parsing Dictionary
+      Map<String,String> commandMap = new HashMap<String,String>();
+      commandMap.put("newflight", "addFlight");
+      commandMap.put("newcar", "addCars");
+      commandMap.put("newroom", "addRooms");
+      commandMap.put("newcustomer", "newCustomer");
+      commandMap.put("newcusomterid", "newCustomer");
+      commandMap.put("deleteflight", "deleteFlight");
+      commandMap.put("deletecar", "deleteCars");
+      commandMap.put("deleteroom", "deleteRooms");
+      commandMap.put("deletecustomer", "deleteCustomer");
+      commandMap.put("queryflight", "queryFlight");
+      commandMap.put("querycar", "queryCars");
+      commandMap.put("queryroom", "queryRooms");
+      commandMap.put("querycustomer", "queryCustomerInfo");
+      commandMap.put("queryflightprice", "queryFlightPrice");
+      commandMap.put("querycarprice", "queryCarsPrice");
+      commandMap.put("queryroomprice", "queryRoomsPrice");
+      commandMap.put("reserveflight", "reserveFlight");
+      commandMap.put("reservecar", "reserveCar");
+      commandMap.put("reserveroom", "reserveRoom");
+      commandMap.put("itinerary", "itinerary");
+
+      return commandMap.get(command);
     }
 
 
