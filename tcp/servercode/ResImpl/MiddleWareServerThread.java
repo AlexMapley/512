@@ -28,21 +28,21 @@ public class MiddleWareServerThread extends Thread {
       String message = null;
       String res = "@ no RM response @";
 
-      //Client
+      // Client
       BufferedReader inFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
   		PrintWriter outToClient = new PrintWriter(clientSocket.getOutputStream(), true);
 
-      //Flights
+      // Flights
       Socket flightSocket = new Socket("lab1-6", 5959);     // lab1-3 has a rogue Gaylen Proc running on port 5959 atm :(
       BufferedReader inFromFlightRM = new BufferedReader(new InputStreamReader(flightSocket.getInputStream()));
   		PrintWriter outToFlightRM = new PrintWriter(flightSocket.getOutputStream(), true);
 
-      //Cars
+      // Cars
       Socket carSocket = new Socket("lab1-4", 5959);
       BufferedReader inFromCarRM = new BufferedReader(new InputStreamReader(carSocket.getInputStream()));
   		PrintWriter outToCarRM = new PrintWriter(carSocket.getOutputStream(), true);
 
-      // //Rooms
+      // Rooms
       Socket roomSocket = new Socket("lab1-5", 5959);
       BufferedReader inFromRoomRM = new BufferedReader(new InputStreamReader(roomSocket.getInputStream()));
   		PrintWriter outToRoomRM = new PrintWriter(roomSocket.getOutputStream(), true);

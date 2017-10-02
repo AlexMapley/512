@@ -3,12 +3,9 @@ package ResImpl;
 import ResInterface.*;
 import java.util.*;
 import java.util.concurrent.*;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 
 
 public class MiddleWareImpl
@@ -49,9 +46,8 @@ public class MiddleWareImpl
               }
           }
       };
-    Thread serverThread = new Thread(serverTask);
-    serverThread.start();
-
+      Thread serverThread = new Thread(serverTask);
+      serverThread.start();
     }
 
 
