@@ -5,55 +5,94 @@
 package ResImpl;
 
 import ResInterface.*;
-
 import java.util.*;
-import java.io.*;
-
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class ResourceManagerImpl implements ResourceManager
 {
 
     protected RMHashtable m_itemHT = new RMHashtable();
-    String server;
-    int port;
-    Socket socket;
+    static int port = 5959;
 
-    public static void main(String args[]) {
 
-        // Default connection,
-        server = "localhost";
-        port = 5959;
 
-        if (args.length == 1) {
-          server = args[0] + ":" + port;
+
+
+    public static void main(String args[]) throws Exception {
+
+      ResourceManagerImpl server = new ResourceManagerImpl();
+      String message;
+
+      // Currently Single Threaded Socket Communication...
+      // TODO: Run this shit concurrent
+      try {
+
+        System.out.println("\n\nRM online...");
+        // Establish Socket
+        ServerSocket serverSocket = new ServerSocket(port);
+        Socket MWSocket = serverSocket.accept();
+        System.out.println("MiddleWare and Client Servers Connected...");
+        BufferedReader inFromMW = new BufferedReader(new InputStreamReader(MWSocket.getInputStream()));
+        PrintWriter outToMW = new PrintWriter(MWSocket.getOutputStream(), true);
+        System.out.println("Waiting for commands from Client -> MiddleWare -> Me ");
+
+        while ((message = inFromMW.readLine())  != null) {
+          System.out.println("\nmessage from MW: " + message);
+          server.callMethod(message);
+          outToMW.println("RM: We hear you loud and clear bud! Your message was " + message);
+
+
         }
-        else if (args.length != 0 &&  args.length != 1) {
-            System.err.println ("Wrong usage");
-            System.out.println("Usage: java ResImpl.ResourceManagerImpl [port]");
-            System.exit(1);
-        }
+      }
+      catch (IOException e) {
+          System.err.println("Unable to process client request");
+          e.printStackTrace();
+      }
 
-        try {
-            // create a new Server object
-            ResourceManagerImpl obj = new ResourceManagerImpl();
-            // dynamically generate the stub (client proxy)
-            ResourceManager rm = (ResourceManager) UnicastRemoteObject.exportObject(obj, 0);
-            // Bind the remote object's stub in the registry
-            Registry registry = LocateRegistry.getRegistry(port);
-            registry.rebind("group_21", rm);
-            System.err.println("RM Server ready");
-          } catch (IOException e) {
-            System.err.println("RM Server IOException: " + e.toString());
-            e.printStackTrace();
-          }
-
-        // Create and install a security manager
-        if (System.getSecurityManager() == null) {
-            System.setSecurityManager(new RMISecurityManager());
-        }
     }
+
+    // Takes a command as an input,
+    // in the form of something like "newflight,1,2,3,4"
+    // and executes that command on the ResourceManagerImpl instance
+    public void callMethod(String command) throws Exception{
+      String[] args = command.split(",");
+      Class params[] = {};
+      Object paramsObj[] = new Object[args.length - 1];
+      for (int i = 0; i < paramsObj.length; i++) {
+        paramsObj[i] = args[i+1];
+        System.out.println(paramsObj[i]);
+      }
+
+       // Print Statements for Testing
+      for (int i = 0; i < args.length; i++) {
+        System.out.println("command arg " + i + " is " + args[i]);
+      }
+
+       // Uses method reflection to call instance methods by name
+       // - Pretty much just a higher level implementation
+       // of that whole dictionary pattern we talked about
+      try {
+        Class thisClass = Class.forName("ResImpl.ResourceManagerImpl");
+        Method m = thisClass.getDeclaredMethod(args[0], params);
+        System.out.println(m.invoke(this, paramsObj).toString());
+      }
+      catch(ClassNotFoundException e) {
+        System.out.println("EXCEPTION:");
+        System.out.println(e.getMessage());
+        e.printStackTrace();
+      }
+
+    }
+
+
+
 
     public ResourceManagerImpl() throws IOException {
     }

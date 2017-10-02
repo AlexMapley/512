@@ -13,4 +13,4 @@ chmod 704 ResInterface/*.class
 chmod 705 * # directory needs to be executable???
 
 # Run server on registered instance
-java -Djava.security.policy=java.policy ResImpl.ResourceManagerImpl lab1-3
+java -Djava.security.policy=java.policy ResImpl.ResourceManagerImpl
