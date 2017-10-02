@@ -9,4 +9,4 @@ echo $CLASSPATH
 javac client.java
 
 # Run Client ON LOCAL INSTANCE
-java -Djava.security.policy=java.policy client
+java -Djava.security.policy=java.policy client lab1-7
