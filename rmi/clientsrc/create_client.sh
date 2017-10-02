@@ -7,7 +7,7 @@ echo $CLASSPATH
 
 # Compile client
 jar cvf ResInterface.jar ../servercode/ResInterface/*.class
-javac client.java
+javac -cp ../servercode/ResInterface/* client.java
 
 # Run Client ON LOCAL INSTANCE
 java -Djava.security.policy=java.policy client lab1-7
