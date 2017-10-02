@@ -92,14 +92,14 @@ public class MiddleWareServerThread extends Thread {
               outToFlightRM.println(message);
               res = inFromFlightRM.readLine();
 
-              if (params[0].compareToIgnoreCase("newcustomer")==0) {
-                try {
-                  callMethod(message);
-                }
-                catch (Exception e) {
-                  System.out.println(e);
-                }
+              try {
+                res = callMethod(message);
               }
+              catch (Exception e) {
+                System.out.println(e);
+              }
+              outToFlightRM.println(res);
+
         }
         else {
           System.out.println("Invalid Command, not sent");
@@ -118,8 +118,9 @@ public class MiddleWareServerThread extends Thread {
   // Takes a command as an input,
   // in the form of something like "newflight,1,2,3,4"
   // and executes that command on the ResourceManagerImpl instance
-  public void callMethod(String command) throws Exception {
+  public string callMethod(String command) throws Exception {
     String[] args = command.split(",");
+    String res = "";
 
     // Uses method reflection to call instance methods by name
     // - Pretty much just a higher level implementation
@@ -141,12 +142,15 @@ public class MiddleWareServerThread extends Thread {
     try {
       Class thisClass = Class.forName("ResImpl.MiddleWareImpl");
       Method m = thisClass.getDeclaredMethod(convertCommand((String) args[0]), params);
-      System.out.println(m.invoke(this.host, paramsObj).toString());
+      res = m.invoke(this.host, paramsObj).toString());
+      System.out.println("\n\n\n\n");
+      System.out.println(res);
+      System.out.println("\n\n\n\n");
     }
     catch(NoSuchMethodException e) {
       System.out.println("Incorrect Args given, No Response");
     }
-
+    return res;
   }
 
 
