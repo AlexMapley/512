@@ -59,26 +59,27 @@ public class ResourceManagerImpl implements ResourceManager
     // and executes that command on the ResourceManagerImpl instance
     public void callMethod(String command) throws Exception {
       String[] args = command.split(",");
+
+      // Uses method reflection to call instance methods by name
+      // - Pretty much just a higher level implementation
+      // of that whole dictionary pattern we talked about
       Object paramsObj[] = new Object[args.length - 1];
+      Class params[] = new Class[paramsObj.length];
       for (int i = 0; i < paramsObj.length; i++) {
         paramsObj[i] = args[i+1];
         if (isInteger(paramsObj[i])) {
-          paramsObject[i] = Integer.parseInt(paramsObject[i]);
+          System.out.println("Arg is an int!");
+          paramsObj[i] = Integer.parseInt( (String) paramsObj[i] );
+          params[i] = int.class;
         }
-        System.out.println(paramsObj[i]);
-      }
-      Class params[] = new Class[paramsObj.length];
-      for (int i = 0; i < params.length; i++) {
-        params[i] = paramsObj[i].getClass();
+        else {
+          params[i] = String.class;
+        }
       }
 
-
-       // Uses method reflection to call instance methods by name
-       // - Pretty much just a higher level implementation
-       // of that whole dictionary pattern we talked about
       try {
         Class thisClass = Class.forName("ResImpl.ResourceManagerImpl");
-        Method m = thisClass.getDeclaredMethod(convertCommand(args[0]), params);
+        Method m = thisClass.getDeclaredMethod(convertCommand((String) args[0]), params);
         System.out.println(m.invoke(this, paramsObj).toString());
       }
       catch(ClassNotFoundException e) {
@@ -91,13 +92,14 @@ public class ResourceManagerImpl implements ResourceManager
 
 
     // Checks for String -> Integer Conversion
-    public boolean isInteger( String input ) {
+    public boolean isInteger( Object input ) {
+      System.out.println( (String) input );
       try {
-          Integer.parseInt( input );
-          return true;
+        Integer.parseInt( (String) input );
+        return true;
       }
-      catch( Exception e ) {
-          return false;
+      catch (Exception e) {
+        return false;
       }
     }
 
