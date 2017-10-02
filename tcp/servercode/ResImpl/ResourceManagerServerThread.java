@@ -56,7 +56,6 @@ public class ResourceManagerServerThread extends Thread {
   // and executes that command on the ResourceManagerImpl instance
   public void callMethod(String command) throws Exception {
     String[] args = command.split(",");
-
     // Uses method reflection to call instance methods by name
     // - Pretty much just a higher level implementation
     // of that whole dictionary pattern we talked about
@@ -107,7 +106,7 @@ public class ResourceManagerServerThread extends Thread {
     commandMap.put("newcar", "addCars");
     commandMap.put("newroom", "addRooms");
     commandMap.put("newcustomer", "newCustomer");
-    commandMap.put("newcusomterid", "newCustomer");
+    commandMap.put("newcustomerid", "newCustomer");
     commandMap.put("deleteflight", "deleteFlight");
     commandMap.put("deletecar", "deleteCars");
     commandMap.put("deleteroom", "deleteRooms");

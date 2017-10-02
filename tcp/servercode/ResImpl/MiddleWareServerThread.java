@@ -15,10 +15,15 @@ import java.lang.reflect.Method;
 public class MiddleWareServerThread extends Thread {
   Socket clientSocket;
   MiddleWareImpl host;
+  String[] servers;
+  static protected RMHashtable m_itemHT = new RMHashtable();
+  static Map<String,String> commandMap = new HashMap<String,String>();
 
-  MiddleWareServerThread (Socket socket, MiddleWareImpl host) {
+  MiddleWareServerThread (Socket socket, MiddleWareImpl host, String[] servers) {
     this.clientSocket = socket;
     this.host = host;
+    this.servers = servers;
+    createCommandMap();
   }
 
   public void run() {
@@ -33,144 +38,145 @@ public class MiddleWareServerThread extends Thread {
   		PrintWriter outToClient = new PrintWriter(clientSocket.getOutputStream(), true);
 
       // Flights
-      Socket flightSocket = new Socket("lab1-6", 5959);     // lab1-3 has a rogue Gaylen Proc running on port 5959 atm :(
+      Socket flightSocket = new Socket(servers[0], 5959);     // lab1-3 has a rogue Galen Proc running on port 5959 atm :(
       BufferedReader inFromFlightRM = new BufferedReader(new InputStreamReader(flightSocket.getInputStream()));
   		PrintWriter outToFlightRM = new PrintWriter(flightSocket.getOutputStream(), true);
 
       // Cars
-      Socket carSocket = new Socket("lab1-4", 5959);
+      Socket carSocket = new Socket(servers[1], 5959);
       BufferedReader inFromCarRM = new BufferedReader(new InputStreamReader(carSocket.getInputStream()));
   		PrintWriter outToCarRM = new PrintWriter(carSocket.getOutputStream(), true);
 
       // Rooms
-      Socket roomSocket = new Socket("lab1-5", 5959);
+      Socket roomSocket = new Socket(servers[2], 5959);
       BufferedReader inFromRoomRM = new BufferedReader(new InputStreamReader(roomSocket.getInputStream()));
   		PrintWriter outToRoomRM = new PrintWriter(roomSocket.getOutputStream(), true);
 
       while ((message = inFromClient.readLine())  != null) {
-    		System.out.println("\nmessage from client: " + message);
+        System.out.println("\nmessage from client: " + message);
 
-        // Parsing commands for RM:
+        // Parse and forward to corresponding RM
+        String[] params =  message.split(",");
+        String command = params[0];
+        params[0] = commandMap.get(command);
+        // message = buildString(params);
 
-        // Flights
-    		String[] params =  message.split(",");
-        if (params[0].compareToIgnoreCase("newflight")==0 || params[0].compareToIgnoreCase("deleteflight")==0
-            || params[0].compareToIgnoreCase("queryflight")==0  || params[0].compareToIgnoreCase("queryflightprice")==0
-            || params[0].compareToIgnoreCase("reserveflight")==0 )
-            {
-              System.out.println("Out to Flight RM");
-              outToFlightRM.println(message);
-              res = inFromFlightRM.readLine();
+        if(command != null) {  // known command
+          if (command.compareToIgnoreCase("newflight")==0 || command.compareToIgnoreCase("deleteflight")==0
+              || command.compareToIgnoreCase("queryflight")==0  || command.compareToIgnoreCase("queryflightprice")==0
+              || command.compareToIgnoreCase("reserveflight")==0 )
+          {
+                System.out.println("Out to Flight RM");
+                outToFlightRM.println(message);
+                res = inFromFlightRM.readLine();
+          }
+          // Cars
+          else if ( command.compareToIgnoreCase("newcar")==0 || command.compareToIgnoreCase("deletecar")==0
+              || command.compareToIgnoreCase("querycar")==0  || command.compareToIgnoreCase("querycarprice")==0
+              || command.compareToIgnoreCase("reservecar")==0 )
+          {
+                System.out.println("Out to Car RM");
+                outToCarRM.println(message);
+                res = inFromCarRM.readLine();
+          }
+          // Rooms
+          else if ( command.compareToIgnoreCase("newroom")==0 || command.compareToIgnoreCase("deleteroom")==0
+              || command.compareToIgnoreCase("queryroom")==0  || command.compareToIgnoreCase("queryroomprice")==0
+              || command.compareToIgnoreCase("reserveroom")==0 )
+          {
+                System.out.println("Out to Room RM");
+                outToRoomRM.println(message);
+                res = inFromRoomRM.readLine();
+          }
+          // newcustomer
+          else if ( command.compareToIgnoreCase("newcustomer")==0 ) {
+            System.out.println("General MW/RM command: " + params[0]); 
+
+            // MW call
+            int cid = newCustomer(Integer.parseInt(params[1]));
+
+            //RM forwarding
+            String[] newParams = {"newcustomerid", params[1], Integer.toString(cid)};
+            String newMessage = buildMessage(newParams);
+            outToRoomRM.println(newMessage);
+            res = inFromRoomRM.readLine();
+            outToCarRM.println(newMessage);
+            res = inFromCarRM.readLine();
+            outToFlightRM.println(newMessage);
+            res = inFromFlightRM.readLine();
+          }
+          // newcustomerid
+          else if ( command.compareToIgnoreCase("newcustomerid")==0 ) {
+            System.out.println("General MW/RM command: " + params[0]); 
+
+            // MW call
+            newCustomer(Integer.parseInt(params[1]), Integer.parseInt(params[2]));
+
+            //RM forwarding
+            outToRoomRM.println(message);
+            res = inFromRoomRM.readLine();
+            outToCarRM.println(message);
+            res = inFromCarRM.readLine();
+            outToFlightRM.println(message);
+            res = inFromFlightRM.readLine();
+          }
+          else if ( command.compareToIgnoreCase("deletecustomer")==0 ) {
+            System.out.println("General MW/RM command: " + params[0]); 
+
+            // MW call
+            deleteCustomer(Integer.parseInt(params[1]), Integer.parseInt(params[2]));
+
+            //RM forwarding
+            outToRoomRM.println(message);
+            res = inFromRoomRM.readLine();
+            outToCarRM.println(message);
+            res = inFromCarRM.readLine();
+            outToFlightRM.println(message);
+            res = inFromFlightRM.readLine();
+          }
+          else if ( command.compareToIgnoreCase("querycustomer")==0 ) {
+            System.out.println("General MW/RM command: " + params[0]);
+            outToRoomRM.println(message);
+            String resR = inFromRoomRM.readLine();
+            outToCarRM.println(message);
+            String resC = inFromCarRM.readLine();
+            outToFlightRM.println(message);
+            String resF = inFromFlightRM.readLine();
+            res = resR + resC + resF;
+          }
+          // else if ( command.compareToIgnoreCase("itinerary")==0 ) {
+          //   System.out.println("General MW/RM command: " + params[0]);
+          //   itinerary(Integer.parseInt(params[1]), Integer.parseInt(params[2]), params[3], params[4], params[5], params[6]);
+          // }
+
         }
-        // Cars
-        else if ( params[0].compareToIgnoreCase("newcar")==0 || params[0].compareToIgnoreCase("deletecar")==0
-            || params[0].compareToIgnoreCase("querycar")==0  || params[0].compareToIgnoreCase("querycarprice")==0
-            || params[0].compareToIgnoreCase("reservecar")==0 )
-            {
-              System.out.println("Out to Car RM");
-              outToCarRM.println(message);
-              res = inFromCarRM.readLine();
+        else {  // unknown command
+          System.out.println("unknown client command input");
         }
-        // Rooms
-        else if ( params[0].compareToIgnoreCase("newroom")==0 || params[0].compareToIgnoreCase("deleteroom")==0
-            || params[0].compareToIgnoreCase("queryroom")==0  || params[0].compareToIgnoreCase("queryroomprice")==0
-            || params[0].compareToIgnoreCase("reserveroom")==0 )
-            {
-              System.out.println("Out to Room RM");
-              outToRoomRM.println(message);
-              res = inFromRoomRM.readLine();
-        }
-        // Other
-        else if ( params[0].compareToIgnoreCase("newcustomer")==0 || params[0].compareToIgnoreCase("deletecustomer")==0
-            || params[0].compareToIgnoreCase("itinerary")==0  || params[0].compareToIgnoreCase("newcustomerid")==0 )
-            {
-              System.out.println("General MW/RM command: " + params[0]);
-              outToRoomRM.println(message);
-              res = inFromRoomRM.readLine();
-              outToCarRM.println(message);
-              res = inFromCarRM.readLine();
-              outToFlightRM.println(message);
-              res = inFromFlightRM.readLine();
-
-              try {
-                res = callMethod(message);
-              }
-              catch (Exception e) {
-                System.out.println(e);
-              }
-              outToFlightRM.println(res);
-
-        }
-        else {
-          System.out.println("Invalid Command, not sent");
-        }
-
-    		outToClient.println("hello client from server THREAD, your result is: " + res );
-  		}
-
-    clientSocket.close();
-    flightSocket.close();
-  	}
-  	catch (IOException e) {
-  	}
-  }
-
-  // Takes a command as an input,
-  // in the form of something like "newflight,1,2,3,4"
-  // and executes that command on the ResourceManagerImpl instance
-  public string callMethod(String command) throws Exception {
-    String[] args = command.split(",");
-    String res = "";
-
-    // Uses method reflection to call instance methods by name
-    // - Pretty much just a higher level implementation
-    // of that whole dictionary pattern we talked about
-    Object paramsObj[] = new Object[args.length - 1];
-    Class params[] = new Class[paramsObj.length];
-    for (int i = 0; i < paramsObj.length; i++) {
-      paramsObj[i] = args[i+1];
-      if (isInteger(paramsObj[i])) {
-        System.out.println("Arg is an int!");
-        paramsObj[i] = Integer.parseInt( (String) paramsObj[i] );
-        params[i] = int.class;
+        outToClient.println("hello client from server THREAD, your result is: " + res );
       }
-      else {
-        params[i] = String.class;
-      }
-    }
 
-    try {
-      Class thisClass = Class.forName("ResImpl.MiddleWareImpl");
-      Method m = thisClass.getDeclaredMethod(convertCommand((String) args[0]), params);
-      res = m.invoke(this.host, paramsObj).toString());
-      System.out.println("\n\n\n\n");
-      System.out.println(res);
-      System.out.println("\n\n\n\n");
-    }
-    catch(NoSuchMethodException e) {
-      System.out.println("Incorrect Args given, No Response");
-    }
-    return res;
-  }
-
-
-  // Checks for String -> Integer Conversion
-  public boolean isInteger( Object input ) {
-    System.out.println( (String) input );
-    try {
-      Integer.parseInt( (String) input );
-      return true;
-    }
-    catch (Exception e) {
-      return false;
+      clientSocket.close();
+      flightSocket.close();
+      carSocket.close();
+      roomSocket.close();
+    } catch (IOException e) {
+      System.out.println("Middleware IOException: " + e);
     }
   }
 
+  /// Concatenates a string array
+  private String buildMessage(String[] params) {
+    StringBuilder strBuilder = new StringBuilder();
+    for (int i = 0; i < params.length; i++) {
+       strBuilder.append(params[i]+",");
+    }
+    String str = strBuilder.toString();
+    return str.substring(0, str.length() - 1);
+  }
 
-  public String convertCommand(String command) {
-
+  public void createCommandMap() {
     // Comand Parsing Dictionary
-    Map<String,String> commandMap = new HashMap<String,String>();
     commandMap.put("newflight", "addFlight");
     commandMap.put("newcar", "addCars");
     commandMap.put("newroom", "addRooms");
@@ -191,7 +197,156 @@ public class MiddleWareServerThread extends Thread {
     commandMap.put("reservecar", "reserveCar");
     commandMap.put("reserveroom", "reserveRoom");
     commandMap.put("itinerary", "itinerary");
-
-    return commandMap.get(command);
   }
+
+  // Reads a data item
+    private RMItem readData( int id, String key )
+    {
+        synchronized(m_itemHT) {
+            return (RMItem) m_itemHT.get(key);
+        }
+    }
+
+    // Writes a data item
+    private void writeData( int id, String key, RMItem value )
+    {
+        synchronized(m_itemHT) {
+            m_itemHT.put(key, value);
+        }
+    }
+
+    // Remove the item out of storage
+    protected RMItem removeData(int id, String key) {
+        synchronized(m_itemHT) {
+            return (RMItem)m_itemHT.remove(key);
+        }
+    }
+
+
+    // deletes the entire item
+    protected boolean deleteItem(int id, String key)
+    {
+        Trace.info("RM::deleteItem(" + id + ", " + key + ") called" );
+        ReservableItem curObj = (ReservableItem) readData( id, key );
+        // Check if there is such an item in the storage
+        if ( curObj == null ) {
+            Trace.warn("RM::deleteItem(" + id + ", " + key + ") failed--item doesn't exist" );
+            return false;
+        } else {
+            if (curObj.getReserved()==0) {
+                removeData(id, curObj.getKey());
+                Trace.info("RM::deleteItem(" + id + ", " + key + ") item deleted" );
+                return true;
+            }
+            else {
+                Trace.info("RM::deleteItem(" + id + ", " + key + ") item can't be deleted because some customers reserved it" );
+                return false;
+            }
+        } // if
+    }
+
+    // Returns data structure containing customer reservation info. Returns null if the
+    //  customer doesn't exist. Returns empty RMHashtable if customer exists but has no
+    //  reservations.
+    // public RMHashtable getCustomerReservations(int id, int customerID)
+    //     throws IOException
+    // {
+    //     Trace.info("RM::getCustomerReservations(" + id + ", " + customerID + ") called" );
+    //     Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
+    //     if ( cust == null ) {
+    //         Trace.warn("RM::getCustomerReservations failed(" + id + ", " + customerID + ") failed--customer doesn't exist" );
+    //         return null;
+    //     } else {
+    //         return cust.getReservations();
+    //     } // if
+    // }
+
+    // return a bill
+    public String queryCustomerInfo(int id, int customerID)
+        throws IOException
+    {
+        Trace.info("RM::queryCustomerInfo(" + id + ", " + customerID + ") called" );
+        Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
+        if ( cust == null ) {
+            Trace.warn("RM::queryCustomerInfo(" + id + ", " + customerID + ") failed--customer doesn't exist" );
+            return "";   // NOTE: don't change this--WC counts on this value indicating a customer does not exist...
+        } else {
+                String s = cust.printBill();
+                Trace.info("RM::queryCustomerInfo(" + id + ", " + customerID + "), bill follows..." );
+                System.out.println( s );
+                return s;
+        } // if
+    }
+
+    // customer functions
+    // new customer just returns a unique customer identifier
+
+    public int newCustomer(int id)
+        throws IOException
+    {
+        Trace.info("INFO: RM::newCustomer(" + id + ") called" );
+        // Generate a globally unique ID for the new customer
+        int cid = Integer.parseInt( String.valueOf(id) +
+                                String.valueOf(Calendar.getInstance().get(Calendar.MILLISECOND)) +
+                                String.valueOf( Math.round( Math.random() * 100 + 1 )));
+        Customer cust = new Customer( cid );
+        writeData( id, cust.getKey(), cust );
+        Trace.info("RM::newCustomer(" + cid + ") returns ID=" + cid );
+        return cid;
+    }
+
+    // I opted to pass in customerID instead. This makes testing easier
+    public boolean newCustomer(int id, int customerID )
+        throws IOException
+    {
+        Trace.info("INFO: RM::newCustomer(" + id + ", " + customerID + ") called" );
+        Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
+        if ( cust == null ) {
+            cust = new Customer(customerID);
+            writeData( id, cust.getKey(), cust );
+            Trace.info("INFO: RM::newCustomer(" + id + ", " + customerID + ") created a new customer" );
+            return true;
+        } else {
+            Trace.info("INFO: RM::newCustomer(" + id + ", " + customerID + ") failed--customer already exists");
+            return false;
+        } // else
+    }
+
+
+    // Deletes customer from the database.
+    public boolean deleteCustomer(int id, int customerID)
+        throws IOException
+    {
+        Trace.info("RM::deleteCustomer(" + id + ", " + customerID + ") called" );
+        Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
+        if ( cust == null ) {
+            Trace.warn("RM::deleteCustomer(" + id + ", " + customerID + ") failed--customer doesn't exist" );
+            return false;
+        } else {
+            // Increase the reserved numbers of all reservable items which the customer reserved.
+            RMHashtable reservationHT = cust.getReservations();
+            for (Enumeration e = reservationHT.keys(); e.hasMoreElements();) {
+                String reservedkey = (String) (e.nextElement());
+                ReservedItem reserveditem = cust.getReservedItem(reservedkey);
+                Trace.info("RM::deleteCustomer(" + id + ", " + customerID + ") has reserved " + reserveditem.getKey() + " " +  reserveditem.getCount() +  " times"  );
+                ReservableItem item  = (ReservableItem) readData(id, reserveditem.getKey());
+                Trace.info("RM::deleteCustomer(" + id + ", " + customerID + ") has reserved " + reserveditem.getKey() + "which is reserved" +  item.getReserved() +  " times and is still available " + item.getCount() + " times"  );
+                item.setReserved(item.getReserved()-reserveditem.getCount());
+                item.setCount(item.getCount()+reserveditem.getCount());
+            }
+
+            // remove the customer from the storage
+            removeData(id, cust.getKey());
+
+            Trace.info("RM::deleteCustomer(" + id + ", " + customerID + ") succeeded" );
+            return true;
+        } // if
+    }
+
+    // Reserve an itinerary
+    public boolean itinerary(int id,int customer,Vector flightNumbers,String location,boolean Car,boolean Room)
+        throws IOException
+    {
+        return false;
+    }
 }
