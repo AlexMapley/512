@@ -82,10 +82,8 @@ public class ResourceManagerImpl implements ResourceManager
         Method m = thisClass.getDeclaredMethod(convertCommand((String) args[0]), params);
         System.out.println(m.invoke(this, paramsObj).toString());
       }
-      catch(ClassNotFoundException e) {
-        System.out.println("EXCEPTION:");
-        System.out.println(e.getMessage());
-        e.printStackTrace();
+      catch(NoSuchMethodException e) {
+        System.out.println("Incorrect Args given, No Response");
       }
 
     }
