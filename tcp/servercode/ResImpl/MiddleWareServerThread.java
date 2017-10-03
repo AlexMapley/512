@@ -174,28 +174,30 @@ public class MiddleWareServerThread extends Thread {
               for (int i = 0; i < numflights; i++) {
                 if (flightnumbers[i] != null) {
                     flightresponses[i] = "reserveflight," + id + "," + customerid + "," + flightnumbers[i];
-                    outToFlightRM.println(flightresponse[i]);
+                    outToFlightRM.println(flightresponses[i]);
                     flightresponses[i] = inFromFlightRM.readLine();
                 }
                 else
                   break;
               }
             }
+            String resC = "";
             if (car == "true") {
-              String message2 = "reservecar," + id + "," + customerid + "," + location + "," + "1";
-              outToCarRM.println(message);
-              String resC = inFromCarRM.readLine();
+              String messageC = "reservecar," + id + "," + customerid + "," + location + "," + "1";
+              outToCarRM.println(messageC);
+              resC = inFromCarRM.readLine();
             }
+            String resR = "";
             if(room == "true") {
-              String message3 = "reserveroom," + id + "," + customerid + "," + location + "," + "1";
-              outToRoomRM.println(message);
-              String resC = inFromRoomRM.readLine();
+              String messageR = "reserveroom," + id + "," + customerid + "," + location + "," + "1";
+              outToRoomRM.println(messageR);
+              resR = inFromRoomRM.readLine();
             }
             for (int i = 0; i < numflights; i++) {
               res += flightresponses[i] + "\n";
             }
-            res += message2 + "\n";
-            res += message3;
+            res += resC + "\n";
+            res += resR;
           }
 
         }
