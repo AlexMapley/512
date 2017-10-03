@@ -154,7 +154,7 @@ public class MiddleWareServerThread extends Thread {
             int index = 3;
             int numflights = 0;
             while (index < 13) {
-              if (isInteger(params[index]) {
+              if (isInteger(params[index])) {
                 flightnumbers[numflights] = params[index];
                 index++;
                 numflights++;
@@ -164,8 +164,8 @@ public class MiddleWareServerThread extends Thread {
               }
             }
             String location = params[index];
-            String car = [index+1];
-            String room = [index+1];
+            String car = params[index+1];
+            String room = params[index+1];
             String flightresponses = new String[numflights];
             // General
             if (flightnumbers[0]) {
