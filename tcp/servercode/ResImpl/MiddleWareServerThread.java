@@ -99,11 +99,11 @@ public class MiddleWareServerThread extends Thread {
             String[] newParams = {"newcustomerid", params[1], Integer.toString(cid)};
             String newMessage = buildMessage(newParams);
             outToRoomRM.println(newMessage);
-            resR = inFromRoomRM.readLine();
+            String resR = inFromRoomRM.readLine();
             outToCarRM.println(newMessage);
-            resC = inFromCarRM.readLine();
+            String resC = inFromCarRM.readLine();
             outToFlightRM.println(newMessage);
-            resF = inFromFlightRM.readLine();
+            String resF = inFromFlightRM.readLine();
             res = resR + "\n" + resC + "\n" + resF;
           }
           // newcustomerid
@@ -115,11 +115,11 @@ public class MiddleWareServerThread extends Thread {
 
             //RM forwarding
             outToRoomRM.println(message);
-            resR = inFromRoomRM.readLine();
+            String resR = inFromRoomRM.readLine();
             outToCarRM.println(message);
-            resC = inFromCarRM.readLine();
+            String resC = inFromCarRM.readLine();
             outToFlightRM.println(message);
-            resF = inFromFlightRM.readLine();
+            String resF = inFromFlightRM.readLine();
             res = resR + "\n" + resC + "\n" + resF;
           }
           else if ( command.compareToIgnoreCase("deletecustomer")==0 ) {
@@ -130,11 +130,12 @@ public class MiddleWareServerThread extends Thread {
 
             //RM forwarding
             outToRoomRM.println(message);
-            res = inFromRoomRM.readLine();
+            String resR = inFromRoomRM.readLine();
             outToCarRM.println(message);
-            res = inFromCarRM.readLine();
+            String resC = inFromCarRM.readLine();
             outToFlightRM.println(message);
-            res = inFromFlightRM.readLine();
+            String resF = inFromFlightRM.readLine();
+            res = resR + "\n" + resC + "\n" + resF;
           }
           else if ( command.compareToIgnoreCase("querycustomer")==0 ) {
             System.out.println("General MW/RM command: " + params[0]);
@@ -166,7 +167,7 @@ public class MiddleWareServerThread extends Thread {
             String location = params[index];
             String car = params[index+1];
             String room = params[index+1];
-            String flightresponses = new String[numflights];
+            String[] flightresponses = new String[numflights];
             // General
             if (flightnumbers[0]) {
               for (int i = 0; i < numflights; i++) {
@@ -176,15 +177,15 @@ public class MiddleWareServerThread extends Thread {
                     flightresponse[i] = inFromFlightRM.readLine();
                 }
                 else
-                  break
+                  break;
               }
             }
-            if (car) {
+            if (car == true) {
               String message2 = "reservecar," + id + "," + customerid + "," + location + "," + "1";
               outToCarRM.println(message);
               String resC = inFromCarRM.readLine();
             }
-            if(room) {
+            if(room== true) {
               String message3 = "reserveroom," + id + "," + customerid + "," + location + "," + "1";
               outToRoomRM.println(message);
               String resC = inFromRoomRM.readLine();
