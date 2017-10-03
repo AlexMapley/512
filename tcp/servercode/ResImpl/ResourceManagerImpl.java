@@ -467,41 +467,41 @@ public class ResourceManagerImpl implements ResourceManager
     public boolean itinerary(int id,int customer,Vector flightNumbers,String location,boolean Car,boolean Room)
         throws IOException
     {
-        Trace.info("RM::itinerary(" + id + ", " + customer + ") called" );
-        boolean success = true;
-        int customerid = Integer.parseInt(customer);
-        Boolean carBool = Boolean.valueOf(Car);
-        Boolean roomBool = Boolean.valueOf(Room);
-        System.out.println(flightNumbers);
-        // try {
-        //     if(!flightNumbers.isEmpty()) {
-        //         Iterator<Integer> flights = flightNumbers.iterator();
-        //         while(flights.hasNext()) { 
-        //         // Reserve all flights
-        //             // System.out.println(flights.next());
-        //             int flightNum = flights.next();
-        //             success = success && FlightRM.reserveFlight(id, customer, flightNum);
-        //         }   
+        // Trace.info("RM::itinerary(" + id + ", " + customer + ") called" );
+        // boolean success = true;
+        // int customerid = Integer.parseInt(customer);
+        // Boolean carBool = Boolean.valueOf(Car);
+        // Boolean roomBool = Boolean.valueOf(Room);
+        // System.out.println(flightNumbers);
+        // // try {
+        // //     if(!flightNumbers.isEmpty()) {
+        // //         Iterator<Integer> flights = flightNumbers.iterator();
+        // //         while(flights.hasNext()) { 
+        // //         // Reserve all flights
+        // //             // System.out.println(flights.next());
+        // //             int flightNum = flights.next();
+        // //             success = success && FlightRM.reserveFlight(id, customer, flightNum);
+        // //         }   
 
-        //         //Reserve Car
-        //         if(Car)
-        //             success = success && CarRM.reserveCar(id, customer, location);
+        // //         //Reserve Car
+        // //         if(Car)
+        // //             success = success && CarRM.reserveCar(id, customer, location);
 
-        //         //Reserve Room
-        //         if(Room) 
-        //             success = success && HotelRM.reserveRoom(id, customer, location);
-        //     }
-        //     else {
-        //         return false;
-        //     }
-        // } catch(Exception e) {
-        //     System.out.println("EXCEPTION:");
-        //     System.out.println(e.getMessage());
-        //     e.printStackTrace();
-        // }
+        // //         //Reserve Room
+        // //         if(Room) 
+        // //             success = success && HotelRM.reserveRoom(id, customer, location);
+        // //     }
+        // //     else {
+        // //         return false;
+        // //     }
+        // // } catch(Exception e) {
+        // //     System.out.println("EXCEPTION:");
+        // //     System.out.println(e.getMessage());
+        // //     e.printStackTrace();
+        // // }
 
 
-        return success;
+        return false;
     }
 
 }
