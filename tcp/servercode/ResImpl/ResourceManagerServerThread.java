@@ -76,7 +76,8 @@ public class ResourceManagerServerThread extends Thread {
     try {
       Class thisClass = Class.forName("ResImpl.ResourceManagerImpl");
       Method m = thisClass.getDeclaredMethod(convertCommand((String) args[0]), params);
-      System.out.println(m.invoke(this.host, paramsObj).toString());
+      Object object = m.invoke(this.host, paramsObj);
+      System.out.println("returned value: " + object);
       res = "RM: Succesffuly called " + args[0];
     }
     catch(NoSuchMethodException e) {
