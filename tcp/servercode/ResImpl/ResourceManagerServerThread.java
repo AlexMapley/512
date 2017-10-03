@@ -41,7 +41,7 @@ public class ResourceManagerServerThread extends Thread {
          catch (Exception e) {
            System.out.println(e);
          }
-         outToMW.println("RM: We hear you loud and clear bud! Your message was " + message);
+         outToMW.println("RM: Your message was " + message);
   		}
 
     clientSocket.close();
@@ -64,7 +64,6 @@ public class ResourceManagerServerThread extends Thread {
     for (int i = 0; i < paramsObj.length; i++) {
       paramsObj[i] = args[i+1];
       if (isInteger(paramsObj[i])) {
-        System.out.println("Arg is an int!");
         paramsObj[i] = Integer.parseInt( (String) paramsObj[i] );
         params[i] = int.class;
       }
@@ -87,7 +86,6 @@ public class ResourceManagerServerThread extends Thread {
 
   // Checks for String -> Integer Conversion
   public boolean isInteger( Object input ) {
-    System.out.println( (String) input );
     try {
       Integer.parseInt( (String) input );
       return true;
