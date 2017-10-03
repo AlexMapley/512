@@ -8,7 +8,6 @@ import java.io.*;
 public class client
 {
     static String message = "blank";
-    static ResourceManager rm = null;
 
     public static void main(String args[])
     {
@@ -65,8 +64,6 @@ public class client
           // CLI Interface, help page
           System.out.println("\n\nClient Interface: !@ <( 'o')> <('O' )> @! ");
           System.out.println("Type \"help\" for list of supported commands");
-          System.out.println("\n\nNOTE FROM ALEX: TESTING COMMAND:");
-          System.out.println("newflight,1,2,3,4\n\n");
 
         // Client Main Loop
         while(true){
@@ -114,7 +111,7 @@ public class client
               // Send a tcp call to this method, instead of an rmi call
               outToServer.println(command);
               String res = inFromServer.readLine();
-              System.out.println("Server Response: " + res);
+              System.out.println("Server Response:\n" + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -141,7 +138,7 @@ public class client
               // Send a tcp call to this method, instead of an rmi call
               outToServer.println(command);
               String res = inFromServer.readLine();
-              System.out.println("Server Response: " + res);
+              System.out.println("Server Response:\n" + res);
             }
 
             catch(Exception e){
@@ -169,7 +166,7 @@ public class client
               // Send a tcp call to this method, instead of an rmi call
               outToServer.println(command);
               String res = inFromServer.readLine();
-              System.out.println("Server Response: " + res);
+              System.out.println("Server Response:\n" + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -190,7 +187,7 @@ public class client
               // Send a tcp call to this method, instead of an rmi call
               outToServer.println(command);
               String res = inFromServer.readLine();
-              System.out.println("Server Response: " + res);
+              System.out.println("Server Response:\n" + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -213,7 +210,7 @@ public class client
               // Send a tcp call to this method, instead of an rmi call
               outToServer.println(command);
               String res = inFromServer.readLine();
-              System.out.println("Server Response: " + res);
+              System.out.println("Server Response:\n" + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -236,7 +233,7 @@ public class client
               // Send a tcp call to this method, instead of an rmi call
               outToServer.println(command);
               String res = inFromServer.readLine();
-              System.out.println("Server Response: " + res);
+              System.out.println("Server Response:\n" + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -259,7 +256,7 @@ public class client
               // Send a tcp call to this method, instead of an rmi call
               outToServer.println(command);
               String res = inFromServer.readLine();
-              System.out.println("Server Response: " + res);
+              System.out.println("Server Response:\n" + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -282,7 +279,7 @@ public class client
               // Send a tcp call to this method, instead of an rmi call
               outToServer.println(command);
               String res = inFromServer.readLine();
-              System.out.println("Server Response: " + res);
+              System.out.println("Server Response:\n" + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -305,7 +302,7 @@ public class client
               // Send a tcp call to this method, instead of an rmi call
               outToServer.println(command);
               String res = inFromServer.readLine();
-              System.out.println("Server Response: " + res);
+              System.out.println("Server Response:\n" + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -328,7 +325,7 @@ public class client
               // Send a tcp call to this method, instead of an rmi call
               outToServer.println(command);
               String res = inFromServer.readLine();
-              System.out.println("Server Response: " + res);
+              System.out.println("Server Response:\n" + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -351,7 +348,7 @@ public class client
               // Send a tcp call to this method, instead of an rmi call
               outToServer.println(command);
               String res = inFromServer.readLine();
-              System.out.println("Server Response: " + res);
+              System.out.println("Server Response:\n" + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -374,7 +371,7 @@ public class client
               // Send a tcp call to this method, instead of an rmi call
               outToServer.println(command);
               String res = inFromServer.readLine();
-              System.out.println("Server Response: " + res);
+              System.out.println("Server Response:\n" + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -397,7 +394,7 @@ public class client
               // Send a tcp call to this method, instead of an rmi call
               outToServer.println(command);
               String res = inFromServer.readLine();
-              System.out.println("Server Response: " + res);
+              System.out.println("Server Response:\n" + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -420,7 +417,7 @@ public class client
               // Send a tcp call to this method, instead of an rmi call
               outToServer.println(command);
               String res = inFromServer.readLine();
-              System.out.println("Server Response: " + res);
+              System.out.println("Server Response:\n" + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -443,7 +440,7 @@ public class client
               // Send a tcp call to this method, instead of an rmi call
               outToServer.println(command);
               String res = inFromServer.readLine();
-              System.out.println("Server Response: " + res);
+              System.out.println("Server Response:\n" + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -468,7 +465,7 @@ public class client
               // Send a tcp call to this method, instead of an rmi call
               outToServer.println(command);
               String res = inFromServer.readLine();
-              System.out.println("Server Response: " + res);
+              System.out.println("Server Response:\n" + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -493,7 +490,7 @@ public class client
               // Send a tcp call to this method, instead of an rmi call
               outToServer.println(command);
               String res = inFromServer.readLine();
-              System.out.println("Server Response: " + res);
+              System.out.println("Server Response:\n" + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -518,7 +515,7 @@ public class client
               // Send a tcp call to this method, instead of an rmi call
               outToServer.println(command);
               String res = inFromServer.readLine();
-              System.out.println("Server Response: " + res);
+              System.out.println("Server Response:\n" + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -554,7 +551,7 @@ public class client
               // Send a tcp call to this method, instead of an rmi call
               outToServer.println(command);
               String res = inFromServer.readLine();
-              System.out.println("Server Response: " + res);
+              System.out.println("Server Response:\n" + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");
@@ -585,7 +582,7 @@ public class client
               // Send a tcp call to this method, instead of an rmi call
               outToServer.println(command);
               String res = inFromServer.readLine();
-              System.out.println("Server Response: " + res);
+              System.out.println("Server Response:\n" + res);
             }
             catch(Exception e){
               System.out.println("EXCEPTION:");

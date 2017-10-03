@@ -6,7 +6,8 @@ export CLASSPATH=`pwd`:`pwd`/ResInterface.jar
 echo $CLASSPATH
 
 # Compile client
-javac client.java
+jar cvf ResInterface.jar ../servercode/ResInterface/*.class
+javac -cp ../servercode/ResInterface/* client.java
 
 # Run Client ON LOCAL INSTANCE
-java -Djava.security.policy=java.policy client
+java -Djava.security.policy=java.policy client lab1-7 #Connects to MiddleWare

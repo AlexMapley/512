@@ -25,7 +25,7 @@ public class MiddleWareImpl
     public void runServerThread(MiddleWareImpl host) throws IOException {
 
       final ExecutorService clientProcessingPool = Executors.newFixedThreadPool(10);
-      String[] servers = {"lab1-7", "lab1-8", "lab1-10"};
+      String[] servers = {"lab1-4", "lab1-5", "lab1-6"};
 
 
       Runnable serverTask = new Runnable() {

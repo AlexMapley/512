@@ -33,15 +33,16 @@ public class ResourceManagerServerThread extends Thread {
   		PrintWriter outToMW = new PrintWriter(clientSocket.getOutputStream(), true);
 
       while ((message = inFromMW.readLine())  != null) {
+         String res = "";
     	   System.out.println("\nmessage from MW: " + message);
          String[] params =  message.split(",");
          try {
-           callMethod(message);
+           res = callMethod(message);
          }
          catch (Exception e) {
            System.out.println(e);
          }
-         outToMW.println("RM: We hear you loud and clear bud! Your message was " + message);
+         outToMW.println(res);
   		}
 
     clientSocket.close();
@@ -54,7 +55,8 @@ public class ResourceManagerServerThread extends Thread {
   // Takes a command as an input,
   // in the form of something like "newflight,1,2,3,4"
   // and executes that command on the ResourceManagerImpl instance
-  public void callMethod(String command) throws Exception {
+  public String callMethod(String command) throws Exception {
+    String res = "";
     String[] args = command.split(",");
     // Uses method reflection to call instance methods by name
     // - Pretty much just a higher level implementation
@@ -64,7 +66,6 @@ public class ResourceManagerServerThread extends Thread {
     for (int i = 0; i < paramsObj.length; i++) {
       paramsObj[i] = args[i+1];
       if (isInteger(paramsObj[i])) {
-        System.out.println("Arg is an int!");
         paramsObj[i] = Integer.parseInt( (String) paramsObj[i] );
         params[i] = int.class;
       }
@@ -76,18 +77,17 @@ public class ResourceManagerServerThread extends Thread {
     try {
       Class thisClass = Class.forName("ResImpl.ResourceManagerImpl");
       Method m = thisClass.getDeclaredMethod(convertCommand((String) args[0]), params);
-      System.out.println(m.invoke(this.host, paramsObj).toString());
+      res = m.invoke(this.host, paramsObj).toString());
     }
     catch(NoSuchMethodException e) {
       System.out.println("Incorrect Args given, No Response");
     }
-
+    return res;
   }
 
 
   // Checks for String -> Integer Conversion
   public boolean isInteger( Object input ) {
-    System.out.println( (String) input );
     try {
       Integer.parseInt( (String) input );
       return true;
