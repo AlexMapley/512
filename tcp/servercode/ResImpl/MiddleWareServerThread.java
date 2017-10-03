@@ -183,13 +183,13 @@ public class MiddleWareServerThread extends Thread {
             }
             String resC = "";
             if (car == "true") {
-              String messageC = "reservecar," + id + "," + customerid + "," + location + "," + "1";
+              String messageC = "reservecar," + id + "," + customerid + "," + location;
               outToCarRM.println(messageC);
               resC = inFromCarRM.readLine();
             }
             String resR = "";
             if(room == "true") {
-              String messageR = "reserveroom," + id + "," + customerid + "," + location + "," + "1";
+              String messageR = "reserveroom," + id + "," + customerid + "," + location;
               outToRoomRM.println(messageR);
               resR = inFromRoomRM.readLine();
             }
