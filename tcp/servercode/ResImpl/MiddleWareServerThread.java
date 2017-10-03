@@ -168,30 +168,31 @@ public class MiddleWareServerThread extends Thread {
             String car = params[index+1];
             String room = params[index+1];
             String[] flightresponses = new String[numflights];
+
             // General
-            if (flightnumbers[0]) {
+            if (flightnumbers[0] != null) {
               for (int i = 0; i < numflights; i++) {
-                if (flightnumbers[i]) {
-                    flightresponse[i] = "reserveflight," + id + "," + customerid + "," + flightnumbers[i];
+                if (flightnumbers[i] != null) {
+                    flightresponses[i] = "reserveflight," + id + "," + customerid + "," + flightnumbers[i];
                     outToFlightRM.println(flightresponse[i]);
-                    flightresponse[i] = inFromFlightRM.readLine();
+                    flightresponses[i] = inFromFlightRM.readLine();
                 }
                 else
                   break;
               }
             }
-            if (car == true) {
+            if (car == "true") {
               String message2 = "reservecar," + id + "," + customerid + "," + location + "," + "1";
               outToCarRM.println(message);
               String resC = inFromCarRM.readLine();
             }
-            if(room== true) {
+            if(room == "true") {
               String message3 = "reserveroom," + id + "," + customerid + "," + location + "," + "1";
               outToRoomRM.println(message);
               String resC = inFromRoomRM.readLine();
             }
             for (int i = 0; i < numflights; i++) {
-              res += flightresponse[i] + "\n";
+              res += flightresponses[i] + "\n";
             }
             res += message2 + "\n";
             res += message3;
