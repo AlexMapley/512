@@ -56,7 +56,7 @@ public class ResourceManagerServerThread extends Thread {
   // and executes that command on the ResourceManagerImpl instance
   public String callMethod(String command) throws Exception {
     String[] args = command.split(",");
-    String res = "Invalid args, method not called";
+    String res = "RM: Invalid args, method not called";
     // Uses method reflection to call instance methods by name
     // - Pretty much just a higher level implementation
     // of that whole dictionary pattern we talked about
@@ -77,6 +77,7 @@ public class ResourceManagerServerThread extends Thread {
       Class thisClass = Class.forName("ResImpl.ResourceManagerImpl");
       Method m = thisClass.getDeclaredMethod(convertCommand((String) args[0]), params);
       System.out.println(m.invoke(this.host, paramsObj).toString());
+      res = "RM: Succesffuly called " + args[0];
     }
     catch(NoSuchMethodException e) {
       System.out.println("Incorrect Args given, No Response");
