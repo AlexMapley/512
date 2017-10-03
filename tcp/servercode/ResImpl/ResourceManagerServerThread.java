@@ -78,7 +78,7 @@ public class ResourceManagerServerThread extends Thread {
       Method m = thisClass.getDeclaredMethod(convertCommand((String) args[0]), params);
       Object object = m.invoke(this.host, paramsObj);
       System.out.println("returned value: " + object);
-      res = "RM: Succesffuly called " + args[0] + "return value: " + object;
+      res = "RM: Successfuly called " + args[0] + " return value: " + object;
     }
     catch(NoSuchMethodException e) {
       System.out.println("Incorrect Args given, No Response");
