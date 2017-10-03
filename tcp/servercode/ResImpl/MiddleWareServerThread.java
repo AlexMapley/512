@@ -90,7 +90,7 @@ public class MiddleWareServerThread extends Thread {
           }
           // newcustomer
           else if ( command.compareToIgnoreCase("newcustomer")==0 ) {
-            System.out.println("General MW/RM command: " + params[0]); 
+            System.out.println("General MW/RM command: " + params[0]);
 
             // MW call
             int cid = newCustomer(Integer.parseInt(params[1]));
@@ -107,7 +107,7 @@ public class MiddleWareServerThread extends Thread {
           }
           // newcustomerid
           else if ( command.compareToIgnoreCase("newcustomerid")==0 ) {
-            System.out.println("General MW/RM command: " + params[0]); 
+            System.out.println("General MW/RM command: " + params[0]);
 
             // MW call
             newCustomer(Integer.parseInt(params[1]), Integer.parseInt(params[2]));
@@ -121,7 +121,7 @@ public class MiddleWareServerThread extends Thread {
             res = inFromFlightRM.readLine();
           }
           else if ( command.compareToIgnoreCase("deletecustomer")==0 ) {
-            System.out.println("General MW/RM command: " + params[0]); 
+            System.out.println("General MW/RM command: " + params[0]);
 
             // MW call
             deleteCustomer(Integer.parseInt(params[1]), Integer.parseInt(params[2]));
@@ -153,7 +153,7 @@ public class MiddleWareServerThread extends Thread {
         else {  // unknown command
           System.out.println("unknown client command input");
         }
-        outToClient.println("hello client from server THREAD, your result is: " + res );
+        outToClient.println(res);
       }
 
       clientSocket.close();
