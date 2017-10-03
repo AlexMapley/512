@@ -144,6 +144,16 @@ public class MiddleWareServerThread extends Thread {
             String resF = inFromFlightRM.readLine();
             res = resR + resC + resF;
           }
+          else if ( command.compareToIgnoreCase("itinerary")==0 ) {
+            System.out.println("General MW/RM command: " + params[0]);
+            outToRoomRM.println(message);
+            String resR = inFromRoomRM.readLine();
+            outToCarRM.println(message);
+            String resC = inFromCarRM.readLine();
+            outToFlightRM.println(message);
+            String resF = inFromFlightRM.readLine();
+            res = resR + resC + resF;
+          }
           // else if ( command.compareToIgnoreCase("itinerary")==0 ) {
           //   System.out.println("General MW/RM command: " + params[0]);
           //   itinerary(Integer.parseInt(params[1]), Integer.parseInt(params[2]), params[3], params[4], params[5], params[6]);
@@ -347,6 +357,11 @@ public class MiddleWareServerThread extends Thread {
     public boolean itinerary(int id,int customer,Vector flightNumbers,String location,boolean Car,boolean Room)
         throws IOException
     {
-        return false;
+        boolean success = true;
+
+
+
+
+        return success;
     }
 }
