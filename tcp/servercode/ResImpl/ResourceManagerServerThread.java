@@ -36,12 +36,12 @@ public class ResourceManagerServerThread extends Thread {
     	   System.out.println("\nmessage from MW: " + message);
          String[] params =  message.split(",");
          try {
-           callMethod(message);
+           res = callMethod(message);
          }
          catch (Exception e) {
            System.out.println(e);
          }
-         outToMW.println("RM: Your message was " + message);
+         outToMW.println(res);
   		}
 
     clientSocket.close();
@@ -54,8 +54,9 @@ public class ResourceManagerServerThread extends Thread {
   // Takes a command as an input,
   // in the form of something like "newflight,1,2,3,4"
   // and executes that command on the ResourceManagerImpl instance
-  public void callMethod(String command) throws Exception {
+  public String callMethod(String command) throws Exception {
     String[] args = command.split(",");
+    String res = "Invalid args, method not called";
     // Uses method reflection to call instance methods by name
     // - Pretty much just a higher level implementation
     // of that whole dictionary pattern we talked about
@@ -80,7 +81,7 @@ public class ResourceManagerServerThread extends Thread {
     catch(NoSuchMethodException e) {
       System.out.println("Incorrect Args given, No Response");
     }
-
+    return res;
   }
 
 
