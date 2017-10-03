@@ -409,5 +409,6 @@ public class MiddleWareServerThread extends Thread {
     public boolean itinerary(int id,int customer,Vector flightNumbers,String location,boolean Car,boolean Room)
         throws IOException
     {
+      return false;
     }
 }
