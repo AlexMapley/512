@@ -377,7 +377,7 @@ public class MiddleWareImpl implements ResourceManager
             String f = FlightRM.queryCustomerInfo(id, customerID);
             String h = HotelRM.queryCustomerInfo(id, customerID);
             Trace.info("RM::queryCustomerInfo(" + id + ", " + customerID + "), bill follows..." );
-            
+
             // Could make this look nicer
             System.out.println( c + f + h );
             return c + f + h;
@@ -519,19 +519,19 @@ public class MiddleWareImpl implements ResourceManager
         try {
             if(!flightNumbers.isEmpty()) {
                 Iterator<Integer> flights = flightNumbers.iterator();
-                while(flights.hasNext()) { 
+                while(flights.hasNext()) {
                 // Reserve all flights
                     // System.out.println(flights.next());
                     int flightNum = flights.next();
                     success = success && FlightRM.reserveFlight(id, customer, flightNum);
-                }   
+                }
 
                 //Reserve Car
                 if(Car)
                     success = success && CarRM.reserveCar(id, customer, location);
 
                 //Reserve Room
-                if(Room) 
+                if(Room)
                     success = success && HotelRM.reserveRoom(id, customer, location);
             }
             else {
@@ -542,7 +542,6 @@ public class MiddleWareImpl implements ResourceManager
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
-
 
         return success;
     }

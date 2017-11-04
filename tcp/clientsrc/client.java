@@ -539,14 +539,14 @@ public class client
             System.out.println("Room to book?:"+arguments.elementAt(arguments.size()-1));
 
             try{
-              Id = obj.getInt(arguments.elementAt(1));
-              int customer = obj.getInt(arguments.elementAt(2));
-              Vector flightNumbers = new Vector();
-              for(int i=0;i<arguments.size()-6;i++)
-                flightNumbers.addElement(arguments.elementAt(3+i));
-              location = obj.getString(arguments.elementAt(arguments.size()-3));
-              Car = obj.getBoolean(arguments.elementAt(arguments.size()-2));
-              Room = obj.getBoolean(arguments.elementAt(arguments.size()-1));
+              // Id = obj.getInt(arguments.elementAt(1));
+              // int customer = obj.getInt(arguments.elementAt(2));
+              // Vector flightNumbers = new Vector();
+              // for(int i=0;i<arguments.size()-6;i++)
+              //   flightNumbers.addElement(arguments.elementAt(3+i));
+              // location = obj.getString(arguments.elementAt(arguments.size()-3));
+              // Car = obj.getBoolean(arguments.elementAt(arguments.size()-2));
+              // Room = obj.getBoolean(arguments.elementAt(arguments.size()-1));
 
               // Send a tcp call to this method, instead of an rmi call
               outToServer.println(command);
