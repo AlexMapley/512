@@ -9,7 +9,7 @@ public class LockManager
     public static final int WRITE = 1;
 
     private static int TABLE_SIZE = 2039;
-    private static int DEADLOCK_TIMEOUT = 1000;
+    private static int DEADLOCK_TIMEOUT = 10000;
 
     private static TPHashTable lockTable = new TPHashTable(LockManager.TABLE_SIZE);
     private static TPHashTable stampTable = new TPHashTable(LockManager.TABLE_SIZE);
@@ -64,6 +64,9 @@ public class LockManager
                             // lock conversion
                             // *** ADD CODE HERE *** to carry out the lock conversion in the
                             // lock table
+                            this.lockTable.get(trxnObj).setLockType(TrxnObj.WRITE);
+                            this.lockTable.get(dataObj).setLockType(TrxnObj.WRITE);
+
                         } else {
                             // a lock request that is not lock conversion
                             this.lockTable.add(trxnObj);
@@ -90,7 +93,7 @@ public class LockManager
 
 
     // remove all locks for this transaction in the lock table.
-    public boolean  UnlockAll(int xid) {
+    public boolean UnlockAll(int xid) {
 
         // if any parameter is invalid, then return false
         if (xid < 0) {
@@ -203,6 +206,17 @@ public class LockManager
                     // (2) transaction already had a WRITE lock
                     // Seeing the comments at the top of this function might be helpful
                     // *** ADD CODE HERE *** to take care of both these cases
+
+                    if (dataObj2.getLockType() == DataObj.READ) {
+                        // transaction requests a conversion to a write lock
+                        // flip bitset to 1
+                        bitset.set(0);
+                    }
+                    else if (dataObj2.getLockType() == DataObj.WRITE) {
+                        // transaction already has write lock
+                        // throw redundant lock request
+                        throw new RedundantLockRequestException(dataObj.getXId(), "Redundant WRITE lock request");
+                    }
                 }
             }
             else {
