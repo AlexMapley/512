@@ -474,11 +474,11 @@ public class ResourceManagerImpl implements ResourceManager
         return 0;
     }
     
-    public boolean commit(int transactionId) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
+    public boolean commit(int transactionId) throws RemoteException { //, TransactionAbortedException, InvalidTransactionException {
         return false;
     }
     
-    public void abort(int transactionId) throws RemoteException, InvalidTransactionException {
+    public void abort(int transactionId) throws RemoteException { //, InvalidTransactionException {
 
     }
 

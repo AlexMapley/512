@@ -22,7 +22,7 @@ public class MiddleWareImpl implements ResourceManager
 
     private static LockManager LM = new LockManager();
     private static TransactionManager TM = new TransactionManager();
-    
+
     public static void main(String[] args) {
         int port = 5959;  // hardcoded
         String server = "localhost";  // creates middlware on current machine
@@ -554,11 +554,11 @@ public class MiddleWareImpl implements ResourceManager
         return 0;
     }
     
-    public boolean commit(int transactionId) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
+    public boolean commit(int transactionId) throws RemoteException { //, TransactionAbortedException, InvalidTransactionException {
         return false;
     }
     
-    public void abort(int transactionId) throws RemoteException, InvalidTransactionException {
+    public void abort(int transactionId) throws RemoteException { //, InvalidTransactionException {
 
     }
 
