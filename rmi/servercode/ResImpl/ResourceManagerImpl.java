@@ -470,4 +470,19 @@ public class ResourceManagerImpl implements ResourceManager
         return false;
     }
 
+    public int start() throws RemoteException {
+        return 0;
+    }
+    
+    public boolean commit(int transactionId) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
+        return false;
+    }
+    
+    public void abort(int transactionId) throws RemoteException, InvalidTransactionException {
+
+    }
+
+    public boolean shutdown() throws RemoteException {
+        return false;
+    }
 }
