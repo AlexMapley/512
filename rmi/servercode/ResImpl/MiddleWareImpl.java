@@ -1,6 +1,7 @@
 package ResImpl;
 
 import ResInterface.*;
+import LockManager.*;
 
 import java.util.*;
 
@@ -18,6 +19,8 @@ public class MiddleWareImpl implements ResourceManager
     static ResourceManager HotelRM = null;
     static ResourceManager FlightRM = null;
     // static ResourceManager rm = null;
+
+    private static LockManager LM = new LockManager();
 
     public static void main(String[] args) {
         int port = 5959;  // hardcoded
