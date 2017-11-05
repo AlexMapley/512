@@ -3,6 +3,7 @@ package ResInterface;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.lang.Exception.*;
 
 import java.util.*;
 /** 
