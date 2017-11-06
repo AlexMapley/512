@@ -62,30 +62,6 @@ public class MiddleWareImpl implements ResourceManager
         // Associate inputted machines to respective RMs
         CarRM = rms.get(0); HotelRM = rms.get(1); FlightRM = rms.get(2);
 
-        //TEST 1 RM ON SPECIFIC MACHINE
-        // try
-        // {
-        //     // get a reference to the rmiregistry
-        //     Registry registry = LocateRegistry.getRegistry(server, port);
-        //     // get the proxy and the remote reference by rmiregistry lookup
-        //     rm = (ResourceManager) registry.lookup("group_21");
-        //     if(rm!=null)
-        //     {
-        //         System.out.println("Successful");
-        //         System.out.println("Connected to RM");
-        //     }
-        //     else
-        //     {
-        //         System.out.println("Unsuccessful");
-        //     }
-        //     // make call on remote method
-        // }
-        // catch (Exception e)
-        // {
-        //     System.err.println("MiddleWare exception: " + e.toString());
-        //     e.printStackTrace();
-        // }
-
         //Start middleware server
         try {
             // create a new Server object
@@ -553,11 +529,11 @@ public class MiddleWareImpl implements ResourceManager
     public int start() throws RemoteException {
         return 0;
     }
-    
+
     public boolean commit(int transactionId) throws RemoteException { //, TransactionAbortedException, InvalidTransactionException {
         return false;
     }
-    
+
     public void abort(int transactionId) throws RemoteException { //, InvalidTransactionException {
 
     }
