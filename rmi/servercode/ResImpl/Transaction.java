@@ -8,6 +8,7 @@ public class Transaction
     private int id;
     private String status;
     private boolean[] rms = new int[3];
+    private int[] locks = new int[3];
 
     public Transaction(int id) {
 
@@ -17,6 +18,11 @@ public class Transaction
         false,
         false,
         false
+      };
+      this.locks = {
+        -1,
+        -1,
+        -1
       };
 
 
