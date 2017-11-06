@@ -27,4 +27,14 @@ public class Transaction
 
 
     }
+
+    public setStatus(String status) {
+      if ( status.equals("ongoing") || status.equals("finished") ) {
+        this.status = status;
+      }
+    }
+
+    public getStatus() {
+      return this.status;
+    }
 }

@@ -20,12 +20,12 @@ public class TransactionManager
     }
 
     public newTransaction() {
-      transactionNumber++;
+      this.transactionNumber++;
       liveTransactions.put(transactionNumber, new Transaction(transactionNumber));
       return transactionNumber;
     }
 
     public endTransaction(int id) {
-      liveTransactions.remove(id);
+      ((Transaction) liveTransactions.get(id)).setStatus("finished");
     }
 }
