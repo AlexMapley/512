@@ -1,4 +1,4 @@
-package LockManager;
+package LockImpl;
 
 
 import java.util.BitSet;
@@ -21,7 +21,6 @@ public class LockManager
     }
 
     public boolean Lock(int xid, String strData, int lockType) throws DeadlockException {
-
         // if any parameter is invalid, then return false
         if (xid < 0) {
             return false;
@@ -42,7 +41,7 @@ public class LockManager
         // return true when there is no lock conflict or throw a deadlock exception.
         try {
             boolean bConflict = true;
-            BitSet bConvert = new BitSet(1);
+            BitSet bConvert = new BitSet(0);
             while (bConflict) {
                 synchronized (this.lockTable) {
                     // check if this lock request conflicts with existing locks
@@ -65,9 +64,14 @@ public class LockManager
                             // lock conversion
                             // *** ADD CODE HERE *** to carry out the lock conversion in the
                             // lock table
-
-                            ((TrxnObj) this.lockTable.get(trxnObj)).setLockType(TrxnObj.WRITE);
-                            ((DataObj) this.lockTable.get(dataObj)).setLockType(TrxnObj.WRITE);
+                            // System.out.println(this.lockTable.allElements());
+                            // System.out.println(this.lockTable.get(new XObj(xid)));
+                            XObj temp = new XObj(xid);
+                            ((TrxnObj) this.lockTable.get(temp)).setLockType(TrxnObj.WRITE);
+                            // ((TrxnObj) this.lockTable.get(temp)).setLockType(TrxnObj.WRITE);
+                            
+                            
+                            // WHAT TO DO WITH DATAOBJ IN LOCKTABLE
 
                         } else {
                             // a lock request that is not lock conversion
