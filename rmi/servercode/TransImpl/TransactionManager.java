@@ -17,6 +17,7 @@ public class TransactionManager
 	}
 
 	public int start() {
+		System.out.println("\n\nTransaction Started in Manager!\n\n");
 	 	transactionCounter++;
 	 	transactions.put(transactionCounter, new Transaction(transactionCounter));
 	 	return transactionCounter;
@@ -52,5 +53,9 @@ public class TransactionManager
 
 	public void enlist(int id, ResourceManager rm) {
 		transactions.get(id).add(rm);
+	}
+
+	public int getCounter() {
+		return this.transactionCounter;
 	}
 }

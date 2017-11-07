@@ -28,6 +28,7 @@ public class client
 		int numRooms;
 		int numCars;
 		String location;
+		int transactionId = 1;
 
 
 		String server = "localhost";
@@ -91,6 +92,40 @@ public class client
 		//remove heading and trailing white space
 		command=command.trim();
 		arguments=obj.parse(command);
+
+
+
+
+
+
+
+
+
+
+
+		//Start Transaction
+		try {
+			int count =rm.start(transactionId);
+			System.out.println("\n\nStarting Transaction " + count + "\n\n");
+		}
+
+
+		catch(Exception e){
+			System.out.println("EXCEPTION:");
+		}
+
+		// if(rm.start(transactionId) != 0) {
+		// 	rm.abort(transactionId);
+		// }
+
+
+
+
+
+
+
+
+
 
 		//decide which of the commands this was
 		switch(obj.findChoice((String)arguments.elementAt(0))){
@@ -892,5 +927,21 @@ public class client
 	catch (Exception e) {
 		throw e;
 		}
+	}
+
+	public int start(int transactionId) throws Exception {
+			return 0;
+	}
+
+	public boolean commit(int transactionId) throws Exception { //, TransactionAbortedException, InvalidTransactionException {
+			return false;
+	}
+
+	public void abort(int transactionId) throws Exception { //, InvalidTransactionException {
+
+	}
+
+	public boolean shutdown() throws Exception {
+			return false;
 	}
 }

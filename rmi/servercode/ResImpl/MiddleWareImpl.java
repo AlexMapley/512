@@ -530,8 +530,13 @@ public class MiddleWareImpl implements ResourceManager
     }
 
     public int start(int transactionId) throws RemoteException {
-        return 0;
+        TM.start();
+        int count = TM.getCounter();
+        System.out.println("\nStarting Transaction " + count + "\n");
+        return count;
     }
+
+
 
     public boolean commit(int transactionId) throws RemoteException { //, TransactionAbortedException, InvalidTransactionException {
         return false;
