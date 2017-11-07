@@ -1,7 +1,7 @@
 package ResImpl;
 
 import ResInterface.*;
-import LockManager.*;
+import TransImpl.*;
 
 import java.util.*;
 
@@ -20,8 +20,7 @@ public class MiddleWareImpl implements ResourceManager
     static ResourceManager FlightRM = null;
     // static ResourceManager rm = null;
 
-    private static LockManager LM = new LockManager();
-    private static TransactionManager TM = new TransactionManager();
+    private static TransactionManager TM;
 
     public static void main(String[] args) {
         int port = 5959;  // hardcoded
@@ -84,6 +83,10 @@ public class MiddleWareImpl implements ResourceManager
         if (System.getSecurityManager() == null) {
             System.setSecurityManager(new RMISecurityManager());
         }
+
+        // Setup transaction manager
+        TM = new TransactionManager();
+
     }
 
     public MiddleWareImpl() throws RemoteException {
@@ -208,7 +211,7 @@ public class MiddleWareImpl implements ResourceManager
                 // call succesfull
                 Trace.info("RM::addRooms(" + id + ") created or modified room location " + location + ", count=" + count + ", price=$" + price );
             else {
-                Trace.info("RM::addCar encountered an unknown error");
+                Trace.info("RM::addRooms encountered an unknown error");
             }
         }
         catch(Exception e){
@@ -526,7 +529,7 @@ public class MiddleWareImpl implements ResourceManager
         return success;
     }
 
-    public int start() throws RemoteException {
+    public int start(int transactionId) throws RemoteException {
         return 0;
     }
 

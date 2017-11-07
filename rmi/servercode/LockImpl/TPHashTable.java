@@ -1,4 +1,4 @@
-package LockManager;
+package LockImpl;
 
 import java.util.Vector;
 import java.util.Enumeration;
@@ -109,7 +109,7 @@ public class TPHashTable
         }
         
         vectSlot = (Vector) vect.elementAt( hashSlot );
-
+        // System.out.println("got here");
         XObj xobj2;
         int size = vectSlot.size();
         for ( int i = 0; i < size; i++ ) {

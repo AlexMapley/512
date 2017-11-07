@@ -1,4 +1,4 @@
-package LockManager;
+package LockImpl;
 
 public class WaitObj extends DataObj
 {

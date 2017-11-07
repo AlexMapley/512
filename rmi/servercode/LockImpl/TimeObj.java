@@ -1,4 +1,4 @@
-package LockManager;
+package LockImpl;
 
 import java.util.Date;
 

@@ -5,7 +5,7 @@
 package ResImpl;
 
 import ResInterface.*;
-
+import LockImpl.*;
 import java.util.*;
 
 import java.rmi.registry.Registry;
@@ -18,8 +18,9 @@ public class ResourceManagerImpl implements ResourceManager
 {
 
     protected RMHashtable m_itemHT = new RMHashtable();
-
-
+    private static LockManager LM = new LockManager();
+    private static HashMap<Integer, RMHashtable> transactionImages = new HashMap<Integer, RMHashtable>();
+    
     public static void main(String args[]) {
         // Figure out where server is running
         String server = "localhost";
@@ -61,24 +62,43 @@ public class ResourceManagerImpl implements ResourceManager
     // Reads a data item
     private RMItem readData( int id, String key )
     {
-        synchronized(m_itemHT) {
+        try { 
+            LM.Lock(id, key, LM.READ);
             return (RMItem) m_itemHT.get(key);
+        } catch (DeadlockException e) {
+            // abort and throw Transaction aborted exeption
         }
+
+        return null;
     }
 
     // Writes a data item
     private void writeData( int id, String key, RMItem value )
     {
-        synchronized(m_itemHT) {
+        try { 
+            LM.Lock(id, key, LM.WRITE);
+            start(id);
             m_itemHT.put(key, value);
-        }
+        } catch (DeadlockException e) {
+            // abort and throw Transaction aborted exeption
+        } catch (RemoteException e) {
+            // Due to interface requirements
+        } 
     }
 
     // Remove the item out of storage
-    protected RMItem removeData(int id, String key) {
-        synchronized(m_itemHT) {
+    protected RMItem removeData(int id, String key) 
+    {
+        try { 
+            LM.Lock(id, key, LM.WRITE);
+            start(id);
             return (RMItem)m_itemHT.remove(key);
-        }
+        } catch (DeadlockException e) {
+            // abort and throw Transaction aborted exeption
+        } catch (RemoteException e) {
+            // Due to interface requirements
+        } 
+        return null;
     }
 
 
@@ -470,19 +490,35 @@ public class ResourceManagerImpl implements ResourceManager
         return false;
     }
 
-    public int start() throws RemoteException {
+    public int start(int transactionId) throws RemoteException {
+        // Copy the hashtable and use is as a backup
+        transactionImages.put(transactionId, (RMHashtable) m_itemHT.clone());
         return 0;
     }
     
-    public boolean commit(int transactionId) throws RemoteException { //, TransactionAbortedException, InvalidTransactionException {
+    public boolean commit(int transactionId) throws RemoteException { //, TransactionAbortedException, InvalidTransactionException {       
+        // Release transaction locks
+        if(LM.UnlockAll(transactionId)) 
+            return true;
+        
         return false;
     }
     
     public void abort(int transactionId) throws RemoteException { //, InvalidTransactionException {
+        // Reset DB from transaction image
+        RMHashtable reset = transactionImages.get(transactionId);
+        if(reset != null)
+            m_itemHT = reset;
 
+        // Release transaction locks
+        LM.UnlockAll(transactionId);
+        
     }
 
     public boolean shutdown() throws RemoteException {
-        return false;
+        m_itemHT.clear();
+        LM = new LockManager();
+        transactionImages.clear();
+        return true;
     }
 }
