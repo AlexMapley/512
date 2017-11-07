@@ -17,7 +17,7 @@ public class TransactionManager
 	}
 
 	public int start() {
-		System.out.println("\n\nTransaction Started in Manager!\n\n");
+		System.out.println("Transaction Started in Manager!\n");
 	 	transactionCounter++;
 	 	transactions.put(transactionCounter, new Transaction(transactionCounter));
 	 	return transactionCounter;

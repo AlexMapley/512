@@ -11,6 +11,7 @@ public class client
 {
 	static String message = "blank";
 	static ResourceManager rm = null;
+	static int transactionId;
 
 	public static void main(String args[])
 	{
@@ -28,7 +29,6 @@ public class client
 		int numRooms;
 		int numCars;
 		String location;
-		int transactionId = 1;
 
 
 		String server = "localhost";
@@ -94,38 +94,13 @@ public class client
 		arguments=obj.parse(command);
 
 
-
-
-
-
-
-
-
-
-
 		//Start Transaction
 		try {
-			int count =rm.start(transactionId);
-			System.out.println("\n\nStarting Transaction " + count + "\n\n");
-		}
-
-
-		catch(Exception e){
+			transactionId = rm.start(0);
+			System.out.println("\nStarting Transaction " + transactionId + "\n");
+		} catch(Exception e){
 			System.out.println("EXCEPTION:");
 		}
-
-		// if(rm.start(transactionId) != 0) {
-		// 	rm.abort(transactionId);
-		// }
-
-
-
-
-
-
-
-
-
 
 		//decide which of the commands this was
 		switch(obj.findChoice((String)arguments.elementAt(0))){
@@ -929,8 +904,9 @@ public class client
 		}
 	}
 
-	public int start(int transactionId) throws Exception {
-			return 0;
+	// Unused method, we just use an RM call to start
+	public void start() {
+
 	}
 
 	public boolean commit(int transactionId) throws Exception { //, TransactionAbortedException, InvalidTransactionException {
