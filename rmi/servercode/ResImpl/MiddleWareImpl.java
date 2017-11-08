@@ -19,7 +19,6 @@ public class MiddleWareImpl implements ResourceManager
     static ResourceManager HotelRM = null;
     static ResourceManager FlightRM = null;
     static int NewTransactionId;
-    // static ResourceManager rm = null;
 
     private static TransactionManager TM;
 
@@ -530,21 +529,25 @@ public class MiddleWareImpl implements ResourceManager
         return success;
     }
 
+
+    /* Fleshing out these methods a bit
+    just to help facilitate Client->MW->TM->MW->Client communication */
     public int start(int transactionId) throws RemoteException {
+        int count = TM.getCounter() + 1;
+        System.out.println("\nStarting Transaction " + count + " in MW Server");
         TM.start();
-        int count = TM.getCounter();
-        System.out.println("\nStarting Transaction " + count + "\n");
         NewTransactionId = count;
         return count;
     }
 
 
     public boolean commit(int transactionId) throws RemoteException { //, TransactionAbortedException, InvalidTransactionException {
-        return true;
+        boolean result = TM.commit(transactionId);
+        return(result);
     }
 
     public void abort(int transactionId) throws RemoteException { //, InvalidTransactionException {
-
+      boolean result = TM.abort(transactionId);
     }
 
     public boolean shutdown() throws RemoteException {

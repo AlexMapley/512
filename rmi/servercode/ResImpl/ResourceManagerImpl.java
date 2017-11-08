@@ -500,7 +500,6 @@ public class ResourceManagerImpl implements ResourceManager
         // Release transaction locks
         if(LM.UnlockAll(transactionId))
             return true;
-
         return false;
     }
 

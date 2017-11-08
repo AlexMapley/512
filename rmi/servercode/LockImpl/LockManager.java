@@ -69,7 +69,7 @@ public class LockManager
                             System.out.println(this.lockTable.allElements());
 
                             // WHAT TO DO WITH DATAOBJ IN LOCKTABLE
-                            // IKR!!!!!
+                            // IKR
 
                         } else {
                             // a lock request that is not lock conversion
