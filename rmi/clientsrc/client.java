@@ -601,6 +601,21 @@ public class client
 			System.out.println("The interface does not support this command.");
 			break;
 		}//end of switch
+
+		//Commit Transaction
+		try {
+			boolean commitWorthy = rm.commit(transactionId);
+			System.out.println("Attempting to Commit Transaction " + transactionId);
+			if (commitWorthy = true) {
+				System.out.println("Transaction " + transactionId + " Committed Successfully");
+			}
+			else {
+				rm.abort(transactionId);
+				System.out.println("Transaction " + transactionId + " Was Aborted (Oh Noes!)");
+			}
+		} catch(Exception e){
+			System.out.println("EXCEPTION:");
+		}
 		}//end of while(true)
 	}
 
@@ -904,20 +919,4 @@ public class client
 		}
 	}
 
-	// Unused method, we just use an RM call to start
-	public void start() {
-
-	}
-
-	public boolean commit(int transactionId) throws Exception { //, TransactionAbortedException, InvalidTransactionException {
-			return false;
-	}
-
-	public void abort(int transactionId) throws Exception { //, InvalidTransactionException {
-
-	}
-
-	public boolean shutdown() throws Exception {
-			return false;
-	}
 }

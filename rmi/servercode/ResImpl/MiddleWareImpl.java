@@ -18,6 +18,7 @@ public class MiddleWareImpl implements ResourceManager
     static ResourceManager CarRM = null;
     static ResourceManager HotelRM = null;
     static ResourceManager FlightRM = null;
+    static int NewTransactionId;
     // static ResourceManager rm = null;
 
     private static TransactionManager TM;
@@ -533,13 +534,13 @@ public class MiddleWareImpl implements ResourceManager
         TM.start();
         int count = TM.getCounter();
         System.out.println("\nStarting Transaction " + count + "\n");
+        NewTransactionId = count;
         return count;
     }
 
 
-
     public boolean commit(int transactionId) throws RemoteException { //, TransactionAbortedException, InvalidTransactionException {
-        return false;
+        return true;
     }
 
     public void abort(int transactionId) throws RemoteException { //, InvalidTransactionException {
