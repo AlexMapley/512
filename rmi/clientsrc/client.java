@@ -602,7 +602,7 @@ public class client
 			break;
 		}//end of switch
 
-		//Commit Transaction
+		//Commit or Abort Transaction
 		try {
 			boolean commitWorthy = rm.commit(transactionId);
 			System.out.println("Attempting to Commit Transaction " + transactionId);

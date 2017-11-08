@@ -81,9 +81,7 @@ public class ResourceManagerImpl implements ResourceManager
         } catch (DeadlockException e) {
             // abort and throw Transaction aborted exeption
         }
-        // catch (RemoteException e) {
-        //     // Due to interface requirements
-        // }
+
     }
 
     // Remove the item out of storage
@@ -95,9 +93,6 @@ public class ResourceManagerImpl implements ResourceManager
         } catch (DeadlockException e) {
             // abort and throw Transaction aborted exeption
         }
-        // catch (RemoteException e) {
-        //     // Due to interface requirements
-        // }
         return null;
     }
 
