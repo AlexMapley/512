@@ -41,7 +41,7 @@ public class LockManager
         // return true when there is no lock conflict or throw a deadlock exception.
         try {
             boolean bConflict = true;
-            BitSet bConvert = new BitSet(0);
+            BitSet bConvert = new BitSet(1);
             while (bConflict) {
                 synchronized (this.lockTable) {
                     // check if this lock request conflicts with existing locks
@@ -64,18 +64,18 @@ public class LockManager
                             // lock conversion
                             // *** ADD CODE HERE *** to carry out the lock conversion in the
                             // lock table
-                            // System.out.println(this.lockTable.allElements());
-                            // System.out.println(this.lockTable.get(new XObj(xid)));
                             XObj temp = new XObj(xid);
                             ((TrxnObj) this.lockTable.get(temp)).setLockType(TrxnObj.WRITE);
-                            // ((TrxnObj) this.lockTable.get(temp)).setLockType(TrxnObj.WRITE);
-                            
-                            
+                            System.out.println(this.lockTable.allElements());
+
                             // WHAT TO DO WITH DATAOBJ IN LOCKTABLE
+                            // IKR
 
                         } else {
                             // a lock request that is not lock conversion
                             this.lockTable.add(trxnObj);
+
+                            //Fuck you DataObject
                             this.lockTable.add(dataObj);
                         }
                     }

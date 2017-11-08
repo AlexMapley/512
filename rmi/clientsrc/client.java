@@ -11,6 +11,7 @@ public class client
 {
 	static String message = "blank";
 	static ResourceManager rm = null;
+	static int transactionId;
 
 	public static void main(String args[])
 	{
@@ -91,6 +92,15 @@ public class client
 		//remove heading and trailing white space
 		command=command.trim();
 		arguments=obj.parse(command);
+
+
+		//Start Transaction
+		try {
+			transactionId = rm.start(0);
+			System.out.println("\nStarting Transaction " + transactionId + "\n");
+		} catch(Exception e){
+			System.out.println("EXCEPTION:");
+		}
 
 		//decide which of the commands this was
 		switch(obj.findChoice((String)arguments.elementAt(0))){
@@ -591,6 +601,21 @@ public class client
 			System.out.println("The interface does not support this command.");
 			break;
 		}//end of switch
+
+		//Commit or Abort Transaction
+		try {
+			boolean commitWorthy = rm.commit(transactionId);
+			System.out.println("Attempting to Commit Transaction " + transactionId);
+			if (commitWorthy = true) {
+				System.out.println("Transaction " + transactionId + " Committed Successfully");
+			}
+			else {
+				rm.abort(transactionId);
+				System.out.println("Transaction " + transactionId + " Was Aborted (Oh Noes!)");
+			}
+		} catch(Exception e){
+			System.out.println("EXCEPTION:");
+		}
 		}//end of while(true)
 	}
 
@@ -893,4 +918,5 @@ public class client
 		throw e;
 		}
 	}
+
 }

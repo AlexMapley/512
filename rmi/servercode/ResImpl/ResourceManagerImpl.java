@@ -20,7 +20,7 @@ public class ResourceManagerImpl implements ResourceManager
     protected RMHashtable m_itemHT = new RMHashtable();
     private static LockManager LM = new LockManager();
     private static HashMap<Integer, RMHashtable> transactionImages = new HashMap<Integer, RMHashtable>();
-    
+
     public static void main(String args[]) {
         // Figure out where server is running
         String server = "localhost";
@@ -62,7 +62,7 @@ public class ResourceManagerImpl implements ResourceManager
     // Reads a data item
     private RMItem readData( int id, String key )
     {
-        try { 
+        try {
             LM.Lock(id, key, LM.READ);
             return (RMItem) m_itemHT.get(key);
         } catch (DeadlockException e) {
@@ -73,37 +73,32 @@ public class ResourceManagerImpl implements ResourceManager
     }
 
     // Writes a data item
-    private void writeData( int id, String key, RMItem value )
+    private void writeData( int id, String key, RMItem value ) throws RemoteException
     {
-        try { 
+        try {
             LM.Lock(id, key, LM.WRITE);
-            start(id);
             m_itemHT.put(key, value);
         } catch (DeadlockException e) {
             // abort and throw Transaction aborted exeption
-        } catch (RemoteException e) {
-            // Due to interface requirements
-        } 
+        }
+
     }
 
     // Remove the item out of storage
-    protected RMItem removeData(int id, String key) 
+    protected RMItem removeData(int id, String key) throws RemoteException
     {
-        try { 
+        try {
             LM.Lock(id, key, LM.WRITE);
-            start(id);
             return (RMItem)m_itemHT.remove(key);
         } catch (DeadlockException e) {
             // abort and throw Transaction aborted exeption
-        } catch (RemoteException e) {
-            // Due to interface requirements
-        } 
+        }
         return null;
     }
 
 
     // deletes the entire item
-    protected boolean deleteItem(int id, String key)
+    protected boolean deleteItem(int id, String key) throws RemoteException
     {
         Trace.info("RM::deleteItem(" + id + ", " + key + ") called" );
         ReservableItem curObj = (ReservableItem) readData( id, key );
@@ -150,7 +145,7 @@ public class ResourceManagerImpl implements ResourceManager
     }
 
     // reserve an item
-    protected boolean reserveItem(int id, int customerID, String key, String location) {
+    protected boolean reserveItem(int id, int customerID, String key, String location) throws RemoteException {
         Trace.info("RM::reserveItem( " + id + ", customer=" + customerID + ", " +key+ ", "+location+" ) called" );
         // Read customer object if it exists (and read lock it)
         Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
@@ -495,15 +490,14 @@ public class ResourceManagerImpl implements ResourceManager
         transactionImages.put(transactionId, (RMHashtable) m_itemHT.clone());
         return 0;
     }
-    
-    public boolean commit(int transactionId) throws RemoteException { //, TransactionAbortedException, InvalidTransactionException {       
+
+    public boolean commit(int transactionId) throws RemoteException { //, TransactionAbortedException, InvalidTransactionException {
         // Release transaction locks
-        if(LM.UnlockAll(transactionId)) 
+        if(LM.UnlockAll(transactionId))
             return true;
-        
         return false;
     }
-    
+
     public void abort(int transactionId) throws RemoteException { //, InvalidTransactionException {
         // Reset DB from transaction image
         RMHashtable reset = transactionImages.get(transactionId);
@@ -512,7 +506,7 @@ public class ResourceManagerImpl implements ResourceManager
 
         // Release transaction locks
         LM.UnlockAll(transactionId);
-        
+
     }
 
     public boolean shutdown() throws RemoteException {
