@@ -6,6 +6,7 @@ package ResImpl;
 
 import ResInterface.*;
 import LockImpl.*;
+import TransImpl.*;
 import java.util.*;
 
 import java.rmi.registry.Registry;
@@ -491,14 +492,14 @@ public class ResourceManagerImpl implements ResourceManager
         return 0;
     }
 
-    public boolean commit(int transactionId) throws RemoteException { //, TransactionAbortedException, InvalidTransactionException {
+    public boolean commit(int transactionId) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
         // Release transaction locks
         if(LM.UnlockAll(transactionId))
             return true;
         return false;
     }
 
-    public void abort(int transactionId) throws RemoteException { //, InvalidTransactionException {
+    public void abort(int transactionId) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
         // Reset DB from transaction image
         RMHashtable reset = transactionImages.get(transactionId);
         if(reset != null)

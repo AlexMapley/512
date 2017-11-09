@@ -1,4 +1,5 @@
 import ResInterface.*;
+
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.RMISecurityManager;
@@ -606,15 +607,22 @@ public class client
 		try {
 			boolean commitWorthy = rm.commit(transactionId);
 			System.out.println("Attempting to Commit Transaction " + transactionId);
-			if (commitWorthy = true) {
+			if (commitWorthy) {
 				System.out.println("Transaction " + transactionId + " Committed Successfully");
 			}
 			else {
-				rm.abort(transactionId);
-				System.out.println("Transaction " + transactionId + " Was Aborted (Oh Noes!)");
+				System.out.println("Transaction " + transactionId + " Had nothing to commit");
 			}
-		} catch(Exception e){
-			System.out.println("EXCEPTION:");
+		} catch(Exception e) {
+			System.out.println("Transaction: " + transactionId + " commit error " + e);
+			System.out.println("Attempting to abort");
+			// Because client doesn't have access to the Transaction exceptions 
+			// if this was an InvalidTransactionException this next try/catch is redundant
+			try { 
+				rm.abort(transactionId);
+			} catch(Exception ee) {
+				System.out.println("Transaction error: " + transactionId + " abort error " + ee);
+			}
 		}
 		}//end of while(true)
 	}

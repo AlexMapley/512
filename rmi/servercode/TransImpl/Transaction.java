@@ -5,18 +5,28 @@ import java.util.*;
 
 public class Transaction
 {
-	// A single transaction object
+	public static final int TIME2LIVE = 10000; // 10s in ms
 	public int id;
-	public List<ResourceManager> activeRMs;
-	// timestamp of last operation?
+	public Set<ResourceManager> activeRMs;
+	public int status; // 0 for active, 1 for finished
+	private long time;
 
 	public Transaction(int id) {
 	 	this.id = id;
-	 	this.activeRMs = new ArrayList<ResourceManager>();
+	 	this.activeRMs = new HashSet<ResourceManager>();
+	 	this.status = 1;
+	 	this.time = (new Date()).getTime();
 	}
 
 	public void add(ResourceManager rm) {
-		activeRMs.add(rm);
+		this.activeRMs.add(rm);
 	}
 
+	public void setTime(long time) {
+		this.time = time;
+	}
+
+	public long getTime() {
+		return this.time;
+	}
 }
