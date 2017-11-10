@@ -1,5 +1,6 @@
 package ResInterface;
 
+import TransImpl.*;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -136,10 +137,10 @@ public interface ResourceManager extends Remote
   throws RemoteException;
 
     public boolean commit(int transactionId)
-  throws RemoteException; //, TransactionAbortedException, InvalidTransactionException;
+  throws RemoteException, TransactionAbortedException, InvalidTransactionException;
 
     public void abort(int transactionId)
-  throws RemoteException; //, InvalidTransactionException;
+  throws RemoteException, InvalidTransactionException, TransactionAbortedException;
 
     public boolean shutdown()
   throws RemoteException;

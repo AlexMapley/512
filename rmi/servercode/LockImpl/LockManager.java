@@ -41,11 +41,12 @@ public class LockManager
         // return true when there is no lock conflict or throw a deadlock exception.
         try {
             boolean bConflict = true;
-            BitSet bConvert = new BitSet(1);
+            BitSet bConvert = new BitSet(0);
             while (bConflict) {
                 synchronized (this.lockTable) {
                     // check if this lock request conflicts with existing locks
                     bConflict = LockConflict(dataObj, bConvert);
+                    // System.out.println(bConvert);
                     if (!bConflict) {
                         // no lock conflict
                         synchronized (this.stampTable) {
@@ -69,7 +70,6 @@ public class LockManager
                             System.out.println(this.lockTable.allElements());
 
                             // WHAT TO DO WITH DATAOBJ IN LOCKTABLE
-                            // IKR
 
                         } else {
                             // a lock request that is not lock conversion

@@ -18,7 +18,6 @@ public class MiddleWareImpl implements ResourceManager
     static ResourceManager CarRM = null;
     static ResourceManager HotelRM = null;
     static ResourceManager FlightRM = null;
-    static int NewTransactionId;
 
     private static TransactionManager TM;
 
@@ -171,8 +170,8 @@ public class MiddleWareImpl implements ResourceManager
     public boolean addFlight(int id, int flightNum, int flightSeats, int flightPrice)
         throws RemoteException
     {
+        TM.enlist(id, FlightRM);
         Trace.info("RM::addFlight(" + id + ", " + flightNum + ", $" + flightPrice + ", " + flightSeats + ") called" );
-
         try {
             if(FlightRM.addFlight(id,flightNum,flightSeats,flightPrice))
             // if(rm.addFlight(id,flightNum,flightSeats,flightPrice))
@@ -195,6 +194,7 @@ public class MiddleWareImpl implements ResourceManager
     public boolean deleteFlight(int id, int flightNum)
         throws RemoteException
     {
+        TM.enlist(id, FlightRM);
         return FlightRM.deleteFlight(id, flightNum);
         // return rm.deleteFlight(id, flightNum);
     }
@@ -204,6 +204,7 @@ public class MiddleWareImpl implements ResourceManager
     public boolean addRooms(int id, String location, int count, int price)
         throws RemoteException
     {
+        TM.enlist(id, HotelRM);
         Trace.info("RM::addRooms(" + id + ", " + location + ", " + count + ", $" + price + ") called" );
         try {
             if(HotelRM.addRooms(id,location,count,price))
@@ -226,6 +227,7 @@ public class MiddleWareImpl implements ResourceManager
     public boolean deleteRooms(int id, String location)
         throws RemoteException
     {
+        TM.enlist(id, HotelRM);
         return HotelRM.deleteRooms(id, location);
         // return rm.deleteRooms(id, location);
 
@@ -236,6 +238,7 @@ public class MiddleWareImpl implements ResourceManager
     public boolean addCars(int id, String location, int count, int price)
         throws RemoteException
     {
+        TM.enlist(id, CarRM);
         try {
             if(CarRM.addCars(id,location,count,price))
             // if(rm.addCars(id,location,count,price))
@@ -258,6 +261,7 @@ public class MiddleWareImpl implements ResourceManager
     public boolean deleteCars(int id, String location)
         throws RemoteException
     {
+        TM.enlist(id, CarRM);
         return CarRM.deleteCars(id, location);
         // return rm.deleteCars(id, location);
     }
@@ -268,6 +272,7 @@ public class MiddleWareImpl implements ResourceManager
     public int queryFlight(int id, int flightNum)
         throws RemoteException
     {
+        TM.enlist(id, FlightRM);
         return FlightRM.queryFlight(id,flightNum);
         // return rm.queryFlight(id,flightNum);
     }
@@ -290,6 +295,7 @@ public class MiddleWareImpl implements ResourceManager
     public int queryFlightPrice(int id, int flightNum )
         throws RemoteException
     {
+        TM.enlist(id, FlightRM);
         return FlightRM.queryFlightPrice(id, flightNum);
         // return rm.queryFlightPrice(id, flightNum);
     }
@@ -299,6 +305,7 @@ public class MiddleWareImpl implements ResourceManager
     public int queryRooms(int id, String location)
         throws RemoteException
     {
+        TM.enlist(id, HotelRM);
         return HotelRM.queryRooms(id, location);
         // return rm.queryRooms(id, location);
     }
@@ -307,6 +314,7 @@ public class MiddleWareImpl implements ResourceManager
     public int queryRoomsPrice(int id, String location)
         throws RemoteException
     {
+        TM.enlist(id, HotelRM);
         return HotelRM.queryRoomsPrice(id, location);
         // return rm.queryRoomsPrice(id, location);
     }
@@ -316,6 +324,7 @@ public class MiddleWareImpl implements ResourceManager
     public int queryCars(int id, String location)
         throws RemoteException
     {
+        TM.enlist(id, CarRM);
         return CarRM.queryCars(id, location);
         // return rm.queryCars(id, location);
     }
@@ -325,6 +334,7 @@ public class MiddleWareImpl implements ResourceManager
     public int queryCarsPrice(int id, String location)
         throws RemoteException
     {
+        TM.enlist(id, CarRM);
         return CarRM.queryCarsPrice(id, location);
         // return rm.queryCarsPrice(id, location);
     }
@@ -349,6 +359,9 @@ public class MiddleWareImpl implements ResourceManager
     public String queryCustomerInfo(int id, int customerID)
         throws RemoteException
     {
+        TM.enlist(id, CarRM);
+        TM.enlist(id, FlightRM);
+        TM.enlist(id, HotelRM);
         Trace.info("RM::queryCustomerInfo(" + id + ", " + customerID + ") called" );
         Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
         if ( cust == null ) {
@@ -373,6 +386,9 @@ public class MiddleWareImpl implements ResourceManager
     public int newCustomer(int id)
         throws RemoteException
     {
+        TM.enlist(id, CarRM);
+        TM.enlist(id, FlightRM);
+        TM.enlist(id, HotelRM);
         Trace.info("INFO: RM::newCustomer(" + id + ") called" );
         // Generate a globally unique ID for the new customer
         int cid = Integer.parseInt( String.valueOf(id) +
@@ -400,6 +416,9 @@ public class MiddleWareImpl implements ResourceManager
     public boolean newCustomer(int id, int customerID )
         throws RemoteException
     {
+        TM.enlist(id, CarRM);
+        TM.enlist(id, FlightRM);
+        TM.enlist(id, HotelRM);
         Trace.info("INFO: RM::newCustomer(" + id + ", " + customerID + ") called" );
         Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
         if ( cust == null ) {
@@ -431,6 +450,9 @@ public class MiddleWareImpl implements ResourceManager
     public boolean deleteCustomer(int id, int customerID)
         throws RemoteException
     {
+        TM.enlist(id, CarRM);
+        TM.enlist(id, FlightRM);
+        TM.enlist(id, HotelRM);
         Trace.info("RM::deleteCustomer(" + id + ", " + customerID + ") called" );
         Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
         if ( cust == null ) {
@@ -472,6 +494,7 @@ public class MiddleWareImpl implements ResourceManager
     public boolean reserveCar(int id, int customerID, String location)
         throws RemoteException
     {
+        TM.enlist(id, CarRM);
         return CarRM.reserveCar(id, customerID, location);
         // return rm.reserveCar(id, customerID, location);
     }
@@ -481,6 +504,7 @@ public class MiddleWareImpl implements ResourceManager
     public boolean reserveRoom(int id, int customerID, String location)
         throws RemoteException
     {
+        TM.enlist(id, HotelRM);
         return HotelRM.reserveRoom(id, customerID, location);
         // return rm.reserveRoom(id, customerID, location);
     }
@@ -489,6 +513,7 @@ public class MiddleWareImpl implements ResourceManager
     public boolean reserveFlight(int id, int customerID, int flightNum)
         throws RemoteException
     {
+        TM.enlist(id, FlightRM);
         return FlightRM.reserveFlight(id, customerID, flightNum);
         // return rm.reserveFlight(id, customerID, flightNum);
     }
@@ -532,22 +557,17 @@ public class MiddleWareImpl implements ResourceManager
 
     /* Fleshing out these methods a bit
     just to help facilitate Client->MW->TM->MW->Client communication */
-    public int start(int transactionId) throws RemoteException {
-        int count = TM.getCounter() + 1;
-        System.out.println("\nStarting Transaction " + count + " in MW Server");
-        TM.start();
-        NewTransactionId = count;
-        return count;
+    public int start(int transactionId) throws RemoteException {      
+        return TM.start();
     }
 
-
-    public boolean commit(int transactionId) throws RemoteException { //, TransactionAbortedException, InvalidTransactionException {
+    public boolean commit(int transactionId) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
         boolean result = TM.commit(transactionId);
-        return(result);
+        return result;
     }
 
-    public void abort(int transactionId) throws RemoteException { //, InvalidTransactionException {
-      boolean result = TM.abort(transactionId);
+    public void abort(int transactionId) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
+        TM.abort(transactionId);
     }
 
     public boolean shutdown() throws RemoteException {
