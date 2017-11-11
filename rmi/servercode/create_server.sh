@@ -1,3 +1,4 @@
+#!/bin/bash
 # Register RMI
 rmiregistry -J-Djava.rmi.server.useCodebaseOnly=false 5959 &
 

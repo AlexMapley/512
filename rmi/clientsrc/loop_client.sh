@@ -1,12 +1,8 @@
 #!/bin/bash
 # Export classfile
-export CLASSPATH=`pwd`:`pwd`/ResInterface.jar
+export CLASSPATH=`pwd`:`pwd`/../servercode/ResInterface.jar
 echo $CLASSPATH
 
-# Compiling server codebase
-javac ResInterface/ResourceManager.java
-jar cvf ResInterface.jar ResInterface/*.class
-javac ResImpl/ResourceManagerImpl.java
 
 # Compiling client
 javac client.java
