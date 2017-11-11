@@ -1,12 +1,9 @@
 # Export classfile
-# From own machine!!!
-#cp servercode/ResInterface.jar clientsrc/ResInterface.jar
-
 export CLASSPATH=`pwd`:`pwd`/ResInterface.jar
 echo $CLASSPATH
 
 # Compile client
 javac client.java
 
-# Run Client ON LOCAL INSTANCE
+# Run client on either localhost [default] or a target server
 java -Djava.security.policy=java.policy client $1

@@ -1,4 +1,5 @@
 import ResInterface.*;
+import TransImpl.*;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -80,7 +81,8 @@ public class client
 		System.out.print("\n>");
 		try{
 			//read the next command
-			command =stdin.readLine();
+			command = stdin.readLine();
+			System.out.println("\n\nTEST: command is " + command);
 		}
 		catch (IOException io){
 			System.out.println("Unable to read from standard in");
