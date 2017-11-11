@@ -1,3 +1,4 @@
+#!/bin/bash
 # Register RMI
 rmiregistry -J-Djava.rmi.server.useCodebaseOnly=false 5959 &
 
@@ -9,6 +10,8 @@ echo $CLASSPATH
 javac ResInterface/ResourceManager.java
 jar cvf ResInterface.jar ResInterface/*.class
 javac ResImpl/MiddleWareImpl.java
+javac TransImpl/CrashDetection.java
+
 
 # Setting permissions
 chmod 704 ResInterface.jar
