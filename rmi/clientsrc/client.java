@@ -15,6 +15,7 @@ public class client
 	static ResourceManager rm = null;
 	static int transactionId;
 
+
 	public static void main(String args[])
 	{
 		client obj = new client();
@@ -82,7 +83,6 @@ public class client
 		try{
 			//read the next command
 			command = stdin.readLine();
-			System.out.println("\n\nTEST: command is " + command);
 		}
 		catch (IOException io){
 			System.out.println("Unable to read from standard in");
