@@ -34,17 +34,13 @@ public class client
 
 		String server = "localhost";
 		int port = 5959;
-		if (args.length > 0)
+		if (args.length == 1)
 		{
 			server = args[0];
 		}
 		if (args.length > 1)
 		{
-			port = Integer.parseInt(args[1]);
-		}
-		if (args.length > 2)
-		{
-			System.out.println ("Usage: java client [rmihost [rmiport]]");
+			System.out.println ("Usage: java client [rmihost]");
 			System.exit(1);
 		}
 
@@ -56,8 +52,8 @@ public class client
 			rm = (ResourceManager) registry.lookup("group_21");
 			if(rm!=null)
 			{
-				System.out.println("Successful");
-				System.out.println("Connected to RM");
+				System.out.println("\nSuccessful");
+				System.out.println("Connected to RM at [" + server + "]");
 			}
 			else
 			{
@@ -616,9 +612,9 @@ public class client
 		} catch(Exception e) {
 			System.out.println("Transaction: " + transactionId + " commit error " + e);
 			System.out.println("Attempting to abort");
-			// Because client doesn't have access to the Transaction exceptions 
+			// Because client doesn't have access to the Transaction exceptions
 			// if this was an InvalidTransactionException this next try/catch is redundant
-			try { 
+			try {
 				rm.abort(transactionId);
 			} catch(Exception ee) {
 				System.out.println("Transaction error: " + transactionId + " abort error " + ee);
