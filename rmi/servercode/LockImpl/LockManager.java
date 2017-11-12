@@ -10,7 +10,7 @@ public class LockManager
     public static final int WRITE = 1;
 
     private static int TABLE_SIZE = 2039;
-    private static int DEADLOCK_TIMEOUT = 10000;
+    private static int DEADLOCK_TIMEOUT = 2000;
 
     private static TPHashTable lockTable = new TPHashTable(LockManager.TABLE_SIZE);
     private static TPHashTable stampTable = new TPHashTable(LockManager.TABLE_SIZE);
@@ -302,6 +302,7 @@ public class LockManager
                 TimeObj currTime = new TimeObj(dataObj.getXId());
                 timeBlocked = currTime.getTime() - timestamp.getTime();
                 if (timeBlocked >= LockManager.DEADLOCK_TIMEOUT) {
+                    System.out.println("\n\nDEADLOCKING SON\n\n");
                     // the transaction has been waiting for a period greater than the timeout period
                     cleanupDeadlock(timestamp, waitObj);
                 }
