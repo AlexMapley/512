@@ -9,7 +9,7 @@ public class TransactionManager
 	private int transactionCounter;
 
 	// Hashmap of ongoing transactions, compared to key value
-	public HashMap<Integer, Transaction> transactions = new HashMap<Integer, Transaction>();
+	public static HashMap<Integer, Transaction> transactions = new HashMap<Integer, Transaction>();
 	private CrashDetection CD;
 
 	//Instantiate with access to MiddleWareImpl
@@ -23,6 +23,7 @@ public class TransactionManager
 	public int start() {
 		transactionCounter++;
 		System.out.println("Transaction " + transactionCounter + " Started in Manager");
+		
 	 	transactions.put(transactionCounter, new Transaction(transactionCounter));
 	 	return transactionCounter;
 	}
@@ -80,6 +81,7 @@ public class TransactionManager
 	public void startDetector() {
 		CD.start();
 	}
+
 	public void enlist(int id, ResourceManager rm) {
 		Transaction transaction = transactions.get(id);
 		transaction.add(rm);
