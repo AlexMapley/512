@@ -1,0 +1,20 @@
+
+Successful
+Connected to RM at [lab1-3]
+
+
+Client Interface: !@ <( 'o')> <('O' )> @! 
+Type "help" for list of supported commands
+
+>
+Starting Transaction 18
+
+Adding a new Flight using id: 10
+Flight number: 10
+Add Flight Seats: 3
+Set Flight Price: 4
+Flight added
+Attempting to Commit Transaction 18
+Transaction 18 Committed Successfully
+
+>
