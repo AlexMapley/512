@@ -1,5 +1,4 @@
 import ResInterface.*;
-import TransImpl.*;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
