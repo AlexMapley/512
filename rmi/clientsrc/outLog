@@ -1,0 +1,575 @@
+
+Successful
+Connected to RM at [lab2-3]
+
+
+Client Interface: !@ <( 'o')> <('O' )> @! 
+Type "help" for list of supported commands
+
+>
+Starting Transaction 17
+
+Adding a new Flight using id: 17
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+Flight added
+Attempting to Commit Transaction 17
+Transaction 17 Committed Successfully
+
+>
+Starting Transaction 18
+
+Adding a new Flight using id: 18
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+Flight added
+Attempting to Commit Transaction 18
+Transaction 18 Committed Successfully
+
+>
+Starting Transaction 19
+
+Adding a new Flight using id: 19
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+Flight added
+Attempting to Commit Transaction 19
+Transaction 19 Committed Successfully
+
+>
+Starting Transaction 20
+
+Adding a new Flight using id: 20
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+Flight added
+Attempting to Commit Transaction 20
+Transaction 20 Committed Successfully
+
+>
+Starting Transaction 21
+
+Adding a new Flight using id: 21
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+Flight added
+Attempting to Commit Transaction 21
+Transaction 21 Committed Successfully
+
+>
+Starting Transaction 22
+
+Adding a new Flight using id: 22
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+Flight added
+Attempting to Commit Transaction 22
+Transaction 22 Committed Successfully
+
+>
+Starting Transaction 23
+
+Adding a new Flight using id: 23
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+Flight added
+Attempting to Commit Transaction 23
+Transaction 23 Committed Successfully
+
+>
+Starting Transaction 24
+
+Adding a new Flight using id: 24
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+Flight added
+Attempting to Commit Transaction 24
+Transaction 24 Committed Successfully
+
+>
+Starting Transaction 25
+
+Adding a new Flight using id: 25
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+Flight added
+Attempting to Commit Transaction 25
+Transaction 25 Committed Successfully
+
+>
+Starting Transaction 26
+
+Adding a new Flight using id: 26
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+Flight added
+Attempting to Commit Transaction 26
+Transaction 26 Committed Successfully
+
+>
+Starting Transaction 27
+
+Adding a new Flight using id: 27
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+Flight added
+Attempting to Commit Transaction 27
+Transaction 27 Committed Successfully
+
+>
+Starting Transaction 28
+
+Adding a new Flight using id: 28
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+Flight added
+Attempting to Commit Transaction 28
+Transaction 28 Committed Successfully
+
+>
+Starting Transaction 29
+
+Adding a new Flight using id: 29
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+Flight added
+Attempting to Commit Transaction 29
+Transaction 29 Committed Successfully
+
+>
+Starting Transaction 30
+
+Adding a new Flight using id: 30
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+Flight added
+Attempting to Commit Transaction 30
+Transaction 30 Committed Successfully
+
+>
+Starting Transaction 31
+
+Adding a new Flight using id: 31
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+Flight added
+Transaction: 31 commit error TransImpl.TransactionAbortedException: The transaction 31 is aborted:RM commit encountered an error and needs to abort
+Attempting to abort
+
+>
+Starting Transaction 32
+
+Adding a new Flight using id: 32
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+Flight added
+Transaction: 32 commit error TransImpl.TransactionAbortedException: The transaction 32 is aborted:RM commit encountered an error and needs to abort
+Attempting to abort
+
+>
+Starting Transaction 33
+
+Adding a new Flight using id: 33
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+Flight added
+Transaction: 33 commit error TransImpl.TransactionAbortedException: The transaction 33 is aborted:RM commit encountered an error and needs to abort
+Attempting to abort
+
+>
+Starting Transaction 34
+
+Adding a new Flight using id: 34
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+Flight added
+Transaction: 34 commit error TransImpl.TransactionAbortedException: The transaction 34 is aborted:RM commit encountered an error and needs to abort
+Attempting to abort
+
+>
+Starting Transaction 35
+
+Adding a new Flight using id: 35
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+Flight added
+Transaction: 35 commit error TransImpl.TransactionAbortedException: The transaction 35 is aborted:RM commit encountered an error and needs to abort
+Attempting to abort
+
+>
+Starting Transaction 36
+
+Adding a new Flight using id: 36
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+Flight added
+Transaction: 36 commit error TransImpl.TransactionAbortedException: The transaction 36 is aborted:RM commit encountered an error and needs to abort
+Attempting to abort
+
+>
+Starting Transaction 37
+
+Adding a new Flight using id: 37
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+Flight added
+Transaction: 37 commit error TransImpl.TransactionAbortedException: The transaction 37 is aborted:RM commit encountered an error and needs to abort
+Attempting to abort
+
+>
+Starting Transaction 38
+
+Adding a new Flight using id: 38
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+Flight added
+Transaction: 38 commit error TransImpl.TransactionAbortedException: The transaction 38 is aborted:RM commit encountered an error and needs to abort
+Attempting to abort
+
+>
+Starting Transaction 39
+
+Adding a new Flight using id: 39
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+Flight added
+Transaction: 39 commit error TransImpl.TransactionAbortedException: The transaction 39 is aborted:RM commit encountered an error and needs to abort
+Attempting to abort
+
+>
+Starting Transaction 40
+
+Adding a new Flight using id: 40
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+Flight added
+Transaction: 40 commit error TransImpl.TransactionAbortedException: The transaction 40 is aborted:RM commit encountered an error and needs to abort
+Attempting to abort
+
+>
+Starting Transaction 41
+
+Adding a new Flight using id: 41
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+Flight added
+Transaction: 41 commit error TransImpl.TransactionAbortedException: The transaction 41 is aborted:RM commit encountered an error and needs to abort
+Attempting to abort
+
+>
+Starting Transaction 42
+
+Adding a new Flight using id: 42
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+Flight added
+Transaction: 42 commit error TransImpl.TransactionAbortedException: The transaction 42 is aborted:RM commit encountered an error and needs to abort
+Attempting to abort
+
+>EXCEPTION:
+Adding a new Flight using id: 0
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+EXCEPTION:
+Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Transaction: 0 commit error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Attempting to abort
+Transaction error: 0 abort error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+
+>EXCEPTION:
+Adding a new Flight using id: 0
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+EXCEPTION:
+Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Transaction: 0 commit error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Attempting to abort
+Transaction error: 0 abort error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+
+>EXCEPTION:
+Adding a new Flight using id: 0
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+EXCEPTION:
+Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Transaction: 0 commit error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Attempting to abort
+Transaction error: 0 abort error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+
+>EXCEPTION:
+Adding a new Flight using id: 0
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+EXCEPTION:
+Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Transaction: 0 commit error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Attempting to abort
+Transaction error: 0 abort error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+
+>EXCEPTION:
+Adding a new Flight using id: 0
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+EXCEPTION:
+Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Transaction: 0 commit error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Attempting to abort
+Transaction error: 0 abort error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+
+>EXCEPTION:
+Adding a new Flight using id: 0
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+EXCEPTION:
+Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Transaction: 0 commit error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Attempting to abort
+Transaction error: 0 abort error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+
+>EXCEPTION:
+Adding a new Flight using id: 0
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+EXCEPTION:
+Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Transaction: 0 commit error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Attempting to abort
+Transaction error: 0 abort error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+
+>EXCEPTION:
+Adding a new Flight using id: 0
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+EXCEPTION:
+Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Transaction: 0 commit error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Attempting to abort
+Transaction error: 0 abort error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+
+>EXCEPTION:
+Adding a new Flight using id: 0
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+EXCEPTION:
+Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Transaction: 0 commit error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Attempting to abort
+Transaction error: 0 abort error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+
+>EXCEPTION:
+Adding a new Flight using id: 0
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+EXCEPTION:
+Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Transaction: 0 commit error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Attempting to abort
+Transaction error: 0 abort error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+
+>EXCEPTION:
+Adding a new Flight using id: 0
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+EXCEPTION:
+Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Transaction: 0 commit error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Attempting to abort
+Transaction error: 0 abort error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+
+>EXCEPTION:
+Adding a new Flight using id: 0
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+EXCEPTION:
+Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Transaction: 0 commit error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Attempting to abort
+Transaction error: 0 abort error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+
+>EXCEPTION:
+Adding a new Flight using id: 0
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+EXCEPTION:
+Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Transaction: 0 commit error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Attempting to abort
+Transaction error: 0 abort error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+
+>EXCEPTION:
+Adding a new Flight using id: 0
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+EXCEPTION:
+Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Transaction: 0 commit error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Attempting to abort
+Transaction error: 0 abort error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+
+>EXCEPTION:
+Adding a new Flight using id: 0
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+EXCEPTION:
+Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Transaction: 0 commit error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Attempting to abort
+Transaction error: 0 abort error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+
+>EXCEPTION:
+Adding a new Flight using id: 0
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+EXCEPTION:
+Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Transaction: 0 commit error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Attempting to abort
+Transaction error: 0 abort error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+
+>EXCEPTION:
+Adding a new Flight using id: 0
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+EXCEPTION:
+Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Transaction: 0 commit error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Attempting to abort
+Transaction error: 0 abort error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+
+>EXCEPTION:
+Adding a new Flight using id: 0
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+EXCEPTION:
+Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Transaction: 0 commit error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Attempting to abort
+Transaction error: 0 abort error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+
+>EXCEPTION:
+Adding a new Flight using id: 0
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+EXCEPTION:
+Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Transaction: 0 commit error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Attempting to abort
+Transaction error: 0 abort error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+
+>EXCEPTION:
+Adding a new Flight using id: 0
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+EXCEPTION:
+Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Transaction: 0 commit error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+Attempting to abort
+Transaction error: 0 abort error java.rmi.ConnectException: Connection refused to host: 132.206.54.113; nested exception is: 
+	java.net.ConnectException: Connection refused (Connection refused)
+
+>

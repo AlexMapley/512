@@ -98,6 +98,7 @@ public class client
 			transactionId = rm.start(0);
 
 			System.out.println("\nStarting Transaction " + transactionId + "\n");
+			System.out.println("\nCommand is: " + command + "\n");
 		} catch(Exception e){
 			System.out.println("EXCEPTION:");
 		}
@@ -887,6 +888,7 @@ public class client
 			break;
 
 		default:
+		System.out.println("\n\n\nLOL");
 		System.out.println(command);
 		System.out.println("The interface does not support this command.");
 		break;

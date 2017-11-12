@@ -69,7 +69,7 @@ public class LockManager
                             this.lockTable.remove(dataObjread);
 
 
-                        } 
+                        }
                         // a lock request that is not lock conversion
                         this.lockTable.add(trxnObj);
                         this.lockTable.add(dataObj);

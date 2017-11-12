@@ -17,7 +17,7 @@ public class CrashDetection extends Thread
 	public void run() {
 		while(true) {
 			for (Transaction transaction : host.transactions.values()) {
-				if(transaction == null) 
+				if(transaction == null)
 					break;
  				if(transaction.status == 0) {
  					continue;
