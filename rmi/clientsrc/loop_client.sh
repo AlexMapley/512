@@ -27,20 +27,23 @@ for i in `seq 1 10`;
   do
   value="newflight,$i,$i,3,4"
   echo $value > inPipe
-  while true
+  break=0
+  while [[ $break -eq 0 ]]
   do
-    sleep 0.1s
-    echo `tail -1 outLog`
+    sleep 0.5
     if [[ `tail -1 outLog` = ">" ]]; then
+      sleep 0.5
       tail -9 outLog
+      break=1
       break
     fi
   done
-  sleep 0.5s
+
 done
 
 # Cleanup
 # Kill client process
 kill -9 $processId
 rm outLog
-rm .nfs*
+rm inPipe
+kill -9 $(lsof +D `pwd` | awk '!/bash/' | awk '!/lsof/' | awk '{print $2}')
