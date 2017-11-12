@@ -45,3 +45,5 @@ done
 
 # Kill client process
 kill -9 $processId
+
+rm outLog
