@@ -6,7 +6,7 @@ import java.util.*;
 
 public class TransactionManager
 {
-	private int transactionCounter;
+	private static volatile int transactionCounter;
 
 	// Hashmap of ongoing transactions, compared to key value
 	public static HashMap<Integer, Transaction> transactions = new HashMap<Integer, Transaction>();

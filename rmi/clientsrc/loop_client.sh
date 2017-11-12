@@ -13,7 +13,7 @@ javac client.java
 # RM to target
 keyword="flight"  #default
 keyword=$2
-kewyword="new"$keyword
+keyword="newflight"
 
 # Create stdin pipe
 rm inPipe
@@ -25,13 +25,14 @@ tail -f inPipe | java -Djava.security.policy=java.policy client $1 > outLog &
 processId=$!
 
 # Feeds client-pipe commands in timed loop
-for i in `seq 1 50`;
+for i in `seq 1 1000`;
   do
-  if [[ $kewyord == "newflight "]]; then
-    value="$keyword,$i,$i,3,4"
-  else
-    value="$keyword,mtl$i,3,4"
-  fi
+  # if [[ $kewyord == "newflight" ]]; then
+  #   value="$keyword,$i,$i,3,4"
+  # else
+  #   value="$keyword,1,mtl$i,3,4"
+  # fi
+  value="$keyword,0,1,3,4"
   echo $value > inPipe
   break=0
   while [[ $break -eq 0 ]]
