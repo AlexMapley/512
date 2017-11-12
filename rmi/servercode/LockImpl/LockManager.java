@@ -66,8 +66,8 @@ public class LockManager
                             // *** ADD CODE HERE *** to carry out the lock conversion in the
                             // lock table
                             XObj temp = new XObj(xid);
-                            ((TrxnObj) this.lockTable.get(temp)).setLockType(TrxnObj.WRITE);
                             System.out.println(this.lockTable.allElements());
+                            ((TrxnObj) this.lockTable.get(temp)).setLockType(TrxnObj.WRITE);
 
                             // WHAT TO DO WITH DATAOBJ IN LOCKTABLE
 
