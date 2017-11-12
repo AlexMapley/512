@@ -23,27 +23,27 @@ tail -f inPipe | java -Djava.security.policy=java.policy client $1 > outLog &
 processId=$!
 
 # Feeds client-pipe commands in timed loop
-for i in `seq 10 13`;
+for i in `seq 1 10`;
   do
-  echo $i
   value="newflight,$i,$i,3,4"
-  echo $value
   echo $value > inPipe
-  while true
-  do>
-    sleep 0.5s
-    tail -1 outLog
-    echo `tail -1 outLog`
-    if [[ `tail -1 outLog` == ">" ]]; then
-      tail -1 outLog
-      echo > outLog
+  break=0
+  while [[ $break -eq 0 ]]
+  do
+    sleep 0.5
+    if [[ `tail -1 outLog` = ">" ]]; then
+      sleep 0.5
+      tail -9 outLog
+      break=1
       break
     fi
   done
-  sleep 1s
+
 done
 
+# Cleanup
 # Kill client process
 kill -9 $processId
-
 rm outLog
+rm inPipe
+kill -9 $(lsof +D `pwd` | awk '!/bash/' | awk '!/lsof/' | awk '{print $2}')

@@ -5,7 +5,7 @@ import java.util.*;
 
 public class Transaction
 {
-	public static final int TIME2LIVE = 10000; // 10s in ms
+	public static final int TIME2LIVE = 1000; // 10s in ms
 	public int id;
 	public Set<ResourceManager> activeRMs;
 	public int status; // 0 for active, 1 for finished

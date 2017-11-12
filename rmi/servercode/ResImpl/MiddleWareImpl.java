@@ -155,7 +155,6 @@ public class MiddleWareImpl implements ResourceManager
         } else {
             cust.reserve( key, location, item.getPrice());
             writeData( id, cust.getKey(), cust );
-
             // decrease the number of available items in the storage
             item.setCount(item.getCount() - 1);
             item.setReserved(item.getReserved()+1);
@@ -557,7 +556,7 @@ public class MiddleWareImpl implements ResourceManager
 
     /* Fleshing out these methods a bit
     just to help facilitate Client->MW->TM->MW->Client communication */
-    public int start(int transactionId) throws RemoteException {      
+    public int start(int transactionId) throws RemoteException {
         return TM.start();
     }
 
