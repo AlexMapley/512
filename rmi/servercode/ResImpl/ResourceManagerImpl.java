@@ -61,45 +61,42 @@ public class ResourceManagerImpl implements ResourceManager
 
 
     // Reads a data item
-    private RMItem readData( int id, String key )
+    private RMItem readData( int id, String key ) throws TransactionAbortedException
     {
         try {
             LM.Lock(id, key, LM.READ);
             return (RMItem) m_itemHT.get(key);
         } catch (DeadlockException e) {
-            // abort and throw Transaction aborted exeption
+            throw new TransactionAbortedException(id, "Deadlock occured during transaction: " + id);
         }
-
-        return null;
     }
 
     // Writes a data item
-    private void writeData( int id, String key, RMItem value ) throws RemoteException
+    private void writeData( int id, String key, RMItem value ) throws TransactionAbortedException
     {
         try {
             LM.Lock(id, key, LM.WRITE);
             m_itemHT.put(key, value);
         } catch (DeadlockException e) {
-            // abort and throw Transaction aborted exeption
+            throw new TransactionAbortedException(id, "Deadlock occured during transaction: " + id);
         }
 
     }
 
     // Remove the item out of storage
-    protected RMItem removeData(int id, String key) throws RemoteException
+    protected RMItem removeData(int id, String key) throws TransactionAbortedException
     {
         try {
             LM.Lock(id, key, LM.WRITE);
             return (RMItem)m_itemHT.remove(key);
         } catch (DeadlockException e) {
-            // abort and throw Transaction aborted exeption
+            throw new TransactionAbortedException(id, "Deadlock occured during transaction: " + id);
         }
-        return null;
     }
 
 
     // deletes the entire item
-    protected boolean deleteItem(int id, String key) throws RemoteException
+    protected boolean deleteItem(int id, String key) throws TransactionAbortedException
     {
         Trace.info("RM::deleteItem(" + id + ", " + key + ") called" );
         ReservableItem curObj = (ReservableItem) readData( id, key );
@@ -122,7 +119,7 @@ public class ResourceManagerImpl implements ResourceManager
 
 
     // query the number of available seats/rooms/cars
-    protected int queryNum(int id, String key) {
+    protected int queryNum(int id, String key) throws TransactionAbortedException {
         Trace.info("RM::queryNum(" + id + ", " + key + ") called" );
         ReservableItem curObj = (ReservableItem) readData( id, key);
         int value = 0;
@@ -134,7 +131,7 @@ public class ResourceManagerImpl implements ResourceManager
     }
 
     // query the price of an item
-    protected int queryPrice(int id, String key) {
+    protected int queryPrice(int id, String key) throws TransactionAbortedException {
         Trace.info("RM::queryCarsPrice(" + id + ", " + key + ") called" );
         ReservableItem curObj = (ReservableItem) readData( id, key);
         int value = 0;
@@ -146,7 +143,7 @@ public class ResourceManagerImpl implements ResourceManager
     }
 
     // reserve an item
-    protected boolean reserveItem(int id, int customerID, String key, String location) throws RemoteException {
+    protected boolean reserveItem(int id, int customerID, String key, String location) throws TransactionAbortedException {
         Trace.info("RM::reserveItem( " + id + ", customer=" + customerID + ", " +key+ ", "+location+" ) called" );
         // Read customer object if it exists (and read lock it)
         Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
@@ -179,7 +176,7 @@ public class ResourceManagerImpl implements ResourceManager
     // Create a new flight, or add seats to existing flight
     //  NOTE: if flightPrice <= 0 and the flight already exists, it maintains its current price
     public boolean addFlight(int id, int flightNum, int flightSeats, int flightPrice)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         Trace.info("RM::addFlight(" + id + ", " + flightNum + ", $" + flightPrice + ", " + flightSeats + ") called" );
         Flight curObj = (Flight) readData( id, Flight.getKey(flightNum) );
@@ -204,7 +201,7 @@ public class ResourceManagerImpl implements ResourceManager
 
 
     public boolean deleteFlight(int id, int flightNum)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         return deleteItem(id, Flight.getKey(flightNum));
     }
@@ -214,7 +211,7 @@ public class ResourceManagerImpl implements ResourceManager
     // Create a new room location or add rooms to an existing location
     //  NOTE: if price <= 0 and the room location already exists, it maintains its current price
     public boolean addRooms(int id, String location, int count, int price)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         Trace.info("RM::addRooms(" + id + ", " + location + ", " + count + ", $" + price + ") called" );
         Hotel curObj = (Hotel) readData( id, Hotel.getKey(location) );
@@ -237,7 +234,7 @@ public class ResourceManagerImpl implements ResourceManager
 
     // Delete rooms from a location
     public boolean deleteRooms(int id, String location)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         return deleteItem(id, Hotel.getKey(location));
 
@@ -246,7 +243,7 @@ public class ResourceManagerImpl implements ResourceManager
     // Create a new car location or add cars to an existing location
     //  NOTE: if price <= 0 and the location already exists, it maintains its current price
     public boolean addCars(int id, String location, int count, int price)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         Trace.info("RM::addCars(" + id + ", " + location + ", " + count + ", $" + price + ") called" );
         Car curObj = (Car) readData( id, Car.getKey(location) );
@@ -270,7 +267,7 @@ public class ResourceManagerImpl implements ResourceManager
 
     // Delete cars from a location
     public boolean deleteCars(int id, String location)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         return deleteItem(id, Car.getKey(location));
     }
@@ -279,7 +276,7 @@ public class ResourceManagerImpl implements ResourceManager
 
     // Returns the number of empty seats on this flight
     public int queryFlight(int id, int flightNum)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         return queryNum(id, Flight.getKey(flightNum));
     }
@@ -300,7 +297,7 @@ public class ResourceManagerImpl implements ResourceManager
 
     // Returns price of this flight
     public int queryFlightPrice(int id, int flightNum )
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         return queryPrice(id, Flight.getKey(flightNum));
     }
@@ -308,7 +305,7 @@ public class ResourceManagerImpl implements ResourceManager
 
     // Returns the number of rooms available at a location
     public int queryRooms(int id, String location)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         return queryNum(id, Hotel.getKey(location));
     }
@@ -318,7 +315,7 @@ public class ResourceManagerImpl implements ResourceManager
 
     // Returns room price at this location
     public int queryRoomsPrice(int id, String location)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         return queryPrice(id, Hotel.getKey(location));
     }
@@ -326,7 +323,7 @@ public class ResourceManagerImpl implements ResourceManager
 
     // Returns the number of cars available at a location
     public int queryCars(int id, String location)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         return queryNum(id, Car.getKey(location));
     }
@@ -334,7 +331,7 @@ public class ResourceManagerImpl implements ResourceManager
 
     // Returns price of cars at this location
     public int queryCarsPrice(int id, String location)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         return queryPrice(id, Car.getKey(location));
     }
@@ -343,7 +340,7 @@ public class ResourceManagerImpl implements ResourceManager
     //  customer doesn't exist. Returns empty RMHashtable if customer exists but has no
     //  reservations.
     public RMHashtable getCustomerReservations(int id, int customerID)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         Trace.info("RM::getCustomerReservations(" + id + ", " + customerID + ") called" );
         Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
@@ -357,7 +354,7 @@ public class ResourceManagerImpl implements ResourceManager
 
     // return a bill
     public String queryCustomerInfo(int id, int customerID)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         Trace.info("RM::queryCustomerInfo(" + id + ", " + customerID + ") called" );
         Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
@@ -376,7 +373,7 @@ public class ResourceManagerImpl implements ResourceManager
     // new customer just returns a unique customer identifier
 
     public int newCustomer(int id)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         Trace.info("INFO: RM::newCustomer(" + id + ") called" );
         // Generate a globally unique ID for the new customer
@@ -391,7 +388,7 @@ public class ResourceManagerImpl implements ResourceManager
 
     // I opted to pass in customerID instead. This makes testing easier
     public boolean newCustomer(int id, int customerID )
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         Trace.info("INFO: RM::newCustomer(" + id + ", " + customerID + ") called" );
         Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
@@ -409,7 +406,7 @@ public class ResourceManagerImpl implements ResourceManager
 
     // Deletes customer from the database.
     public boolean deleteCustomer(int id, int customerID)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         Trace.info("RM::deleteCustomer(" + id + ", " + customerID + ") called" );
         Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
@@ -460,7 +457,7 @@ public class ResourceManagerImpl implements ResourceManager
 
     // Adds car reservation to this customer.
     public boolean reserveCar(int id, int customerID, String location)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         return reserveItem(id, customerID, Car.getKey(location), location);
     }
@@ -468,20 +465,20 @@ public class ResourceManagerImpl implements ResourceManager
 
     // Adds room reservation to this customer.
     public boolean reserveRoom(int id, int customerID, String location)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         return reserveItem(id, customerID, Hotel.getKey(location), location);
     }
     // Adds flight reservation to this customer.
     public boolean reserveFlight(int id, int customerID, int flightNum)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         return reserveItem(id, customerID, Flight.getKey(flightNum), String.valueOf(flightNum));
     }
 
     // Reserve an itinerary
     public boolean itinerary(int id,int customer,Vector<Integer> flightNumbers,String location,boolean Car,boolean Room)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         return false;
     }
@@ -496,7 +493,8 @@ public class ResourceManagerImpl implements ResourceManager
         // Release transaction locks
         if(LM.UnlockAll(transactionId))
             return true;
-        return false;
+        
+        throw new TransactionAbortedException(transactionId, "Error during commit on transaction: " + transactionId);
     }
 
     public void abort(int transactionId) throws RemoteException, InvalidTransactionException, TransactionAbortedException {

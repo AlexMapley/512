@@ -62,22 +62,17 @@ public class LockManager
                         }
 
                         if (bConvert.get(0) == true) {
-                            // lock conversion
-                            // *** ADD CODE HERE *** to carry out the lock conversion in the
-                            // lock table
-                            XObj temp = new XObj(xid);
-                            System.out.println(this.lockTable.allElements());
-                            ((TrxnObj) this.lockTable.get(temp)).setLockType(TrxnObj.WRITE);
+                            // Remove objects and always add them later
+                            TrxnObj trxnObjread = new TrxnObj(xid, strData, TrxnObj.READ);
+                            DataObj dataObjread = new DataObj(xid, strData, DataObj.READ);
+                            this.lockTable.remove(trxnObjread);
+                            this.lockTable.remove(dataObjread);
 
-                            // WHAT TO DO WITH DATAOBJ IN LOCKTABLE
 
-                        } else {
-                            // a lock request that is not lock conversion
-                            this.lockTable.add(trxnObj);
-
-                            //Fuck you DataObject
-                            this.lockTable.add(dataObj);
-                        }
+                        } 
+                        // a lock request that is not lock conversion
+                        this.lockTable.add(trxnObj);
+                        this.lockTable.add(dataObj);
                     }
                 }
                 if (bConflict) {
