@@ -167,7 +167,7 @@ public class MiddleWareImpl implements ResourceManager
     //  Create a new flight, or add seats to existing flight
     //  NOTE: if flightPrice <= 0 and the flight already exists, it maintains its current price
     public boolean addFlight(int id, int flightNum, int flightSeats, int flightPrice)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         TM.enlist(id, FlightRM);
         Trace.info("RM::addFlight(" + id + ", " + flightNum + ", $" + flightPrice + ", " + flightSeats + ") called" );
@@ -191,7 +191,7 @@ public class MiddleWareImpl implements ResourceManager
     }
 
     public boolean deleteFlight(int id, int flightNum)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         TM.enlist(id, FlightRM);
         return FlightRM.deleteFlight(id, flightNum);
@@ -201,7 +201,7 @@ public class MiddleWareImpl implements ResourceManager
     // Create a new room location or add rooms to an existing location
     //  NOTE: if price <= 0 and the room location already exists, it maintains its current price
     public boolean addRooms(int id, String location, int count, int price)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         TM.enlist(id, HotelRM);
         Trace.info("RM::addRooms(" + id + ", " + location + ", " + count + ", $" + price + ") called" );
@@ -224,7 +224,7 @@ public class MiddleWareImpl implements ResourceManager
 
     // Delete rooms from a location
     public boolean deleteRooms(int id, String location)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         TM.enlist(id, HotelRM);
         return HotelRM.deleteRooms(id, location);
@@ -235,7 +235,7 @@ public class MiddleWareImpl implements ResourceManager
     // Create a new car location or add cars to an existing location
     //  NOTE: if price <= 0 and the location already exists, it maintains its current price
     public boolean addCars(int id, String location, int count, int price)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         TM.enlist(id, CarRM);
         try {
@@ -258,7 +258,7 @@ public class MiddleWareImpl implements ResourceManager
 
     // Delete cars from a location
     public boolean deleteCars(int id, String location)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         TM.enlist(id, CarRM);
         return CarRM.deleteCars(id, location);
@@ -269,7 +269,7 @@ public class MiddleWareImpl implements ResourceManager
 
     // Returns the number of empty seats on this flight
     public int queryFlight(int id, int flightNum)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         TM.enlist(id, FlightRM);
         return FlightRM.queryFlight(id,flightNum);
@@ -292,7 +292,7 @@ public class MiddleWareImpl implements ResourceManager
 
     // Returns price of this flight
     public int queryFlightPrice(int id, int flightNum )
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         TM.enlist(id, FlightRM);
         return FlightRM.queryFlightPrice(id, flightNum);
@@ -302,7 +302,7 @@ public class MiddleWareImpl implements ResourceManager
 
     // Returns the number of rooms available at a location
     public int queryRooms(int id, String location)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         TM.enlist(id, HotelRM);
         return HotelRM.queryRooms(id, location);
@@ -311,7 +311,7 @@ public class MiddleWareImpl implements ResourceManager
 
     // Returns room price at this location
     public int queryRoomsPrice(int id, String location)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         TM.enlist(id, HotelRM);
         return HotelRM.queryRoomsPrice(id, location);
@@ -321,7 +321,7 @@ public class MiddleWareImpl implements ResourceManager
 
     // Returns the number of cars available at a location
     public int queryCars(int id, String location)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         TM.enlist(id, CarRM);
         return CarRM.queryCars(id, location);
@@ -331,7 +331,7 @@ public class MiddleWareImpl implements ResourceManager
 
     // Returns price of cars at this location
     public int queryCarsPrice(int id, String location)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         TM.enlist(id, CarRM);
         return CarRM.queryCarsPrice(id, location);
@@ -342,7 +342,7 @@ public class MiddleWareImpl implements ResourceManager
     //  customer doesn't exist. Returns empty RMHashtable if customer exists but has no
     //  reservations.
     public RMHashtable getCustomerReservations(int id, int customerID)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         Trace.info("RM::getCustomerReservations(" + id + ", " + customerID + ") called" );
         Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
@@ -356,7 +356,7 @@ public class MiddleWareImpl implements ResourceManager
 
     // return a bill
     public String queryCustomerInfo(int id, int customerID)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         TM.enlist(id, CarRM);
         TM.enlist(id, FlightRM);
@@ -383,7 +383,7 @@ public class MiddleWareImpl implements ResourceManager
     // new customer just returns a unique customer identifier
 
     public int newCustomer(int id)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         TM.enlist(id, CarRM);
         TM.enlist(id, FlightRM);
@@ -413,7 +413,7 @@ public class MiddleWareImpl implements ResourceManager
 
     // I opted to pass in customerID instead. This makes testing easier
     public boolean newCustomer(int id, int customerID )
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         TM.enlist(id, CarRM);
         TM.enlist(id, FlightRM);
@@ -447,7 +447,7 @@ public class MiddleWareImpl implements ResourceManager
 
     // Deletes customer from the database.
     public boolean deleteCustomer(int id, int customerID)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         TM.enlist(id, CarRM);
         TM.enlist(id, FlightRM);
@@ -491,7 +491,7 @@ public class MiddleWareImpl implements ResourceManager
 
     // Adds car reservation to this customer.
     public boolean reserveCar(int id, int customerID, String location)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         TM.enlist(id, CarRM);
         return CarRM.reserveCar(id, customerID, location);
@@ -501,7 +501,7 @@ public class MiddleWareImpl implements ResourceManager
 
     // Adds room reservation to this customer.
     public boolean reserveRoom(int id, int customerID, String location)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         TM.enlist(id, HotelRM);
         return HotelRM.reserveRoom(id, customerID, location);
@@ -510,7 +510,7 @@ public class MiddleWareImpl implements ResourceManager
 
     // Adds flight reservation to this customer.
     public boolean reserveFlight(int id, int customerID, int flightNum)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         TM.enlist(id, FlightRM);
         return FlightRM.reserveFlight(id, customerID, flightNum);
@@ -519,7 +519,7 @@ public class MiddleWareImpl implements ResourceManager
 
     // Reserve an itinerary
     public boolean itinerary(int id,int customer,Vector<Integer> flightNumbers,String location,boolean Car,boolean Room)
-        throws RemoteException
+        throws RemoteException, TransactionAbortedException
     {
         Trace.info("RM::itinerary(" + id + ", " + customer + ") called" );
         boolean success = true;
