@@ -1,17 +1,19 @@
 #!/bin/bash
 # Export classfile
 export CLASSPATH=`pwd`:`pwd`/../servercode/ResInterface.jar
-echo $CLASSPATH
+
+# Usage
+echo "arg1 is MiddleWare lab station"
+echo "arg2 is either flight/car/room, for the target RM"
 
 
 # Compiling client
 javac client.java
 
-
-
-
-# Expect variable
-keyword="Flight"
+# RM to target
+keyword="flight"  #default
+keyword=$2
+kewyword="new"$keyword
 
 # Create stdin pipe
 rm inPipe
@@ -23,9 +25,13 @@ tail -f inPipe | java -Djava.security.policy=java.policy client $1 > outLog &
 processId=$!
 
 # Feeds client-pipe commands in timed loop
-for i in `seq 1 10`;
+for i in `seq 1 50`;
   do
-  value="newflight,$i,$i,3,4"
+  if [[ $kewyord == "newflight "]]; then
+    value="$keyword,$i,$i,3,4"
+  else
+    value="$keyword,mtl$i,3,4"
+  fi
   echo $value > inPipe
   break=0
   while [[ $break -eq 0 ]]
