@@ -6,13 +6,14 @@ export CLASSPATH=`pwd`:`pwd`/../servercode/ResInterface.jar
 echo "arg1 is MiddleWare lab station"
 echo "arg2 is either flight/car/room, for the target RM"
 
-
 # Compiling client
 javac client.java
 
 # RM to target
 keyword="newflight"  #default
 keyword="new"$2
+
+
 
 # Create stdin pipe
 mkfifo inPipe$$
@@ -23,15 +24,11 @@ tail -f inPipe$$ | java -Djava.security.policy=java.policy client $1 > outLog$$ 
 processId=$!
 
 # Feeds client-pipe commands in timed loop
-for i in `seq 1 50`;
+for i in `seq 1 30`;
+
+  # 5.B block
   do
-  if [[ $keyword == "newflight" ]]; then
-    value="$keyword,1,$i,3,4"
-  else
-    value="$keyword,1,mtl,3,4"
-  fi
-  echo $value
-  echo $value > inPipe$$
+  echo "newflight,1,$i,3,4" > inPipe$$
   break=0
   while [[ $break -eq 0 ]]
   do
@@ -43,6 +40,52 @@ for i in `seq 1 50`;
       break
     fi
   done
+  echo "newcar,1,mtl,3,4" > inPipe$$
+  break=0
+  while [[ $break -eq 0 ]]
+  do
+    sleep 0.5s
+    if [[ `tail -1 outLog$$` = ">" ]]; then
+      sleep 0.5s
+      tail -9 outLog$$
+      break=1
+      break
+    fi
+  done
+  echo "newroom,1,mtl,3,4" > inPipe$$
+  break=0
+  while [[ $break -eq 0 ]]
+  do
+    sleep 0.5s
+    if [[ `tail -1 outLog$$` = ">" ]]; then
+      sleep 0.5s
+      tail -9 outLog$$
+      break=1
+      break
+    fi
+  done
+
+
+  # Default
+  # do
+  # if [[ $keyword == "newflight" ]]; then
+  #   value="$keyword,1,$i,3,4"
+  # else
+  #   value="$keyword,1,mtl,3,4"
+  # fi
+  # echo $value
+  # echo $value >
+  # break=0
+  # while [[ $break -eq 0 ]]
+  # do
+  #   sleep 0.5s
+  #   if [[ `tail -1 outLog$$` = ">" ]]; then
+  #     sleep 0.5s
+  #     tail -9 outLog$$
+  #     break=1
+  #     break
+  #   fi
+  # done
 
 done
 
