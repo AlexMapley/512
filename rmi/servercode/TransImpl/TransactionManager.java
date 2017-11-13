@@ -11,8 +11,6 @@ public class TransactionManager
 	// Hashmap of ongoing transactions, compared to key value
 	public static HashMap<Integer, Transaction> transactions = new HashMap<Integer, Transaction>();
 	private CrashDetection CD;
-	public synchronized static Writer metricWriter = null;
-
 
 	//Instantiate with access to MiddleWareImpl
 	public TransactionManager() {

@@ -19,18 +19,22 @@ public class MiddleWareImpl implements ResourceManager
     static ResourceManager CarRM = null;
     static ResourceManager HotelRM = null;
     static ResourceManager FlightRM = null;
-    public synchronized Writer metricWriter;
+    public static Writer metricWriter;
 
     private static TransactionManager TM;
 
     public static void main(String[] args) {
 
         // Performance Metrics file
-        metricWriter = new BufferedWRiter(
-          new OutputStreamWriter(
-            newFileOutputStream("metrics.txt"), "utf-8"
-          )
-        );
+        try {
+          metricWriter = new BufferedWriter(
+            new OutputStreamWriter(
+              new FileOutputStream("metrics.txt"), "utf-8"
+              )
+          );
+        } catch (IOException e) {
+          System.err.println(e.toString());
+        }
 
         int port = 5959;  // hardcoded
         String server = "localhost";  // creates middlware on current machine
@@ -585,8 +589,12 @@ public class MiddleWareImpl implements ResourceManager
 
     public void writeMetric(int transactionId) throws RemoteException {
       Transaction metricTransaction = TM.transactions.get(transactionId);
-      long transactionTime = metricTransaction.gettime() - (new Date()).getTime();
-      metricWriter.append(String.valueOf(transactionTime));
+      long transactionTime = metricTransaction.getTime() - (new Date()).getTime();
+      try {
+        metricWriter.append(String.valueOf(transactionTime));
+      } catch (IOException e) {
+        System.err.println(e.toString());
+      }
     }
 
 }
