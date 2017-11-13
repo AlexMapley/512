@@ -9,6 +9,10 @@ echo "arg2 is either flight/car/room, for the target RM"
 # Compiling client
 javac client.java
 
+# RM to target
+keyword="newflight"  #default
+keyword="new"$2
+
 
 
 # Create stdin pipe
