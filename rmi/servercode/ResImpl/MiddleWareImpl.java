@@ -579,15 +579,12 @@ public class MiddleWareImpl implements ResourceManager
 
     public void writeMetric(int transactionId) throws RemoteException {
       FileWriter metricWriter = null;
-
-      System.out.println("Writing Metric...");
       Transaction metricTransaction = TM.transactions.get(transactionId);
       long transactionTime =  (new Date()).getTime() - metricTransaction.getTime();
 
       try {
         metricWriter = new FileWriter("metrics.txt", true);
-        metricWriter.write("Transaction " + metricTransaction.id + " Time: " + String.valueOf(transactionTime) + "\n");
-        System.out.println("Metric Success!");
+        metricWriter.write("Transaction " + transactionId + " Time: " + String.valueOf(transactionTime) + "\n");
         //metricWriter.flush();
       } catch (IOException e) {
         System.err.println(e.toString());
@@ -598,6 +595,7 @@ public class MiddleWareImpl implements ResourceManager
           e.printStackTrace();
         }
       }
+
     }
 
 }
