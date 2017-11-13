@@ -1,0 +1,64 @@
+
+Successful
+Connected to RM at [lab2-3]
+
+
+Client Interface: !@ <( 'o')> <('O' )> @! 
+Type "help" for list of supported commands
+
+>
+Starting Transaction 1
+
+Adding a new Flight using id: 1
+Flight number: 1
+Add Flight Seats: 3
+Set Flight Price: 4
+Flight added
+Attempting to Commit Transaction 1
+Transaction 1 Committed Successfully
+
+>
+Starting Transaction 2
+
+Adding a new Flight using id: 2
+Flight number: 2
+Add Flight Seats: 3
+Set Flight Price: 4
+Flight added
+Attempting to Commit Transaction 2
+Transaction 2 Committed Successfully
+
+>
+Starting Transaction 3
+
+Adding a new Flight using id: 3
+Flight number: 3
+Add Flight Seats: 3
+Set Flight Price: 4
+Flight added
+Attempting to Commit Transaction 3
+Transaction 3 Committed Successfully
+
+>
+Starting Transaction 4
+
+Adding a new Flight using id: 4
+Flight number: 4
+Add Flight Seats: 3
+Set Flight Price: 4
+Flight added
+Attempting to Commit Transaction 4
+Transaction 4 Committed Successfully
+
+>
+Starting Transaction 5
+
+Adding a new Flight using id: 5
+Flight number: 5
+Add Flight Seats: 3
+Set Flight Price: 4
+Flight added
+Attempting to Commit Transaction 5
+Transaction 5 Committed Successfully
+
+>
