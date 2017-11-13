@@ -657,6 +657,13 @@ public class client
 				}
 			}
 		}
+
+		// Write Metric
+		try {
+			rm.writeMetric(transactionId);
+		} catch(Exception e) {
+			System.out.println("Error writing metric");
+		}
 		}//end of while(true)
 	}
 

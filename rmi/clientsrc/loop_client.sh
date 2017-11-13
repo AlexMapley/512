@@ -16,7 +16,6 @@ keyword="new"$2
 
 # Create stdin pipe
 mkfifo inPipe$$
-ls -la
 
 # Spawns new client with pipe
 # tail -f inPipe | java -Djava.security.policy=java.policy client $1 > outPipe &
@@ -47,11 +46,5 @@ for i in `seq 1 50`;
 
 done
 
-# Cleanup
 # Kill client process
 kill -9 $processId
-rm outLog$$
-rm inPipe$$
-kill -9 $(lsof +D `pwd` | awk '!/bash/' | awk '!/lsof/' | awk '{print $2}')
-kill -9 $(ps -aux | grep ".nfs" | awk '{print $2}')
-rm .nfs*

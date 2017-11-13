@@ -496,7 +496,7 @@ public class ResourceManagerImpl implements ResourceManager
             System.out.println("Transaction: " + transactionId + " Commited");
             return true;
         }
-        
+
         throw new TransactionAbortedException(transactionId, "Error during commit on transaction: " + transactionId);
     }
 
@@ -519,4 +519,7 @@ public class ResourceManagerImpl implements ResourceManager
         transactionImages.clear();
         return true;
     }
+    public void writeMetric(int transactionId) throws RemoteException {
+    }
+    
 }
