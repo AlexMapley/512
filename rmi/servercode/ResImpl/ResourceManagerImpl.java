@@ -493,7 +493,7 @@ public class ResourceManagerImpl implements ResourceManager
         // Release transaction locks
         if(LM.UnlockAll(transactionId))
             return true;
-        
+
         throw new TransactionAbortedException(transactionId, "Error during commit on transaction: " + transactionId);
     }
 
@@ -513,5 +513,8 @@ public class ResourceManagerImpl implements ResourceManager
         LM = new LockManager();
         transactionImages.clear();
         return true;
+    }
+
+    public void writeMetric(int transactionId) throws RemoteException {
     }
 }

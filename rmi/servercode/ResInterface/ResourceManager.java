@@ -145,4 +145,7 @@ public interface ResourceManager extends Remote
     public boolean shutdown()
   throws RemoteException;
 
+    public void writeMetric(int transactionId)
+  throws RemoteException;
+
 }

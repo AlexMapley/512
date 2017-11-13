@@ -19,22 +19,12 @@ public class MiddleWareImpl implements ResourceManager
     static ResourceManager CarRM = null;
     static ResourceManager HotelRM = null;
     static ResourceManager FlightRM = null;
-    public static Writer metricWriter;
+
+    static File metrics = new File("metrics.txt");
 
     private static TransactionManager TM;
 
     public static void main(String[] args) {
-
-        // Performance Metrics file
-        try {
-          metricWriter = new BufferedWriter(
-            new OutputStreamWriter(
-              new FileOutputStream("metrics.txt"), "utf-8"
-              )
-          );
-        } catch (IOException e) {
-          System.err.println(e.toString());
-        }
 
         int port = 5959;  // hardcoded
         String server = "localhost";  // creates middlware on current machine
@@ -588,12 +578,25 @@ public class MiddleWareImpl implements ResourceManager
     }
 
     public void writeMetric(int transactionId) throws RemoteException {
+      FileWriter metricWriter = null;
+
+      System.out.println("Writing Metric...");
       Transaction metricTransaction = TM.transactions.get(transactionId);
-      long transactionTime = metricTransaction.getTime() - (new Date()).getTime();
+      long transactionTime =  (new Date()).getTime() - metricTransaction.getTime();
+
       try {
-        metricWriter.append(String.valueOf(transactionTime));
+        metricWriter = new FileWriter("metrics.txt", true);
+        metricWriter.write("Transaction " + metricTransaction.id + " Time: " + String.valueOf(transactionTime) + "\n");
+        System.out.println("Metric Success!");
+        //metricWriter.flush();
       } catch (IOException e) {
         System.err.println(e.toString());
+      } finally {
+        try {
+          metricWriter.close();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
       }
     }
 
