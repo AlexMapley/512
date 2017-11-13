@@ -18,7 +18,7 @@ public class MiddleWareImpl implements ResourceManager
     static ResourceManager CarRM = null;
     static ResourceManager HotelRM = null;
     static ResourceManager FlightRM = null;
-
+    static ArrayList<ResourceManager> rms;
     private static TransactionManager TM;
 
     public static void main(String[] args) {
@@ -26,7 +26,7 @@ public class MiddleWareImpl implements ResourceManager
         String server = "localhost";  // creates middlware on current machine
 
         // collect inputted RMs
-        ArrayList<ResourceManager> rms = new ArrayList<ResourceManager>();
+        rms = new ArrayList<ResourceManager>();
 
         if (args.length == 3) {
             try
@@ -570,7 +570,25 @@ public class MiddleWareImpl implements ResourceManager
     }
 
     public boolean shutdown() throws RemoteException {
-        return false;
+        Set<ResourceManager> active = TM.checkActive();
+        Set<ResourceManager> shutdown = new HashSet<ResourceManager>(rms);
+        shutdown.removeAll(active);
+
+        if(shutdown.size() != 0) {
+            Iterator<ResourceManager> iterator = shutdown.iterator();
+            while(iterator.hasNext()) {
+                iterator.next().shutdown();
+                System.out.println("Restarting a Resource Manager...");
+            }
+        }
+
+        if(shutdown.size() == 3) {
+            System.out.println("Restarting Middleware...");
+            m_itemHT.clear();
+            TM.restart();
+        }
+
+        return true;
     }
 
 }

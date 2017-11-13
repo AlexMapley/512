@@ -97,6 +97,29 @@ public class TransactionManager
 		rm.start(id);
 	}
 
+	public Set<ResourceManager> checkActive() {
+		Set<ResourceManager> active = new HashSet<ResourceManager>();
+
+		// Iterator<Transaction> transIterator = transactions.iterator();
+		for (Transaction transaction : transactions.values()) {
+			if(transaction.status == 1) {
+				Iterator<ResourceManager> rmIterator = transaction.activeRMs.iterator();
+				while(rmIterator.hasNext()) {
+					active.add(rmIterator.next());
+				}
+			}
+			else
+				continue;
+		}
+		return active;
+	}
+
+	public void restart() {
+		this.transactionCounter = 0;
+		this.transactions.clear();
+		CD = new CrashDetection(this);
+	}
+
 	public int getCounter() {
 		return this.transactionCounter;
 	}

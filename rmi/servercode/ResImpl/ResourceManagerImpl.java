@@ -513,6 +513,7 @@ public class ResourceManagerImpl implements ResourceManager
     }
 
     public boolean shutdown() throws RemoteException {
+        System.out.println("Restarting...");
         m_itemHT.clear();
         LM = new LockManager();
         transactionImages.clear();
