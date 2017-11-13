@@ -7,7 +7,7 @@ import java.lang.*;
 public class CrashDetection extends Thread
 {
 	static TransactionManager host;
-	public static final int sleepTime = 1000; // 1 second in ms
+	public static final int sleepTime = 5000; // 5 second in ms
 
 	public CrashDetection(TransactionManager host) {
 	 	this.host = host;

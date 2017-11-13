@@ -7,4 +7,4 @@ echo $CLASSPATH
 javac client.java
 
 # Run client on either localhost [default] or a target server
-java -Djava.security.policy=java.policy client $1
+java -Djava.security.policy=java.policy client $1 $2

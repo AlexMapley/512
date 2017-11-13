@@ -21,7 +21,7 @@ public class MiddleWareImpl implements ResourceManager
     static ResourceManager FlightRM = null;
     static ArrayList<ResourceManager> rms;
     private static TransactionManager TM;
-    static File metrics = new File("metrics.txt");
+    // static File metrics = new File("metrics.txt");
 
     public static void main(String[] args) {
         int port = 5959;  // hardcoded
@@ -593,24 +593,24 @@ public class MiddleWareImpl implements ResourceManager
         return true;
     }
 
-    public void writeMetric(int transactionId) throws RemoteException {
-       FileWriter metricWriter = null;
-       Transaction metricTransaction = TM.transactions.get(transactionId);
-       long transactionTime =  (new Date()).getTime() - metricTransaction.getTime();
+    // public void writeMetric(int transactionId) throws RemoteException {
+    //    FileWriter metricWriter = null;
+    //    Transaction metricTransaction = TM.transactions.get(transactionId);
+    //    long transactionTime =  (new Date()).getTime() - metricTransaction.getTime();
 
-       try {
-         metricWriter = new FileWriter("metrics.txt", true);
-         metricWriter.write("Transaction " + transactionId + " Time: " + String.valueOf(transactionTime) + "\n");
-         //metricWriter.flush();
-       } catch (IOException e) {
-         System.err.println(e.toString());
-       } finally {
-         try {
-           metricWriter.close();
-         } catch (IOException e) {
-           e.printStackTrace();
-         }
-       }
-    }
+    //    try {
+    //      metricWriter = new FileWriter("metrics.txt", true);
+    //      metricWriter.write("Transaction " + transactionId + " Time: " + String.valueOf(transactionTime) + "\n");
+    //      //metricWriter.flush();
+    //    } catch (IOException e) {
+    //      System.err.println(e.toString());
+    //    } finally {
+    //      try {
+    //        metricWriter.close();
+    //      } catch (IOException e) {
+    //        e.printStackTrace();
+    //      }
+    //    }
+    // }
 
 }
