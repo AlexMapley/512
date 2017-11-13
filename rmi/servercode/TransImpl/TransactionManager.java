@@ -94,7 +94,6 @@ public class TransactionManager
 		Transaction transaction = transactions.get(id);
 		transaction.add(rm);
 		transaction.setTime((new Date()).getTime());
-		System.out.println("got here");
 		rm.start(id);
 	}
 
