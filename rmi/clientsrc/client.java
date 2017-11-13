@@ -33,18 +33,28 @@ public class client
 		String location;
 		boolean help;
 		boolean shutdown;
+		String clientNum;
+		long startTime;
+		long endTime;
 
 
 		String server = "localhost";
 		int port = 5959;
-		if (args.length == 1)
+		// if (args.length == 1)
+		// {
+		// 	server = args[0];
+		// }
+		// if (args.length == 2) {
+		// 	clientNum = args[1];
+		// }
+		if (args.length != 2)
 		{
-			server = args[0];
-		}
-		if (args.length > 1)
-		{
-			System.out.println ("Usage: java client [rmihost]");
+			System.out.println ("Usage: java client [rmihost] [clientnumber]");
 			System.exit(1);
+		}
+		else {
+			server = args[0];
+			clientNum = args[1];
 		}
 
 		try
@@ -92,9 +102,14 @@ public class client
 		//remove heading and trailing white space
 		command=command.trim();
 		arguments=obj.parse(command);
+		
+		//initialize supporting variables
 		help = false;
 		Id = 0;
 		shutdown = false;
+		startTime = -1;
+		endTime = -1;
+		clientNum = "-1";
 
 		//Help
 		if(obj.findChoice((String)arguments.elementAt(0)) == 1) {
@@ -110,9 +125,9 @@ public class client
 		//Start Transaction
 		if(!help) {
 			transactionId = 0;
+			startTime = System.currentTimeMillis();
 			try {
 				transactionId = rm.start(0);
-
 				System.out.println("\nStarting Transaction " + transactionId + "\n");
 			} catch(Exception e){
 				System.out.println("EXCEPTION:");
@@ -656,14 +671,28 @@ public class client
 					System.out.println("Transaction error: " + transactionId + " abort error " + ee);
 				}
 			}
+
+			// Write Metric
+			endTime = System.currentTimeMillis();
+			FileWriter metricWriter = null;
+			long totalTime = endTime - startTime;
+			String filename = "client" + clientNum +".txt";
+			String metrics = "Transaction " + transactionId + " Time: " + String.valueOf(totalTime) + "\n";
+		    try {
+		    	metricWriter = new FileWriter(filename, true);
+		    	metricWriter.write(metrics);
+		     	//metricWriter.flush();
+		   	} catch (IOException e) {
+		     	System.err.println(e.toString());
+		   	} finally {
+		     	try {
+		       		metricWriter.close();
+		     	} catch (IOException e) {
+		      		e.printStackTrace();
+		     }
+		   }
 		}
 
-		// Write Metric
-		try {
-			rm.writeMetric(transactionId);
-		} catch(Exception e) {
-			System.out.println("Error writing metric");
-		}
 		}//end of while(true)
 	}
 

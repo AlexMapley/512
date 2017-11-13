@@ -519,7 +519,8 @@ public class ResourceManagerImpl implements ResourceManager
         transactionImages.clear();
         return true;
     }
-    public void writeMetric(int transactionId) throws RemoteException {
-    }
+
+    // public void writeMetric(int transactionId) throws RemoteException {
+    // }
     
 }

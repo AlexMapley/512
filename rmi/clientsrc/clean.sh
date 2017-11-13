@@ -3,4 +3,4 @@ kill -9 $(ps -aux | grep ".nfs" | awk '{print $2}')
 rm .nfs*
 rm inPipe*
 rm outLog*
-rm ../servercode/metrics.txt
+rm *.txt
