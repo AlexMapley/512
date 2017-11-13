@@ -521,6 +521,9 @@ public class MiddleWareImpl implements ResourceManager
     public boolean itinerary(int id,int customer,Vector<Integer> flightNumbers,String location,boolean Car,boolean Room)
         throws RemoteException, TransactionAbortedException
     {
+        TM.enlist(id, CarRM);
+        TM.enlist(id, FlightRM);
+        TM.enlist(id, HotelRM);
         Trace.info("RM::itinerary(" + id + ", " + customer + ") called" );
         boolean success = true;
         try {
@@ -553,9 +556,6 @@ public class MiddleWareImpl implements ResourceManager
         return success;
     }
 
-
-    /* Fleshing out these methods a bit
-    just to help facilitate Client->MW->TM->MW->Client communication */
     public int start(int transactionId) throws RemoteException {
         return TM.start();
     }

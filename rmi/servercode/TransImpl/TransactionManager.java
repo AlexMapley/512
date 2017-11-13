@@ -2,11 +2,13 @@ package TransImpl;
 
 import ResInterface.*;
 import LockImpl.*;
+
 import java.util.*;
+import java.rmi.RemoteException;
 
 public class TransactionManager
 {
-	private int transactionCounter;
+	private static volatile int transactionCounter;
 
 	// Hashmap of ongoing transactions, compared to key value
 	public static HashMap<Integer, Transaction> transactions = new HashMap<Integer, Transaction>();
@@ -20,12 +22,12 @@ public class TransactionManager
 		System.out.println("Transaction Manager Started...");
 	}
 
-	public int start() {
+	public synchronized int start() {
 		transactionCounter++;
-		System.out.println("Transaction " + transactionCounter + " Started in Manager");
 		synchronized(transactions) {
 	 		transactions.put(transactionCounter, new Transaction(transactionCounter));
 	 	}
+	 	System.out.println("Transaction " + transactionCounter + " Started in Manager");
 	 	return transactionCounter;
 	}
 
@@ -47,8 +49,10 @@ public class TransactionManager
 			else
 				throw new InvalidTransactionException(id, "Transaction not found for abort");
 		}
-		else
+		else {
+			System.out.println("Transaction " + transactionCounter + " Aborted in Manager");
 			return true;
+		}
 	}
 
 	public boolean commit(int id) throws InvalidTransactionException, TransactionAbortedException {
@@ -70,24 +74,28 @@ public class TransactionManager
 				}
 				if (!result)
 					return false;
+				System.out.println("Transaction " + transactionCounter + " Committed in Manager");
 				return true;
 			}
 			else
 				throw new InvalidTransactionException(id, "Transaction not found for commit");
 		}
-		else
+		else {
+			System.out.println("Transaction " + transactionCounter + " Committed in Manager");
 			return true;
+		}
 	}
 
 	public void startDetector() {
 		CD.start();
 	}
 
-	public void enlist(int id, ResourceManager rm) {
+	public void enlist(int id, ResourceManager rm) throws RemoteException, TransactionAbortedException {
 		Transaction transaction = transactions.get(id);
 		transaction.add(rm);
 		transaction.setTime((new Date()).getTime());
-
+		System.out.println("got here");
+		rm.start(id);
 	}
 
 	public int getCounter() {
