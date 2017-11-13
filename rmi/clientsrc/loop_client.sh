@@ -36,9 +36,9 @@ for i in `seq 1 50`;
   break=0
   while [[ $break -eq 0 ]]
   do
-    sleep 0.5
+    sleep 0.5s
     if [[ `tail -1 outLog$$` = ">" ]]; then
-      sleep 0.5
+      sleep 0.5s
       tail -9 outLog$$
       break=1
       break
