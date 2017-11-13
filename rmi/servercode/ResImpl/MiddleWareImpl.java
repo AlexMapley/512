@@ -4,6 +4,7 @@ import ResInterface.*;
 import TransImpl.*;
 
 import java.util.*;
+import java.io.*;
 
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
@@ -18,10 +19,19 @@ public class MiddleWareImpl implements ResourceManager
     static ResourceManager CarRM = null;
     static ResourceManager HotelRM = null;
     static ResourceManager FlightRM = null;
+    public synchronized Writer metricWriter;
 
     private static TransactionManager TM;
 
     public static void main(String[] args) {
+
+        // Performance Metrics file
+        metricWriter = new BufferedWRiter(
+          new OutputStreamWriter(
+            newFileOutputStream("metrics.txt"), "utf-8"
+          )
+        );
+
         int port = 5959;  // hardcoded
         String server = "localhost";  // creates middlware on current machine
 
@@ -571,6 +581,12 @@ public class MiddleWareImpl implements ResourceManager
 
     public boolean shutdown() throws RemoteException {
         return false;
+    }
+
+    public void writeMetric(int transactionId) throws RemoteException {
+      Transaction metricTransaction = TM.transactions.get(transactionId);
+      long transactionTime = metricTransaction.gettime() - (new Date()).getTime();
+      metricWriter.append(String.valueOf(transactionTime));
     }
 
 }
