@@ -25,6 +25,7 @@ public class CrashDetection extends Thread
 	 				}
 	 				long current = (new Date()).getTime();
 	 				if((current - transaction.getTime()) >= transaction.TIME2LIVE) {
+						System.out.println("Transaction: " + transaction.id + " hanging, aborting...");
 						try {
 	 						host.abort(transaction.id);
 						} catch (Exception e) {

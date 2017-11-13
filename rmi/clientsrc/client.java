@@ -31,6 +31,8 @@ public class client
 		int numRooms;
 		int numCars;
 		String location;
+		boolean help;
+		boolean shutdown;
 
 
 		String server = "localhost";
@@ -90,29 +92,45 @@ public class client
 		//remove heading and trailing white space
 		command=command.trim();
 		arguments=obj.parse(command);
+		help = false;
+		Id = 0;
+		shutdown = false;
 
+		//Help
+		if(obj.findChoice((String)arguments.elementAt(0)) == 1) {
+			help = true;
+			if(arguments.size()==1)   //command was "help"
+				  obj.listCommands();
+				else if (arguments.size()==2)  //command was "help <commandname>"
+				  obj.listSpecific((String)arguments.elementAt(1));
+				else  //wrong use of help command
+				  System.out.println("Improper use of help command. Type help or help, <commandname>");
+		}
 
 		//Start Transaction
-		transactionId = 0;
-		try {
-			transactionId = rm.start(0);
+		if(!help) {
+			transactionId = 0;
+			try {
+				transactionId = rm.start(0);
 
-			System.out.println("\nStarting Transaction " + transactionId + "\n");
-		} catch(Exception e){
-			System.out.println("EXCEPTION:");
+				System.out.println("\nStarting Transaction " + transactionId + "\n");
+			} catch(Exception e){
+				System.out.println("EXCEPTION:");
+			}
+			Id = transactionId;
 		}
-		Id = transactionId;
 
 		//decide which of the commands this was
 		switch(obj.findChoice((String)arguments.elementAt(0))){
 		case 1: //help section
-			if(arguments.size()==1)   //command was "help"
-			  obj.listCommands();
-			else if (arguments.size()==2)  //command was "help <commandname>"
-			  obj.listSpecific((String) Integer.toString(Id));
-			else  //wrong use of help command
-			  System.out.println("Improper use of help command. Type help or help, <commandname>");
 			break;
+			// if(arguments.size()==1)   //command was "help"
+			//   obj.listCommands();
+			// else if (arguments.size()==2)  //command was "help <commandname>"
+			//   obj.listSpecific((String) Integer.toString(Id));
+			// else  //wrong use of help command
+			//   System.out.println("Improper use of help command. Type help or help, <commandname>");
+			// break;
 
 		case 2:  //new flight
 			if(arguments.size()!=5){
@@ -598,30 +616,45 @@ public class client
 			}
 			break;
 
+		case 23:
+			shutdown = true;
+			System.out.println("Calling shutdown at Middleware. Will restart if no active transactions");
+			try {
+				rm.shutdown();
+			}
+			catch(Exception e) {
+				System.out.println("EXCEPTION:");
+				System.out.println(e.getMessage());
+				e.printStackTrace();
+			}
+			break;
+
 		default:
 			System.out.println("The interface does not support this command.");
 			break;
 		}//end of switch
 
-		//Commit or Abort Transaction
-		try {
-			boolean commitWorthy = rm.commit(transactionId);
-			System.out.println("Attempting to Commit Transaction " + transactionId);
-			if (commitWorthy) {
-				System.out.println("Transaction " + transactionId + " Committed Successfully");
-			}
-			else {
-				System.out.println("Transaction " + transactionId + " Had nothing to commit");
-			}
-		} catch(Exception e) {
-			System.out.println("Transaction: " + transactionId + " commit error " + e);
-			System.out.println("Attempting to abort");
-			// Because client doesn't have access to the Transaction exceptions
-			// if this was an InvalidTransactionException this next try/catch is redundant
+		if(!(help || shutdown)) {
+			//Commit or Abort Transaction
 			try {
-				rm.abort(transactionId);
-			} catch(Exception ee) {
-				System.out.println("Transaction error: " + transactionId + " abort error " + ee);
+				boolean commitWorthy = rm.commit(transactionId);
+				System.out.println("Attempting to Commit Transaction " + transactionId);
+				if (commitWorthy) {
+					System.out.println("Transaction " + transactionId + " Committed Successfully");
+				}
+				else {
+					System.out.println("Transaction " + transactionId + " Had nothing to commit");
+				}
+			} catch(Exception e) {
+				System.out.println("Transaction: " + transactionId + " commit error " + e);
+				System.out.println("Attempting to abort");
+				// Because client doesn't have access to the Transaction exceptions
+				// if this was an InvalidTransactionException this next try/catch is redundant
+				try {
+					rm.abort(transactionId);
+				} catch(Exception ee) {
+					System.out.println("Transaction error: " + transactionId + " abort error " + ee);
+				}
 			}
 		}
 		}//end of while(true)
@@ -686,6 +719,8 @@ public class client
 		return 21;
 	else if (argument.compareToIgnoreCase("newcustomerid")==0)
 		return 22;
+	else if (argument.compareToIgnoreCase("shutdown")==0)
+		return 23;
 	else
 		return 666;
 
@@ -700,7 +735,7 @@ public class client
 	  System.out.println("deletecustomer\nqueryflight\nquerycar\nqueryroom\nquerycustomer");
 	  System.out.println("queryflightprice\nquerycarprice\nqueryroomprice");
 	  System.out.println("reserveflight\nreservecar\nreserveroom\nitinerary");
-	  System.out.println("nquit");
+	  System.out.println("quit");
 	  System.out.println("\ntype help, <commandname> for detailed info(NOTE the use of comma).");
 	}
 
@@ -884,6 +919,13 @@ public class client
 			System.out.println("\tCreates a new customer with the id provided");
 			System.out.println("\nUsage:");
 			System.out.println("\tnewcustomerid, <id>, <customerid>");
+			break;
+
+		case 23:
+			System.out.println("Call shutdown with no argument");
+			System.out.println("Purpose: Attempts to restart middleware if no active transactions in any RM");
+			System.out.println("\nUsage:");
+			System.out.println("\tshutdown");
 			break;
 
 		default:

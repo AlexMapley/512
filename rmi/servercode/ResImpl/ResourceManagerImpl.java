@@ -486,13 +486,16 @@ public class ResourceManagerImpl implements ResourceManager
     public int start(int transactionId) throws RemoteException {
         // Copy the hashtable and use is as a backup
         transactionImages.put(transactionId, (RMHashtable) m_itemHT.clone());
+        System.out.println("Transaction: " + transactionId + " Started");
         return 0;
     }
 
     public boolean commit(int transactionId) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
         // Release transaction locks
-        if(LM.UnlockAll(transactionId))
+        if(LM.UnlockAll(transactionId)) {
+            System.out.println("Transaction: " + transactionId + " Commited");
             return true;
+        }
         
         throw new TransactionAbortedException(transactionId, "Error during commit on transaction: " + transactionId);
     }
@@ -504,11 +507,13 @@ public class ResourceManagerImpl implements ResourceManager
             m_itemHT = reset;
 
         // Release transaction locks
-        LM.UnlockAll(transactionId);
-
+        if(LM.UnlockAll(transactionId)) {
+            System.out.println("Transaction: " + transactionId + " Aborted");
+        }
     }
 
     public boolean shutdown() throws RemoteException {
+        System.out.println("Restarting...");
         m_itemHT.clear();
         LM = new LockManager();
         transactionImages.clear();

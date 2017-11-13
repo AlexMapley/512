@@ -8,7 +8,7 @@ public class Transaction
 	public static final int TIME2LIVE = 1000; // 1s in ms
 	public int id;
 	public Set<ResourceManager> activeRMs;
-	public int status; // 0 for active, 1 for finished
+	public int status; // 1 for active, 0 for finished
 	private long time;
 
 	public Transaction(int id) {
