@@ -18,6 +18,8 @@ public class TransactionManager
 		CD = new CrashDetection(this);
 		startDetector();
 		System.out.println("Transaction Manager Started...");
+
+
 	}
 
 	public int start() {

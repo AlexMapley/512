@@ -4,6 +4,7 @@ import ResInterface.*;
 import TransImpl.*;
 
 import java.util.*;
+import java.io.*;
 
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
@@ -19,9 +20,12 @@ public class MiddleWareImpl implements ResourceManager
     static ResourceManager HotelRM = null;
     static ResourceManager FlightRM = null;
 
+    static File metrics = new File("metrics.txt");
+
     private static TransactionManager TM;
 
     public static void main(String[] args) {
+
         int port = 5959;  // hardcoded
         String server = "localhost";  // creates middlware on current machine
 
@@ -571,6 +575,29 @@ public class MiddleWareImpl implements ResourceManager
 
     public boolean shutdown() throws RemoteException {
         return false;
+    }
+
+    public void writeMetric(int transactionId) throws RemoteException {
+      FileWriter metricWriter = null;
+
+      System.out.println("Writing Metric...");
+      Transaction metricTransaction = TM.transactions.get(transactionId);
+      long transactionTime =  (new Date()).getTime() - metricTransaction.getTime();
+
+      try {
+        metricWriter = new FileWriter("metrics.txt", true);
+        metricWriter.write("Transaction " + metricTransaction.id + " Time: " + String.valueOf(transactionTime) + "\n");
+        System.out.println("Metric Success!");
+        //metricWriter.flush();
+      } catch (IOException e) {
+        System.err.println(e.toString());
+      } finally {
+        try {
+          metricWriter.close();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
     }
 
 }

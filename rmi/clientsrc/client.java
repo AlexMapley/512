@@ -624,6 +624,13 @@ public class client
 				System.out.println("Transaction error: " + transactionId + " abort error " + ee);
 			}
 		}
+
+		// Write Metric
+		try {
+			rm.writeMetric(transactionId);
+		} catch(Exception e) {
+			System.out.println("Error writing metric");
+		}
 		}//end of while(true)
 	}
 

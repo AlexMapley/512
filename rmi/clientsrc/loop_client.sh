@@ -16,7 +16,6 @@ keyword="new"$2
 
 # Create stdin pipe
 mkfifo inPipe$$
-ls -la
 
 # Spawns new client with pipe
 # tail -f inPipe | java -Djava.security.policy=java.policy client $1 > outPipe &
