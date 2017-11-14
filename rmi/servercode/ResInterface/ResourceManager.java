@@ -133,6 +133,12 @@ public interface ResourceManager extends Remote
     public boolean itinerary(int id,int customer,Vector<Integer> flightNumbers,String location, boolean Car, boolean Room)
 	throws RemoteException, TransactionAbortedException;
 
+	public void spamAllNewItem(int transactionId) 
+  throws RemoteException, TransactionAbortedException;
+
+  	public void spamFlightNewItem(int transactionId)
+  throws RemoteException, TransactionAbortedException;
+
     public int start(int transactionId)
   throws RemoteException, TransactionAbortedException;
 
@@ -144,8 +150,5 @@ public interface ResourceManager extends Remote
 
     public boolean shutdown()
   throws RemoteException;
-
-  //   public void writeMetric(int transactionId)
-  // throws RemoteException;
 
 }

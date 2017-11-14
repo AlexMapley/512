@@ -483,6 +483,14 @@ public class ResourceManagerImpl implements ResourceManager
         return false;
     }
 
+    public void spamAllNewItem(int transactionId) throws RemoteException, TransactionAbortedException {
+        
+    }
+
+    public void spamFlightNewItem(int transactionId) throws RemoteException, TransactionAbortedException {
+
+    }
+
     public int start(int transactionId) throws RemoteException {
         // Copy the hashtable and use is as a backup
         transactionImages.put(transactionId, (RMHashtable) m_itemHT.clone());
