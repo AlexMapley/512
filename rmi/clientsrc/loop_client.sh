@@ -4,14 +4,15 @@ export CLASSPATH=`pwd`:`pwd`/../servercode/ResInterface.jar
 
 # Usage
 echo "arg1 is MiddleWare lab station"
-echo "arg2 is either flight/car/room, for the target RM"
+echo "arg2 is unique client name"
+echo "arg3 is either flight/car/room, for the target RM"
 
 # Compiling client
 javac client.java
 
 # RM to target
 keyword="newflight"  #default
-keyword="new"$2
+keyword="new"$3
 
 
 
@@ -20,7 +21,7 @@ mkfifo inPipe$$
 
 # Spawns new client with pipe
 # tail -f inPipe | java -Djava.security.policy=java.policy client $1 > outPipe &
-tail -f inPipe$$ | java -Djava.security.policy=java.policy client $1 > outLog$$ &
+tail -f inPipe$$ | java -Djava.security.policy=java.policy client $1 $2 > outLog$$ &
 processId=$!
 
 # Feeds client-pipe commands in timed loop

@@ -37,6 +37,13 @@ public class client
 		long startTime;
 		long endTime;
 
+		//initialize supporting variables
+		help = false;
+		Id = 0;
+		shutdown = false;
+		startTime = -1;
+		endTime = -1;
+		clientNum = "-1";
 
 		String server = "localhost";
 		int port = 5959;
@@ -55,6 +62,7 @@ public class client
 		else {
 			server = args[0];
 			clientNum = args[1];
+			System.out.println(clientNum);
 		}
 
 		try
@@ -102,14 +110,6 @@ public class client
 		//remove heading and trailing white space
 		command=command.trim();
 		arguments=obj.parse(command);
-		
-		//initialize supporting variables
-		help = false;
-		Id = 0;
-		shutdown = false;
-		startTime = -1;
-		endTime = -1;
-		clientNum = "-1";
 
 		//Help
 		if(obj.findChoice((String)arguments.elementAt(0)) == 1) {
