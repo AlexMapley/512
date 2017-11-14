@@ -558,6 +558,51 @@ public class MiddleWareImpl implements ResourceManager
         return success;
     }
 
+    public void spamAllNewItem(int transactionId) throws RemoteException, TransactionAbortedException {
+        Trace.info("RM::spamAllNewItem(" + transactionId + ") called" );
+        TM.enlist(transactionId, CarRM);
+        TM.enlist(transactionId, HotelRM);
+        TM.enlist(transactionId, FlightRM);
+        try {
+            if(CarRM.addCars(transactionId,"a",1,1))
+                Trace.info("RM::addCars(" + transactionId + ") created or modified location " + "a" + ", count=" + 1 + ", price=$" + 1 );
+
+            if(HotelRM.addRooms(transactionId,"a",1,1))
+                Trace.info("RM::addRooms(" + transactionId + ") created or modified flight " + 1 + ", seats=" +
+                    1 + ", price=$" + 1 );
+            if(FlightRM.addFlight(transactionId,1,1,1))
+                Trace.info("RM::addFlight(" + transactionId + ") created or modified flight " + 1 + ", seats=" +
+                    1 + ", price=$" + 1 );
+        } catch(Exception e) {
+            System.out.println("EXCEPTION:");
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+
+    }
+
+    public void spamFlightNewItem(int transactionId) throws RemoteException, TransactionAbortedException {
+        Trace.info("RM::spamAllNewItem(" + transactionId + ") called" );
+        TM.enlist(transactionId, FlightRM);
+        try {
+            if(FlightRM.addFlight(transactionId,1,1,1))
+                Trace.info("RM::addFlight(" + transactionId + ") created or modified flight " + 1 + ", seats=" +
+                    1 + ", price=$" + 1 );
+            if(FlightRM.addFlight(transactionId,2,1,1))
+                Trace.info("RM::addFlight(" + transactionId + ") created or modified flight " + 2 + ", seats=" +
+                    1 + ", price=$" + 1 );
+            if(FlightRM.addFlight(transactionId,3,1,1))
+                Trace.info("RM::addFlight(" + transactionId + ") created or modified flight " + 3 + ", seats=" +
+                    1 + ", price=$" + 1 );
+            
+        } catch(Exception e){
+                System.out.println("EXCEPTION:");
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+
+    }
+
     public int start(int transactionId) throws RemoteException {
         return TM.start();
     }

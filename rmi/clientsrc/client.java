@@ -62,7 +62,6 @@ public class client
 		else {
 			server = args[0];
 			clientNum = args[1];
-			System.out.println(clientNum);
 		}
 
 		try
@@ -644,6 +643,38 @@ public class client
 			}
 			break;
 
+		case 24:
+			if(arguments.size()!=2){
+			  obj.wrongNumber();
+			  break;
+			}
+			System.out.println("Spamming all RM's with one command");
+			try {
+				rm.spamAllNewItem(Id);
+			}
+			catch(Exception e) {
+				System.out.println("EXCEPTION:");
+				System.out.println(e.getMessage());
+				e.printStackTrace();
+			}
+			break;
+
+		case 25:
+			if(arguments.size()!=2){
+			  obj.wrongNumber();
+			  break;
+			}
+			System.out.println("Spamming one RM with one command");
+			try {
+				rm.spamFlightNewItem(Id);
+			}
+			catch(Exception e) {
+				System.out.println("EXCEPTION:");
+				System.out.println(e.getMessage());
+				e.printStackTrace();
+			}
+			break;
+
 		default:
 			System.out.println("The interface does not support this command.");
 			break;
@@ -757,6 +788,10 @@ public class client
 		return 22;
 	else if (argument.compareToIgnoreCase("shutdown")==0)
 		return 23;
+	else if (argument.compareToIgnoreCase("spamall")==0)
+		return 24;
+	else if (argument.compareToIgnoreCase("spamone")==0)
+		return 25;
 	else
 		return 666;
 
@@ -962,6 +997,20 @@ public class client
 			System.out.println("Purpose: Attempts to restart middleware if no active transactions in any RM");
 			System.out.println("\nUsage:");
 			System.out.println("\tshutdown");
+			break;
+
+		case 24:
+			System.out.println("Spam each RM with commands");
+			System.out.println("Purpose: tests performance on middleware for each RM");
+			System.out.println("\nUsage:");
+			System.out.println("\tspamall, <id>");
+			break;
+
+		case 25:
+			System.out.println("Spam each RM with commands");
+			System.out.println("Purpose: tests performance on middleware for one RM");
+			System.out.println("\nUsage:");
+			System.out.println("\tspamone, <id>");
 			break;
 
 		default:
