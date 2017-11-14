@@ -38,9 +38,7 @@ public class client
 		long endTime;
 
 		//initialize supporting variables
-		help = false;
 		Id = 0;
-		shutdown = false;
 		startTime = -1;
 		endTime = -1;
 		clientNum = "-1";
@@ -97,6 +95,8 @@ public class client
 		System.out.println("\n\nClient Interface: !@ <( 'o')> <('O' )> @! ");
 		System.out.println("Type \"help\" for list of supported commands");
 		while(true){
+		shutdown = false;
+		help = false;
 		System.out.print("\n>");
 		try{
 			//read the next command

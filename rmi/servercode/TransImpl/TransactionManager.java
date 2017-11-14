@@ -44,6 +44,8 @@ public class TransactionManager
 						throw new TransactionAbortedException(id, "RM abort encountered an error");
 					}
 				}
+				System.out.println("Transaction " + transactionCounter + " Aborted in Manager");
+				// throw new TransactionAbortedException(id, "Transaction: " + id + "aborted in Transaction manager");
 				return true;
 			}
 			else
