@@ -10,11 +10,6 @@ echo "arg3 is either flight/car/room, for the target RM"
 # Compiling client
 javac client.java
 
-# RM to target
-keyword="newflight"  #default
-keyword="new"$3
-
-
 
 # Create stdin pipe
 mkfifo inPipe$$
@@ -29,7 +24,7 @@ for i in `seq 1 30`;
 
   # 5.B block
   do
-  echo "newflight,1,$i,3,4" > inPipe$$
+  echo "newflight,1,$i,1,1" > inPipe$$
   break=0
   while [[ $break -eq 0 ]]
   do
@@ -41,7 +36,8 @@ for i in `seq 1 30`;
       break
     fi
   done
-  echo "newcar,1,mtl,3,4" > inPipe$$
+  # 5.B block
+  echo "newcar,1,mtl,1,1" > inPipe$$
   break=0
   while [[ $break -eq 0 ]]
   do
@@ -53,7 +49,8 @@ for i in `seq 1 30`;
       break
     fi
   done
-  echo "newroom,1,mtl,3,4" > inPipe$$
+  # 5.B block
+  echo "newroom,1,mtl,1,1" > inPipe$$
   break=0
   while [[ $break -eq 0 ]]
   do
@@ -66,27 +63,6 @@ for i in `seq 1 30`;
     fi
   done
 
-
-  # Default
-  # do
-  # if [[ $keyword == "newflight" ]]; then
-  #   value="$keyword,1,$i,3,4"
-  # else
-  #   value="$keyword,1,mtl,3,4"
-  # fi
-  # echo $value
-  # echo $value >
-  # break=0
-  # while [[ $break -eq 0 ]]
-  # do
-  #   sleep 0.5s
-  #   if [[ `tail -1 outLog$$` = ">" ]]; then
-  #     sleep 0.5s
-  #     tail -9 outLog$$
-  #     break=1
-  #     break
-  #   fi
-  # done
 
 done
 
