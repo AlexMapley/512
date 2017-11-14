@@ -638,24 +638,4 @@ public class MiddleWareImpl implements ResourceManager
         return true;
     }
 
-    // public void writeMetric(int transactionId) throws RemoteException {
-    //    FileWriter metricWriter = null;
-    //    Transaction metricTransaction = TM.transactions.get(transactionId);
-    //    long transactionTime =  (new Date()).getTime() - metricTransaction.getTime();
-
-    //    try {
-    //      metricWriter = new FileWriter("metrics.txt", true);
-    //      metricWriter.write("Transaction " + transactionId + " Time: " + String.valueOf(transactionTime) + "\n");
-    //      //metricWriter.flush();
-    //    } catch (IOException e) {
-    //      System.err.println(e.toString());
-    //    } finally {
-    //      try {
-    //        metricWriter.close();
-    //      } catch (IOException e) {
-    //        e.printStackTrace();
-    //      }
-    //    }
-    // }
-
 }
