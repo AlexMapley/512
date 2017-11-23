@@ -67,7 +67,7 @@ public class ResourceManagerImpl implements ResourceManager
             LM.Lock(id, key, LM.READ);
             return (RMItem) m_itemHT.get(key);
         } catch (DeadlockException e) {
-            throw new TransactionAbortedException(id, "Deadlock occured during transaction: " + id);
+            throw new TransactionAbortedException(id, "");
         }
     }
 
@@ -78,7 +78,7 @@ public class ResourceManagerImpl implements ResourceManager
             LM.Lock(id, key, LM.WRITE);
             m_itemHT.put(key, value);
         } catch (DeadlockException e) {
-            throw new TransactionAbortedException(id, "Deadlock occured during transaction: " + id);
+            throw new TransactionAbortedException(id, "");
         }
 
     }
@@ -90,7 +90,7 @@ public class ResourceManagerImpl implements ResourceManager
             LM.Lock(id, key, LM.WRITE);
             return (RMItem)m_itemHT.remove(key);
         } catch (DeadlockException e) {
-            throw new TransactionAbortedException(id, "Deadlock occured during transaction: " + id);
+            throw new TransactionAbortedException(id, "");
         }
     }
 
@@ -495,6 +495,7 @@ public class ResourceManagerImpl implements ResourceManager
         // Copy the hashtable and use is as a backup
         transactionImages.put(transactionId, (RMHashtable) m_itemHT.clone());
         System.out.println("Transaction: " + transactionId + " Started");
+        transactionImages.get(transactionId).dump();
         return 0;
     }
 
@@ -509,15 +510,20 @@ public class ResourceManagerImpl implements ResourceManager
     }
 
     public void abort(int transactionId) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
-        // Reset DB from transaction image
-        RMHashtable reset = transactionImages.get(transactionId);
-        if(reset != null)
-            m_itemHT = reset;
-
         // Release transaction locks
         if(LM.UnlockAll(transactionId)) {
+
+            // Reset DB from transaction image
+            RMHashtable reset = transactionImages.get(transactionId);
+            if(reset != null) {
+                reset.dump();
+                System.out.println("reseting transaction: "+ transactionId);
+                m_itemHT = (RMHashtable) reset.clone();
+            }
             System.out.println("Transaction: " + transactionId + " Aborted");
         }
+        else
+            throw new TransactionAbortedException(transactionId, "Locks could not be released");
     }
 
     public boolean shutdown() throws RemoteException {

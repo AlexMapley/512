@@ -10,7 +10,7 @@ public class TransactionAbortedException extends Exception
     
     public TransactionAbortedException (int xid, String msg)
     {
-        super("The transaction " + xid + " is aborted:" + msg);
+        super("The transaction " + xid + " should be aborted:");
         this.xid = xid;
     }
     

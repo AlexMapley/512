@@ -297,7 +297,7 @@ public class LockManager
                 TimeObj currTime = new TimeObj(dataObj.getXId());
                 timeBlocked = currTime.getTime() - timestamp.getTime();
                 if (timeBlocked >= LockManager.DEADLOCK_TIMEOUT) {
-                    System.out.println("\n\nDEADLOCKING SON\n\n");
+                    System.out.println("\nDEADLOCKING\n");
                     // the transaction has been waiting for a period greater than the timeout period
                     cleanupDeadlock(timestamp, waitObj);
                 }

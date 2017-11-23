@@ -33,6 +33,7 @@ public class client
 		String location;
 		boolean help;
 		boolean shutdown;
+		boolean started;
 		String clientNum;
 		long startTime;
 		long endTime;
@@ -42,16 +43,11 @@ public class client
 		startTime = -1;
 		endTime = -1;
 		clientNum = "-1";
+		started = false;
 
 		String server = "localhost";
 		int port = 5959;
-		// if (args.length == 1)
-		// {
-		// 	server = args[0];
-		// }
-		// if (args.length == 2) {
-		// 	clientNum = args[1];
-		// }
+
 		if (args.length != 2)
 		{
 			System.out.println ("Usage: java client [rmihost] [clientnumber]");
@@ -109,9 +105,10 @@ public class client
 		//remove heading and trailing white space
 		command=command.trim();
 		arguments=obj.parse(command);
+		int commandCase = obj.findChoice((String)arguments.elementAt(0));
 
-		//Help
-		if(obj.findChoice((String)arguments.elementAt(0)) == 1) {
+		//Help and shutdown cases
+		if(commandCase == 1) {
 			help = true;
 			if(arguments.size()==1)   //command was "help"
 				  obj.listCommands();
@@ -120,31 +117,40 @@ public class client
 				else  //wrong use of help command
 				  System.out.println("Improper use of help command. Type help or help, <commandname>");
 		}
-
-		//Start Transaction
-		if(!help) {
-			transactionId = 0;
-			startTime = System.currentTimeMillis();
-			try {
-				transactionId = rm.start(0);
-				System.out.println("\nStarting Transaction " + transactionId + "\n");
-			} catch(Exception e){
-				System.out.println("EXCEPTION:");
-			}
-			Id = transactionId;
+		else if(commandCase == 23) {
+			shutdown = true;
 		}
 
+		//Start Transaction error cases
+		if(!help && !shutdown) {
+			if(commandCase == 26) { 
+				if(started) { // Transaction has already been started
+					System.out.println("A new transaction cannot be started until you finish the current one");
+					System.out.println("Call commit/abort to proceed");
+					continue;
+				}	
+			}
+			else {
+				if(!started) { // A transaction hasn't been started yet
+					System.out.println("Transaction has not been started");
+					System.out.println("Call start to proceed");
+					continue;	
+				}
+			}
+		}
+
+		// if(!help && started) { // Check that a transaction has been ended
+		// 	if(commandCase != 27 || commandCase != 28) {
+		// 		System.out.println("Transaction has not been commited or abort");
+		// 		System.out.println("Call commit/abort to proceed");
+		// 		continue;
+		// 	}
+		// }
+
 		//decide which of the commands this was
-		switch(obj.findChoice((String)arguments.elementAt(0))){
+		switch(commandCase){
 		case 1: //help section
 			break;
-			// if(arguments.size()==1)   //command was "help"
-			//   obj.listCommands();
-			// else if (arguments.size()==2)  //command was "help <commandname>"
-			//   obj.listSpecific((String) Integer.toString(Id));
-			// else  //wrong use of help command
-			//   System.out.println("Improper use of help command. Type help or help, <commandname>");
-			// break;
 
 		case 2:  //new flight
 			if(arguments.size()!=5){
@@ -170,7 +176,7 @@ public class client
 			catch(Exception e){
 			  System.out.println("EXCEPTION:");
 			  System.out.println(e.getMessage());
-			  e.printStackTrace();
+			  // e.printStackTrace();
 			}
 			break;
 
@@ -630,7 +636,7 @@ public class client
 			}
 			break;
 
-		case 23:
+		case 23: // shutdown
 			shutdown = true;
 			System.out.println("Calling shutdown at Middleware. Will restart if no active transactions");
 			try {
@@ -643,7 +649,7 @@ public class client
 			}
 			break;
 
-		case 24:
+		case 24: //spamall
 			if(arguments.size()!=2){
 			  obj.wrongNumber();
 			  break;
@@ -659,7 +665,7 @@ public class client
 			}
 			break;
 
-		case 25:
+		case 25: // spamone
 			if(arguments.size()!=2){
 			  obj.wrongNumber();
 			  break;
@@ -675,54 +681,92 @@ public class client
 			}
 			break;
 
+		case 26: // start
+			try {
+				Id = rm.start(0);
+				started = true;
+				System.out.println("\nStarting Transaction " + Id + "\n");
+			} catch(Exception e){
+				System.out.println("Error starting a transaction, please try again");
+			}
+			break;
+
+		case 27: // commit
+			System.out.println("Attempting to Commit Transaction " + transactionId);
+			try {
+				boolean commitWorthy = rm.commit(Id);
+				if (commitWorthy) {
+					System.out.println("Transaction " + Id + " Committed Successfully");
+				}
+				else {
+					System.out.println("Transaction " + Id + " Had nothing to commit and terminated");
+				}
+				started = false;
+			} catch (Exception e) {
+				System.out.println("Transaction error: " + Id + " commit error " + e);
+				System.out.println("Client should abort: " + Id);
+			}
+			break;
+
+		case 28:
+			System.out.println("Attempting to Abort Transaction " + Id);
+			try {
+				rm.abort(Id);
+				started = false;
+			} catch(Exception e) {
+				System.out.println("Transaction error: " + Id + " abort error " + e);
+				System.out.println("Please try again");
+			}
+			break;
+
 		default:
 			System.out.println("The interface does not support this command.");
 			break;
 		}//end of switch
 
-		if(!(help || shutdown)) {
-			//Commit or Abort Transaction
-			try {
-				boolean commitWorthy = rm.commit(transactionId);
-				System.out.println("Attempting to Commit Transaction " + transactionId);
-				if (commitWorthy) {
-					System.out.println("Transaction " + transactionId + " Committed Successfully");
-				}
-				else {
-					System.out.println("Transaction " + transactionId + " Had nothing to commit");
-				}
-			} catch(Exception e) {
-				System.out.println("Transaction: " + transactionId + " commit error " + e);
-				System.out.println("Attempting to abort");
-				// Because client doesn't have access to the Transaction exceptions
-				// if this was an InvalidTransactionException this next try/catch is redundant
-				try {
-					rm.abort(transactionId);
-				} catch(Exception ee) {
-					System.out.println("Transaction error: " + transactionId + " abort error " + ee);
-				}
-			}
+		// if(!(help || shutdown)) {
+		// 	//Commit or Abort Transaction
+		// 	try {
+		// 		boolean commitWorthy = rm.commit(transactionId);
+		// 		System.out.println("Attempting to Commit Transaction " + transactionId);
+		// 		if (commitWorthy) {
+		// 			System.out.println("Transaction " + transactionId + " Committed Successfully");
+		// 		}
+		// 		else {
+		// 			System.out.println("Transaction " + transactionId + " Had nothing to commit");
+		// 		}
+		// 	} catch(Exception e) {
+		// 		System.out.println("Transaction: " + transactionId + " commit error " + e);
+		// 		System.out.println("Attempting to abort");
+		// 		// Because client doesn't have access to the Transaction exceptions
+		// 		// if this was an InvalidTransactionException this next try/catch is redundant
+		// 		try {
+		// 			rm.abort(transactionId);
+		// 		} catch(Exception ee) {
+		// 			System.out.println("Transaction error: " + transactionId + " abort error " + ee);
+		// 		}
+		// 	}
 
-			// Write Metric
-			endTime = System.currentTimeMillis();
-			FileWriter metricWriter = null;
-			long totalTime = endTime - startTime;
-			String filename = "client" + clientNum +".txt";
-			String metrics = "Transaction " + transactionId + " Time: " + String.valueOf(totalTime) + "\n";
-		    try {
-		    	metricWriter = new FileWriter(filename, true);
-		    	metricWriter.write(metrics);
-		     	//metricWriter.flush();
-		   	} catch (IOException e) {
-		     	System.err.println(e.toString());
-		   	} finally {
-		     	try {
-		       		metricWriter.close();
-		     	} catch (IOException e) {
-		      		e.printStackTrace();
-		     }
-		   }
-		}
+		// 	// Write Metric
+		// 	endTime = System.currentTimeMillis();
+		// 	FileWriter metricWriter = null;
+		// 	long totalTime = endTime - startTime;
+		// 	String filename = "client" + clientNum +".txt";
+		// 	String metrics = "Transaction " + transactionId + " Time: " + String.valueOf(totalTime) + "\n";
+		//     try {
+		//     	metricWriter = new FileWriter(filename, true);
+		//     	metricWriter.write(metrics);
+		//      	//metricWriter.flush();
+		//    	} catch (IOException e) {
+		//      	System.err.println(e.toString());
+		//    	} finally {
+		//      	try {
+		//        		metricWriter.close();
+		//      	} catch (IOException e) {
+		//       		e.printStackTrace();
+		//      }
+		//    }
+		// }
 
 		}//end of while(true)
 	}
@@ -792,6 +836,12 @@ public class client
 		return 24;
 	else if (argument.compareToIgnoreCase("spamone")==0)
 		return 25;
+	else if (argument.compareToIgnoreCase("start")==0)
+		return 26;
+	else if (argument.compareToIgnoreCase("commit")==0)
+		return 27;
+	else if (argument.compareToIgnoreCase("abort")==0)
+		return 28;
 	else
 		return 666;
 
@@ -802,6 +852,7 @@ public class client
 	  System.out.println("\nWelcome to the client interface provided to test your project.");
 	  System.out.println("Commands accepted by the interface are:");
 	  System.out.println("help");
+	  System.out.println("start\ncommit\nabort");
 	  System.out.println("newflight\nnewcar\nnewroom\nnewcustomer\nnewcusomterid\ndeleteflight\ndeletecar\ndeleteroom");
 	  System.out.println("deletecustomer\nqueryflight\nquerycar\nqueryroom\nquerycustomer");
 	  System.out.println("queryflightprice\nquerycarprice\nqueryroomprice");
@@ -1013,6 +1064,27 @@ public class client
 			System.out.println("\tspamone, <id>");
 			break;
 
+		case 26:
+			System.out.println("Start a transaction");
+			System.out.println("Purpose: asks the Middlware for a transaction id");
+			System.out.println("\nUsage:");
+			System.out.println("\tstart");
+			break;
+
+		case 27:
+			System.out.println("Commit a transaction");
+			System.out.println("Purpose: commit the transaction currently started at this client");
+			System.out.println("\nUsage:");
+			System.out.println("\tcommit");
+			break;
+
+		case 28:
+			System.out.println("Abort a transaction");
+			System.out.println("Purpose: abort the transaction currently started at this client");
+			System.out.println("\nUsage:");
+			System.out.println("\tabort");
+			break;
+
 		default:
 		System.out.println(command);
 		System.out.println("The interface does not support this command.");
@@ -1024,8 +1096,6 @@ public class client
 	System.out.println("The number of arguments provided in this command are wrong.");
 	System.out.println("Type help, <commandname> to check usage of this command.");
 	}
-
-
 
 	public int getInt(Object temp) throws Exception {
 	try {
