@@ -187,10 +187,8 @@ public class MiddleWareImpl implements ResourceManager
             }
         }
         catch(Exception e){
-            System.out.println("EXCEPTION:");
-            // System.out.println(e.getMessage());
-            e.printStackTrace();
-            throw e;
+          System.out.println("EXCEPTION:");
+          System.out.println(e.getMessage());
         }
         return(true);
     }
@@ -222,7 +220,6 @@ public class MiddleWareImpl implements ResourceManager
         catch(Exception e){
             System.out.println("EXCEPTION:");
             System.out.println(e.getMessage());
-            e.printStackTrace();
         }
         return(true);
     }
@@ -255,7 +252,6 @@ public class MiddleWareImpl implements ResourceManager
         catch(Exception e){
             System.out.println("EXCEPTION:");
             System.out.println(e.getMessage());
-            e.printStackTrace();
         }
         return(true);
     }
@@ -411,7 +407,6 @@ public class MiddleWareImpl implements ResourceManager
             catch(Exception e) {
                 System.out.println("EXCEPTION:");
                 System.out.println(e.getMessage());
-                e.printStackTrace();
             }
         return cid;
     }
@@ -439,7 +434,6 @@ public class MiddleWareImpl implements ResourceManager
             catch(Exception e) {
                 System.out.println("EXCEPTION:");
                 System.out.println(e.getMessage());
-                e.printStackTrace();
             }
 
             return true;
@@ -555,7 +549,6 @@ public class MiddleWareImpl implements ResourceManager
         } catch(Exception e) {
             System.out.println("EXCEPTION:");
             System.out.println(e.getMessage());
-            e.printStackTrace();
         }
 
         return success;
@@ -579,7 +572,6 @@ public class MiddleWareImpl implements ResourceManager
         } catch(Exception e) {
             System.out.println("EXCEPTION:");
             System.out.println(e.getMessage());
-            e.printStackTrace();
         }
 
     }
@@ -597,12 +589,11 @@ public class MiddleWareImpl implements ResourceManager
             if(FlightRM.addFlight(transactionId,3,1,1))
                 Trace.info("RM::addFlight(" + transactionId + ") created or modified flight " + 3 + ", seats=" +
                     1 + ", price=$" + 1 );
-            
+
         } catch(Exception e){
-                System.out.println("EXCEPTION:");
-                System.out.println(e.getMessage());
-                e.printStackTrace();
-            }
+            System.out.println("EXCEPTION:");
+            System.out.println(e.getMessage());
+        }
 
     }
 
@@ -614,12 +605,13 @@ public class MiddleWareImpl implements ResourceManager
 
     public boolean commit(int transactionId) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
         boolean result = TM.commit(transactionId);
+        // Removes image from hashtable, we don't need it anymore
+        transactionImages = transactionImages.remove(transactionId);
         return result;
     }
 
     public void abort(int transactionId) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
         // Reset DB from transaction image
-
         // System.out.println(m_itemHT.get(Customer.getKey(customerID)));
         RMHashtable reset = transactionImages.get(transactionId);
         if(reset != null) {

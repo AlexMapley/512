@@ -434,27 +434,6 @@ public class ResourceManagerImpl implements ResourceManager
         } // if
     }
 
-
-
-    /*
-    // Frees flight reservation record. Flight reservation records help us make sure we
-    // don't delete a flight if one or more customers are holding reservations
-    public boolean freeFlightReservation(int id, int flightNum)
-        throws RemoteException
-    {
-        Trace.info("RM::freeFlightReservations(" + id + ", " + flightNum + ") called" );
-        RMInteger numReservations = (RMInteger) readData( id, Flight.getNumReservationsKey(flightNum) );
-        if ( numReservations != null ) {
-            numReservations = new RMInteger( Math.max( 0, numReservations.getValue()-1) );
-        } // if
-        writeData(id, Flight.getNumReservationsKey(flightNum), numReservations );
-        Trace.info("RM::freeFlightReservations(" + id + ", " + flightNum + ") succeeded, this flight now has "
-                + numReservations + " reservations" );
-        return true;
-    }
-    */
-
-
     // Adds car reservation to this customer.
     public boolean reserveCar(int id, int customerID, String location)
         throws RemoteException, TransactionAbortedException
@@ -484,7 +463,7 @@ public class ResourceManagerImpl implements ResourceManager
     }
 
     public void spamAllNewItem(int transactionId) throws RemoteException, TransactionAbortedException {
-        
+
     }
 
     public void spamFlightNewItem(int transactionId) throws RemoteException, TransactionAbortedException {
@@ -533,5 +512,5 @@ public class ResourceManagerImpl implements ResourceManager
         transactionImages.clear();
         return true;
     }
-    
+
 }
