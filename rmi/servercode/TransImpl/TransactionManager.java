@@ -18,7 +18,7 @@ public class TransactionManager
 	public TransactionManager() {
 		transactionCounter = 0;
 		CD = new CrashDetection(this);
-		startDetector();
+		// startDetector();
 		System.out.println("Transaction Manager Started...");
 	}
 
@@ -89,7 +89,7 @@ public class TransactionManager
 	}
 
 	public void startDetector() {
-		CD.start();
+		// CD.start();
 	}
 
 	public void enlist(int id, ResourceManager rm) throws RemoteException, TransactionAbortedException {

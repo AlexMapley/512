@@ -16,12 +16,14 @@ public class MiddleWareImpl implements ResourceManager
 {
 
     protected RMHashtable m_itemHT = new RMHashtable();
+    private static HashMap<Integer, RMHashtable> transactionImages = new HashMap<Integer, RMHashtable>();
+
     static ResourceManager CarRM = null;
     static ResourceManager HotelRM = null;
     static ResourceManager FlightRM = null;
     static ArrayList<ResourceManager> rms;
+
     private static TransactionManager TM;
-    // static File metrics = new File("metrics.txt");
 
     public static void main(String[] args) {
         int port = 5959;  // hardcoded
@@ -186,8 +188,9 @@ public class MiddleWareImpl implements ResourceManager
         }
         catch(Exception e){
             System.out.println("EXCEPTION:");
-            System.out.println(e.getMessage());
+            // System.out.println(e.getMessage());
             e.printStackTrace();
+            throw e;
         }
         return(true);
     }
@@ -604,7 +607,9 @@ public class MiddleWareImpl implements ResourceManager
     }
 
     public int start(int transactionId) throws RemoteException {
-        return TM.start();
+        transactionId = TM.start();
+        transactionImages.put(transactionId, (RMHashtable) m_itemHT.clone());
+        return transactionId;
     }
 
     public boolean commit(int transactionId) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
@@ -613,6 +618,14 @@ public class MiddleWareImpl implements ResourceManager
     }
 
     public void abort(int transactionId) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
+        // Reset DB from transaction image
+
+        // System.out.println(m_itemHT.get(Customer.getKey(customerID)));
+        RMHashtable reset = transactionImages.get(transactionId);
+        if(reset != null) {
+            m_itemHT = (RMHashtable) reset.clone();
+        }
+
         TM.abort(transactionId);
     }
 
