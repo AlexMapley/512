@@ -36,10 +36,10 @@ public class TransactionManager
 		if(toCommit.status == 1) {
 			toCommit.status = 0;
 			if(toCommit != null) {
-				Iterator<ResourceManager> iterator = toCommit.activeRMs.iterator();
-				while(iterator.hasNext()) {
+				Iterator<ResourceManager> rm_Iterator = toCommit.activeRMs.iterator();
+				while(rm_Iterator.hasNext()) {
 					try {
-						iterator.next().abort(id);
+						rm_Iterator.next().abort(id);
 					} catch (Exception e) {
 						throw new TransactionAbortedException(id, "RM abort encountered an error");
 					}
@@ -63,16 +63,25 @@ public class TransactionManager
 			toCommit.status = 0;
 			boolean result = true;
 			if(toCommit != null) {
-				Iterator<ResourceManager> iterator = toCommit.activeRMs.iterator();
-				while(iterator.hasNext()) {
+				Iterator<ResourceManager> rm_Iterator = toCommit.activeRMs.iterator();
+				while(rm_Iterator.hasNext()) {
 					try {
-						result = iterator.next().commit(id);
+						rm_clone = rnrm_Iterator.next()
+						result = rm_clone.commit(id);
+
+						// Update Shadow File
+						if (result) {
+							String filename = rm_clone.banner + "_saved.ser"
+							rm_clone.store(filename)
+						}
+
 					} catch (Exception e) {
 						throw new TransactionAbortedException(id, "RM commit encountered an error and needs to abort");
 					}
 					if (!result) {
 						break;
 					}
+
 				}
 				if (!result)
 					return false;

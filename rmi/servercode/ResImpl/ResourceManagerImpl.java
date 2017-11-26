@@ -18,6 +18,7 @@ import java.rmi.RMISecurityManager;
 public class ResourceManagerImpl implements ResourceManager
 {
 
+    public  static String banner = "";
     protected RMHashtable m_itemHT = new RMHashtable();
     private static LockManager LM = new LockManager();
     private static HashMap<Integer, RMHashtable> transactionImages = new HashMap<Integer, RMHashtable>();
@@ -511,6 +512,10 @@ public class ResourceManagerImpl implements ResourceManager
         LM = new LockManager();
         transactionImages.clear();
         return true;
+    }
+
+    public void store(String filename) {
+      m_itemHT.store(filename);
     }
 
 }
