@@ -41,7 +41,7 @@ public class RMHashtable extends Hashtable implements serializable  {
     try {
 
         // Initialize File/Serailization Streams
-		    FileOutputStream file_pipe = new FileOutputStream(new File(filename));
+		    FileOutputStream file_pipe = new FileOutputStream(new File("shadows/" + filename));
 		    ObjectOutputStream object_pipe = new ObjectOutputStream(file_pipe);
 
 		    // Serializes RM to file

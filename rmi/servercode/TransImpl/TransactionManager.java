@@ -27,7 +27,7 @@ public class TransactionManager
 		synchronized(transactions) {
 	 		transactions.put(transactionCounter, new Transaction(transactionCounter));
 	 	}
-	 	System.out.println("Transaction " + transactionCounter + " Started in Manager");
+	 	System.out.println("Transaction " + transactionCounter + " Started in Manager")
 	 	return transactionCounter;
 	}
 
