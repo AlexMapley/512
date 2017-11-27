@@ -11,7 +11,7 @@ import java.io.Serializable;
 // A specialization of Hashtable with some
 // extra diagnostics
 
-public class RMHashtable extends Hashtable implements serializable  {
+public class RMHashtable implements Serialiable extends Hashtable {
 
 
     RMHashtable() {
