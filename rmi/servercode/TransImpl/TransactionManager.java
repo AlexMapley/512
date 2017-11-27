@@ -46,15 +46,15 @@ public class TransactionManager
 
 
 						// Initialize File/Serailization Streams
-						FileOutputStream file_pipe = new FileInputStream(new File("shadows/" + rm_pointer.banner + "_saved.ser"));
+						FileInputStream file_pipe = new FileInputStream(new File("shadows/" + rm_pointer.banner + "_saved.ser"));
 						InputStream input_buffer = new BufferedInputStream(file_pipe);
-						ObjectOutputStream object_pipe = new ObjectInputStream(input_buffer);
+						ObjectInputStream object_pipe = new ObjectInputStream(input_buffer);
 
 						// TODO: NEEDS VALIDATION
 						// Will this change the value of the object
 						// being pointed to, or just change the value
 						// of the pointer as a separate object
-						rm_pointer.m_itemHT = (RMHashtable)input.readObject();
+						rm_pointer.m_itemHT = (RMHashtable)object_pipe.readObject();
 
 						// Closes Streams
 				    file_pipe.close();
