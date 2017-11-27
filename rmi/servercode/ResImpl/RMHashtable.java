@@ -37,22 +37,22 @@ public class RMHashtable extends Hashtable {
   }
 
 
-  public void store(String filename) {
-    try {
+  // public void store(String filename) {
+  //   try {
 
-        // Initialize File/Serailization Streams
-		    FileOutputStream file_pipe = new FileOutputStream(new File("shadows/" + filename));
-		    ObjectOutputStream object_pipe = new ObjectOutputStream(file_pipe);
+  //       // Initialize File/Serailization Streams
+		//     FileOutputStream file_pipe = new FileOutputStream(new File("shadows/" + filename));
+		//     ObjectOutputStream object_pipe = new ObjectOutputStream(file_pipe);
 
-		    // Serializes RM to file
-		    object_pipe.writeObject(this);
+		//     // Serializes RM to file
+		//     object_pipe.writeObject(this);
 
-        file_pipe.close();
-        object_pipe.close();
-	  }
-    catch (IOException e) {
-		     System.out.println("Error initializing stream");
-         e.printStackTrace();
-	  }
-  }
+  //       file_pipe.close();
+  //       object_pipe.close();
+	 //  }
+  //   catch (IOException e) {
+		//      System.out.println("Error initializing stream");
+  //        e.printStackTrace();
+	 //  }
+  // }
 }

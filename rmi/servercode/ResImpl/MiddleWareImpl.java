@@ -61,10 +61,21 @@ public class MiddleWareImpl implements ResourceManager
             System.out.println("Usage: java ResImpl.MiddleWareImpl [rmaddress] X 3 ");
             System.exit(1);
         }
+        
         // Associate inputted machines to respective RMs
-        CarRM = rms.get(0);
-        HotelRM = rms.get(1);
-        FlightRM = rms.get(2);
+        for(int i=0;i<3;i++) {
+            try {
+                String banner = rms.get(i).getBanner().trim();
+                if(banner.equals("Car"))
+                    CarRM = rms.get(i);
+                else if(banner.equals("Flight"))
+                    FlightRM = rms.get(i);
+                else if(banner.equals("Hotel"))
+                    HotelRM = rms.get(i);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
 
         //Start middleware server
         try {
@@ -179,7 +190,6 @@ public class MiddleWareImpl implements ResourceManager
         Trace.info("RM::addFlight(" + id + ", " + flightNum + ", $" + flightPrice + ", " + flightSeats + ") called" );
         try {
             if(FlightRM.addFlight(id,flightNum,flightSeats,flightPrice))
-            // if(rm.addFlight(id,flightNum,flightSeats,flightPrice))
                 // call succesfull
                 Trace.info("RM::addFlight(" + id + ") created or modified flight " + flightNum + ", seats=" +
                     flightSeats + ", price=$" + flightPrice );
@@ -200,7 +210,6 @@ public class MiddleWareImpl implements ResourceManager
     {
         TM.enlist(id, FlightRM);
         return FlightRM.deleteFlight(id, flightNum);
-        // return rm.deleteFlight(id, flightNum);
     }
 
     // Create a new room location or add rooms to an existing location
@@ -212,7 +221,6 @@ public class MiddleWareImpl implements ResourceManager
         Trace.info("RM::addRooms(" + id + ", " + location + ", " + count + ", $" + price + ") called" );
         try {
             if(HotelRM.addRooms(id,location,count,price))
-            // if(rm.addRooms(id,location,count,price))
                 // call succesfull
                 Trace.info("RM::addRooms(" + id + ") created or modified room location " + location + ", count=" + count + ", price=$" + price );
             else {
@@ -232,7 +240,6 @@ public class MiddleWareImpl implements ResourceManager
     {
         TM.enlist(id, HotelRM);
         return HotelRM.deleteRooms(id, location);
-        // return rm.deleteRooms(id, location);
 
     }
 
@@ -244,7 +251,6 @@ public class MiddleWareImpl implements ResourceManager
         TM.enlist(id, CarRM);
         try {
             if(CarRM.addCars(id,location,count,price))
-            // if(rm.addCars(id,location,count,price))
                 // call succesfull
                 Trace.info("RM::addCars(" + id + ") created or modified location " + location + ", count=" + count + ", price=$" + price );
             else {
@@ -636,21 +642,21 @@ public class MiddleWareImpl implements ResourceManager
         return true;
     }
 
-    public void store(String filename) {
-      // Do nothing. We don't shadow the MiddleWare Hashtable.
-      // Not yet at least, i'll do it later.
-    }
+    // public void store(String filename) {
+    //   // Do nothing. We don't shadow the MiddleWare Hashtable.
+    //   // Not yet at least, i'll do it later.
+    // }
 
     public String getBanner() {
       return "MiddleWare";
     }
 
-    public RMHashtable getHash() {
-      return this.m_itemHT;
-    }
+    // public RMHashtable getHash() {
+    //   return this.m_itemHT;
+    // }
 
-    public RMHashtable setHash(RMHashtable shadow) {
-      return this.m_itemHT = shadow;
-    }
+    // public RMHashtable setHash(RMHashtable shadow) {
+    //   return this.m_itemHT = shadow;
+    // }
 
 }
