@@ -4,6 +4,7 @@ import ResInterface.*;
 import LockImpl.*;
 
 import java.util.*;
+import java.io.*;
 import java.rmi.RemoteException;
 
 public class TransactionManager
