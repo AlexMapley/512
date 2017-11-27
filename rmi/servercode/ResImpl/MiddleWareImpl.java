@@ -66,20 +66,6 @@ public class MiddleWareImpl implements ResourceManager
         HotelRM = rms.get(1);
         FlightRM = rms.get(2);
 
-        try {
-            CarRM.setBanner("Cars");
-            HotelRM.setBanner("Hotels");
-            FlightRM.setBanner("Flights");
-        }
-        catch (Exception e) {
-          e.printStackTrace();
-        }
-
-        // CarRM.setbanner("Cars");
-        // HotelRM.setbanner("Hotels");
-        // FlightRM.setbanner("Flights");
-
-
         //Start middleware server
         try {
             // create a new Server object
@@ -279,7 +265,6 @@ public class MiddleWareImpl implements ResourceManager
     {
         TM.enlist(id, CarRM);
         return CarRM.deleteCars(id, location);
-        // return rm.deleteCars(id, location);
     }
 
 
@@ -290,7 +275,6 @@ public class MiddleWareImpl implements ResourceManager
     {
         TM.enlist(id, FlightRM);
         return FlightRM.queryFlight(id,flightNum);
-        // return rm.queryFlight(id,flightNum);
     }
 
     // Returns the number of reservations for this flight.
@@ -313,7 +297,6 @@ public class MiddleWareImpl implements ResourceManager
     {
         TM.enlist(id, FlightRM);
         return FlightRM.queryFlightPrice(id, flightNum);
-        // return rm.queryFlightPrice(id, flightNum);
     }
 
 
@@ -323,7 +306,6 @@ public class MiddleWareImpl implements ResourceManager
     {
         TM.enlist(id, HotelRM);
         return HotelRM.queryRooms(id, location);
-        // return rm.queryRooms(id, location);
     }
 
     // Returns room price at this location
@@ -332,7 +314,6 @@ public class MiddleWareImpl implements ResourceManager
     {
         TM.enlist(id, HotelRM);
         return HotelRM.queryRoomsPrice(id, location);
-        // return rm.queryRoomsPrice(id, location);
     }
 
 
@@ -342,7 +323,6 @@ public class MiddleWareImpl implements ResourceManager
     {
         TM.enlist(id, CarRM);
         return CarRM.queryCars(id, location);
-        // return rm.queryCars(id, location);
     }
 
 
@@ -352,7 +332,6 @@ public class MiddleWareImpl implements ResourceManager
     {
         TM.enlist(id, CarRM);
         return CarRM.queryCarsPrice(id, location);
-        // return rm.queryCarsPrice(id, location);
     }
 
     // Returns data structure containing customer reservation info. Returns null if the
@@ -662,8 +641,6 @@ public class MiddleWareImpl implements ResourceManager
       // Not yet at least, i'll do it later.
     }
 
-    public void setBanner(String name) {
-    }
     public String getBanner() {
       return "MiddleWare";
     }

@@ -18,7 +18,7 @@ import java.rmi.RMISecurityManager;
 public class ResourceManagerImpl implements ResourceManager
 {
 
-    static String banner = "default_banner";
+    public static String banner = "default_banner";
     public static RMHashtable m_itemHT = new RMHashtable();
     private static LockManager LM = new LockManager();
     private static HashMap<Integer, RMHashtable> transactionImages = new HashMap<Integer, RMHashtable>();
@@ -31,10 +31,11 @@ public class ResourceManagerImpl implements ResourceManager
         if (args.length == 1) {
             server = server + ":" + args[0];
             port = Integer.parseInt(args[0]);
-        } else if (args.length != 0 &&  args.length != 1) {
-            System.err.println ("Wrong usage");
-            System.out.println("Usage: java ResImpl.ResourceManagerImpl [port]");
+        } else if (args.length == 2) {
+            banner = args[1];
             System.exit(1);
+        } else if (args.length > 2) {
+          System.out.println("Wrong args");
         }
 
         try {
@@ -516,10 +517,6 @@ public class ResourceManagerImpl implements ResourceManager
 
     public void store(String filename) {
       m_itemHT.store(filename);
-    }
-
-    public void setBanner(String name) {
-      banner = name;
     }
 
     public String getBanner() {

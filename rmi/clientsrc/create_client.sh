@@ -1,6 +1,6 @@
 #!/bin/bash
 # Export classfile
-export CLASSPATH=`pwd`:`pwd`/../servercode/ResInterface.jar
+export CLASSPATH=`pwd`:`pwd`/../servercode
 echo $CLASSPATH
 
 # Compile client
