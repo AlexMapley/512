@@ -617,14 +617,6 @@ public class MiddleWareImpl implements ResourceManager
 
     public boolean commit(int transactionId) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
         boolean result = TM.commit(transactionId);
-
-        // Removes image from hashtable if transaction commits
-        // I ended up smashing the stack a couple weeks ago while testing,
-        // we might have to start being careful about memory allocation.
-        if (result == true) {
-          transactionImages = transactionImages.remove(transactionId);
-        }
-
         return result;
     }
 
@@ -664,6 +656,9 @@ public class MiddleWareImpl implements ResourceManager
     public void store(String filename) {
       // Do nothing. We don't shadow the MiddleWare Hashtable.
       // Not yet at least, i'll do it later.
+    }
+
+    public void setBanner(String name) {
     }
 
 }

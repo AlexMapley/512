@@ -39,7 +39,7 @@ public class TransactionManager
 				Iterator<ResourceManager> rm_Iterator = toCommit.activeRMs.iterator();
 				while(rm_Iterator.hasNext()) {
 					try {
-						rm_hash_pointer = rm_Iterator.next();
+						ResourceManager rm_hash_pointer = rm_Iterator.next();
 						rm_pointer.abort(id);
 
 
@@ -87,7 +87,7 @@ public class TransactionManager
 				Iterator<ResourceManager> rm_Iterator = toCommit.activeRMs.iterator();
 				while(rm_Iterator.hasNext()) {
 					try {
-						rm_pointer = rnrm_Iterator.next();
+						ResourceManager rm_pointer = rnrm_Iterator.next();
 						result = rm_pointer.commit(id);
 
 						// Update Shadow File
