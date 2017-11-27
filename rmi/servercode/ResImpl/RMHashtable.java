@@ -5,7 +5,7 @@
 package ResImpl;
 
 import java.util.*;
-import java.io.Serializable;
+import java.io.*;
 
 
 // A specialization of Hashtable with some
