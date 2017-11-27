@@ -1,4 +1,4 @@
 //Ignore java.policy
 /servercode/java.policy
-*.policy
 *.class
+*.jar

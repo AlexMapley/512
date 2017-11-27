@@ -1,0 +1,3 @@
+grant codeBase "file:`pwd`" {
+   permission java.util.PropertyPermission "*", "read,write";
+ };
