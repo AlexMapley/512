@@ -65,11 +65,14 @@ public class MiddleWareImpl implements ResourceManager
         CarRM = rms.get(0);
         HotelRM = rms.get(1);
         FlightRM = rms.get(2);
+        banner1 = "Cars";
+        banner2 = "Hotels";
+        banner3 = "Flights";
 
         try {
-            CarRM.setBanner("Cars");
-            HotelRM.setBanner("Hotels");
-            FlightRM.setBanner("Flights");
+            CarRM.setBanner(banner1);
+            HotelRM.setBanner(banner2);
+            FlightRM.setBanner(banner3);
         }
         catch (Exception e) {
           e.printStackTrace();
