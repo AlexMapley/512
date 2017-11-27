@@ -160,7 +160,7 @@ public interface ResourceManager extends Remote
     public void setBanner(String name)
   throws RemoteException, IOException;
 
-    public void getBanner()
+    public String getBanner()
   throws RemoteException;
 
     public RMHashtable getHash()

@@ -522,7 +522,7 @@ public class ResourceManagerImpl implements ResourceManager
       this.banner = name;
     }
 
-    public void getBanner() {
+    public String getBanner() {
       return this.banner;
     }
 
