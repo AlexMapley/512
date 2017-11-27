@@ -65,7 +65,7 @@ public class MiddleWareImpl implements ResourceManager
         CarRM = rms.get(0);
         HotelRM = rms.get(1);
         FlightRM = rms.get(2);
-        CarRM.banner = "Cars";
+        CarRM.setbanner("Cars"); = "Cars";
         HotelRM.banner = "Hotels";
         FlightRM.banner = "Flights";
 
