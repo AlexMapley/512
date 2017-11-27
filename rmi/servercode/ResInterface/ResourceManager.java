@@ -1,10 +1,13 @@
 package ResInterface;
 
 import TransImpl.*;
+import ResImpl.*;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.lang.Exception.*;
+import java.io.*;
+
 
 import java.util.*;
 /**
@@ -153,5 +156,17 @@ public interface ResourceManager extends Remote
 
     public void store(String filename)
   throws RemoteException, IOException;
+
+    public void setBanner(String name)
+  throws RemoteException, IOException;
+
+    public String getBanner()
+  throws RemoteException;
+
+    public RMHashtable getHash()
+  throws RemoteException;
+
+    public RMHashtable setHash(RMHashtable shadow)
+  throws RemoteException;
 
 }

@@ -2,8 +2,10 @@ package TransImpl;
 
 import ResInterface.*;
 import LockImpl.*;
+import ResImpl.*;
 
 import java.util.*;
+import java.io.*;
 import java.rmi.RemoteException;
 
 public class TransactionManager
@@ -27,7 +29,7 @@ public class TransactionManager
 		synchronized(transactions) {
 	 		transactions.put(transactionCounter, new Transaction(transactionCounter));
 	 	}
-	 	System.out.println("Transaction " + transactionCounter + " Started in Manager")
+	 	System.out.println("Transaction " + transactionCounter + " Started in Manager");
 	 	return transactionCounter;
 	}
 
@@ -39,27 +41,28 @@ public class TransactionManager
 				Iterator<ResourceManager> rm_Iterator = toCommit.activeRMs.iterator();
 				while(rm_Iterator.hasNext()) {
 					try {
-						rm_hash_pointer = rm_Iterator.next();
+						ResourceManager rm_pointer = rm_Iterator.next();
 						rm_pointer.abort(id);
 
 
 
 						// Initialize File/Serailization Streams
-						FileOutputStream file_pipe = new FileInputStream(new File("shadows/" + rm_pointer.banner + "_saved.ser"));
+						FileInputStream file_pipe = new FileInputStream("shadows/" + rm_pointer.getBanner() + "_saved.ser");
 						InputStream input_buffer = new BufferedInputStream(file_pipe);
-						ObjectOutputStream object_pipe = new ObjectInputStream(input_buffer);
+						ObjectInputStream object_pipe = new ObjectInputStream(input_buffer);
 
 						// TODO: NEEDS VALIDATION
 						// Will this change the value of the object
 						// being pointed to, or just change the value
 						// of the pointer as a separate object
-						rm_pointer.m_itemHT = (RMHashtable)input.readObject();
+						RMHashtable shadow = (RMHashtable) object_pipe.readObject();
+						rm_pointer.setHash(shadow);
 
 						// Closes Streams
 				    file_pipe.close();
-				    onput_buffer.close();
+				    input_buffer.close();
 						object_pipe.close();
-						
+
 					}
 					catch (Exception e) {
 						throw new TransactionAbortedException(id, "RM abort encountered an error");
@@ -87,13 +90,13 @@ public class TransactionManager
 				Iterator<ResourceManager> rm_Iterator = toCommit.activeRMs.iterator();
 				while(rm_Iterator.hasNext()) {
 					try {
-						rm_pointer = rnrm_Iterator.next()
+						ResourceManager rm_pointer = rm_Iterator.next();
 						result = rm_pointer.commit(id);
 
 						// Update Shadow File
 						if (result) {
-							String filename = rm_pointer.banner + "_saved.ser"
-							rm_clone.store(filename)
+							String filename = "shadows/" + rm_pointer.getBanner() + "_saved.ser";
+							rm_pointer.store(filename);
 						}
 
 					} catch (Exception e) {

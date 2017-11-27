@@ -18,8 +18,8 @@ import java.rmi.RMISecurityManager;
 public class ResourceManagerImpl implements ResourceManager
 {
 
-    public  static String banner = "";
-    public static synchronized RMHashtable m_itemHT = new RMHashtable();
+    static String banner = "default_banner";
+    public static RMHashtable m_itemHT = new RMHashtable();
     private static LockManager LM = new LockManager();
     private static HashMap<Integer, RMHashtable> transactionImages = new HashMap<Integer, RMHashtable>();
 
@@ -518,4 +518,19 @@ public class ResourceManagerImpl implements ResourceManager
       m_itemHT.store(filename);
     }
 
+    public void setBanner(String name) {
+      banner = name;
+    }
+
+    public String getBanner() {
+      return banner;
+    }
+
+    public RMHashtable getHash() {
+      return m_itemHT;
+    }
+
+    public RMHashtable setHash(RMHashtable shadow) {
+      return m_itemHT = shadow;
+    }
 }

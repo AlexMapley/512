@@ -5,13 +5,13 @@
 package ResImpl;
 
 import java.util.*;
-import java.io.Serializable;
+import java.io.*;
 
 
 // A specialization of Hashtable with some
 // extra diagnostics
 
-public class RMHashtable extends Hashtable implements serializable  {
+public class RMHashtable extends Hashtable {
 
 
     RMHashtable() {

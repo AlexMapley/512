@@ -2,7 +2,8 @@ package TransImpl;
 
 import ResInterface.*;
 import java.util.*;
-import
+import java.io.*;
+import java.rmi.RemoteException;
 
 public class Transaction
 {
@@ -26,8 +27,14 @@ public class Transaction
 		// name should be `id``banner`.ser,
 		// where `id` is our transaction id,
 		// and banner is the name of our rm.
-		String filename = this.id + rm.banner + ".ser"
-		rm.store(filename)
+		try {
+				String filename = this.id + rm.getBanner() + ".ser";
+				rm.store(filename);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	public void setTime(long time) {

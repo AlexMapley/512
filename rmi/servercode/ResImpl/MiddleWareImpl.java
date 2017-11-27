@@ -65,9 +65,20 @@ public class MiddleWareImpl implements ResourceManager
         CarRM = rms.get(0);
         HotelRM = rms.get(1);
         FlightRM = rms.get(2);
-        CarRM.banner = "Cars";
-        HotelRM.banner = "Hotels";
-        FlightRM.banner = "Flights";
+
+        try {
+            CarRM.setBanner("Cars");
+            HotelRM.setBanner("Hotels");
+            FlightRM.setBanner("Flights");
+        }
+        catch (Exception e) {
+          e.printStackTrace();
+        }
+
+        // CarRM.setbanner("Cars");
+        // HotelRM.setbanner("Hotels");
+        // FlightRM.setbanner("Flights");
+
 
         //Start middleware server
         try {
@@ -610,14 +621,6 @@ public class MiddleWareImpl implements ResourceManager
 
     public boolean commit(int transactionId) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
         boolean result = TM.commit(transactionId);
-
-        // Removes image from hashtable if transaction commits
-        // I ended up smashing the stack a couple weeks ago while testing,
-        // we might have to start being careful about memory allocation.
-        if (result == true) {
-          transactionImages = transactionImages.remove(transactionId);
-        }
-
         return result;
     }
 
@@ -657,6 +660,20 @@ public class MiddleWareImpl implements ResourceManager
     public void store(String filename) {
       // Do nothing. We don't shadow the MiddleWare Hashtable.
       // Not yet at least, i'll do it later.
+    }
+
+    public void setBanner(String name) {
+    }
+    public String getBanner() {
+      return "MiddleWare";
+    }
+
+    public RMHashtable getHash() {
+      return this.m_itemHT;
+    }
+
+    public RMHashtable setHash(RMHashtable shadow) {
+      return this.m_itemHT = shadow;
     }
 
 }
