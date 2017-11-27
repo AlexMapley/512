@@ -519,18 +519,18 @@ public class ResourceManagerImpl implements ResourceManager
     }
 
     public void setBanner(String name) {
-      this.banner = name;
+      banner = name;
     }
 
     public String getBanner() {
-      return this.banner;
+      return banner;
     }
 
     public RMHashtable getHash() {
-      return this.m_itemHT;
+      return m_itemHT;
     }
 
     public RMHashtable setHash(RMHashtable shadow) {
-      return this.m_itemHT = shadow;
+      return m_itemHT = shadow;
     }
 }
