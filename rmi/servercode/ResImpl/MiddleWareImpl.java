@@ -71,7 +71,7 @@ public class MiddleWareImpl implements ResourceManager
             rms.get(1).setBanner("Hotels");
             rms.get(2).setBanner("Flights");
         }
-        catch (RemoteException e) {
+        catch (Exception e) {
           e.printStackTrace();
         }
 
@@ -663,6 +663,8 @@ public class MiddleWareImpl implements ResourceManager
     }
 
     public void setBanner(String name) {
+    }
+    public void getBanner(String name) {
     }
 
 }
