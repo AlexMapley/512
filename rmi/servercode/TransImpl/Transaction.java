@@ -25,8 +25,14 @@ public class Transaction
 		// name should be `id``banner`.ser,
 		// where `id` is our transaction id,
 		// and banner is the name of our rm.
-		String filename = this.id + rm.getBanner() + ".ser";
-		rm.store(filename);
+		try {
+				String filename = this.id + rm.getBanner() + ".ser";
+				rm.store(filename);
+		}
+		catch (RemoteException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	public void setTime(long time) {
