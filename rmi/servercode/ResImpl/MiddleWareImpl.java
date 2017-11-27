@@ -70,6 +70,7 @@ public class MiddleWareImpl implements ResourceManager
             rms.get(0).setBanner("Cars");
             rms.get(1).setBanner("Hotels");
             rms.get(2).setBanner("Flights");
+        }
         catch (RemoteException e) {
           e.printStackTrace();
         }
