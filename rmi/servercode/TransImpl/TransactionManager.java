@@ -2,6 +2,7 @@ package TransImpl;
 
 import ResInterface.*;
 import LockImpl.*;
+import ResImpl.*;
 
 import java.util.*;
 import java.io.*;
@@ -54,11 +55,12 @@ public class TransactionManager
 						// Will this change the value of the object
 						// being pointed to, or just change the value
 						// of the pointer as a separate object
-						rm_pointer.setHash((RMHashtable)object_pipe.readObject());
+						RMHashtable shadow = (RMHashtable) object_pipe.readObject();
+						rm_pointer.setHash(shadow);
 
 						// Closes Streams
 				    file_pipe.close();
-				    onput_buffer.close();
+				    input_buffer.close();
 						object_pipe.close();
 
 					}
@@ -88,13 +90,13 @@ public class TransactionManager
 				Iterator<ResourceManager> rm_Iterator = toCommit.activeRMs.iterator();
 				while(rm_Iterator.hasNext()) {
 					try {
-						ResourceManager rm_pointer = rnrm_Iterator.next();
+						ResourceManager rm_pointer = rm_Iterator.next();
 						result = rm_pointer.commit(id);
 
 						// Update Shadow File
 						if (result) {
 							String filename = rm_pointer.getBanner() + "_saved.ser";
-							rm_clone.store(filename);
+							rm_pointer.store(filename);
 						}
 
 					} catch (Exception e) {
