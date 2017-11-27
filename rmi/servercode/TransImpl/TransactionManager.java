@@ -39,7 +39,7 @@ public class TransactionManager
 				Iterator<ResourceManager> rm_Iterator = toCommit.activeRMs.iterator();
 				while(rm_Iterator.hasNext()) {
 					try {
-						ResourceManager rm_hash_pointer = rm_Iterator.next();
+						ResourceManager rm_pointer = rm_Iterator.next();
 						rm_pointer.abort(id);
 
 
