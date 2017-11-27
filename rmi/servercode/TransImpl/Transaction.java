@@ -2,7 +2,6 @@ package TransImpl;
 
 import ResInterface.*;
 import java.util.*;
-import
 
 public class Transaction
 {

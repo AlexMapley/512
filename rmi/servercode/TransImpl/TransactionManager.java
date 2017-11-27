@@ -27,7 +27,7 @@ public class TransactionManager
 		synchronized(transactions) {
 	 		transactions.put(transactionCounter, new Transaction(transactionCounter));
 	 	}
-	 	System.out.println("Transaction " + transactionCounter + " Started in Manager")
+	 	System.out.println("Transaction " + transactionCounter + " Started in Manager");
 	 	return transactionCounter;
 	}
 
@@ -59,7 +59,7 @@ public class TransactionManager
 				    file_pipe.close();
 				    onput_buffer.close();
 						object_pipe.close();
-						
+
 					}
 					catch (Exception e) {
 						throw new TransactionAbortedException(id, "RM abort encountered an error");
@@ -87,13 +87,13 @@ public class TransactionManager
 				Iterator<ResourceManager> rm_Iterator = toCommit.activeRMs.iterator();
 				while(rm_Iterator.hasNext()) {
 					try {
-						rm_pointer = rnrm_Iterator.next()
+						rm_pointer = rnrm_Iterator.next();
 						result = rm_pointer.commit(id);
 
 						// Update Shadow File
 						if (result) {
-							String filename = rm_pointer.banner + "_saved.ser"
-							rm_clone.store(filename)
+							String filename = rm_pointer.banner + "_saved.ser";
+							rm_clone.store(filename);
 						}
 
 					} catch (Exception e) {
