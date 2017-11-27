@@ -18,7 +18,7 @@ import java.rmi.RMISecurityManager;
 public class ResourceManagerImpl implements ResourceManager
 {
 
-    private static String banner = "";
+    static String banner = "default_banner";
     public static RMHashtable m_itemHT = new RMHashtable();
     private static LockManager LM = new LockManager();
     private static HashMap<Integer, RMHashtable> transactionImages = new HashMap<Integer, RMHashtable>();
