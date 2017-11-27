@@ -518,8 +518,19 @@ public class ResourceManagerImpl implements ResourceManager
       m_itemHT.store(filename);
     }
 
-    public void setBanner(String name) {
-      banner = name;
+    public void setBanner(String option) {
+      if (option == "Cars") {
+        banner = "Cars";
+      }
+      else if (option == "Flights") {
+        banner = "Flights";
+      }
+      else if (option == "Hotels") {
+        banner = "Hotels";
+      }
+      else (option == "Cars") {
+        banner = "default";
+      }
     }
 
     public String getBanner() {
