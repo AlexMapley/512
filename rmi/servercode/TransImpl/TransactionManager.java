@@ -46,7 +46,7 @@ public class TransactionManager
 
 
 						// Initialize File/Serailization Streams
-						FileInputStream file_pipe = new FileInputStream(new File("shadows/" + rm_pointer.getbanner() + "_saved.ser"));
+						FileInputStream file_pipe = new FileInputStream(new File("shadows/" + rm_pointer.getBanner() + "_saved.ser"));
 						InputStream input_buffer = new BufferedInputStream(file_pipe);
 						ObjectInputStream object_pipe = new ObjectInputStream(input_buffer);
 
@@ -54,7 +54,7 @@ public class TransactionManager
 						// Will this change the value of the object
 						// being pointed to, or just change the value
 						// of the pointer as a separate object
-						rm_pointer.m_itemHT = (RMHashtable)object_pipe.readObject();
+						rm_pointer.setHash((RMHashtable)object_pipe.readObject());
 
 						// Closes Streams
 				    file_pipe.close();
@@ -93,7 +93,7 @@ public class TransactionManager
 
 						// Update Shadow File
 						if (result) {
-							String filename = rm_pointer.getbanner() + "_saved.ser";
+							String filename = rm_pointer.getBanner() + "_saved.ser";
 							rm_clone.store(filename);
 						}
 
