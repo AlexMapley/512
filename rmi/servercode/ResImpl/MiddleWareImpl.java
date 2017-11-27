@@ -671,4 +671,8 @@ public class MiddleWareImpl implements ResourceManager
       return this.m_itemHT;
     }
 
+    public RMHashtable setHash(RMHashtable shadow) {
+      return this.m_itemHT = shadow;
+    }
+
 }

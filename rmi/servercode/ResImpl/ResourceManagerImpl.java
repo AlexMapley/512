@@ -529,4 +529,8 @@ public class ResourceManagerImpl implements ResourceManager
     public RMHashtable getHash() {
       return this.m_itemHT;
     }
+    
+    public RMHashtable setHash(RMHashtable shadow) {
+      return this.m_itemHT = shadow;
+    }
 }

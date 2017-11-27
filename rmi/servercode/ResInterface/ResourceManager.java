@@ -166,4 +166,7 @@ public interface ResourceManager extends Remote
     public RMHashtable getHash()
   throws RemoteException;
 
+    public RMHashtable setHash()
+  throws RemoteException;
+
 }
