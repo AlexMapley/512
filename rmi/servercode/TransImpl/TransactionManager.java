@@ -95,7 +95,7 @@ public class TransactionManager
 
 						// Update Shadow File
 						if (result) {
-							String filename = rm_pointer.getBanner() + "_saved.ser";
+							String filename = "shadows/" + rm_pointer.getBanner() + "_saved.ser";
 							rm_pointer.store(filename);
 						}
 
