@@ -18,7 +18,7 @@ import java.rmi.RMISecurityManager;
 public class ResourceManagerImpl implements ResourceManager
 {
 
-    public static String banner = "default_banner";
+    private static String banner = "default_banner";
     public static RMHashtable m_itemHT = new RMHashtable();
     private static LockManager LM = new LockManager();
     private static HashMap<Integer, RMHashtable> transactionImages = new HashMap<Integer, RMHashtable>();
@@ -29,13 +29,9 @@ public class ResourceManagerImpl implements ResourceManager
         int port = 5959;
 
         if (args.length == 1) {
-            server = server + ":" + args[0];
-            port = Integer.parseInt(args[0]);
-        } else if (args.length == 2) {
-            banner = args[1];
-            System.exit(1);
-        } else if (args.length > 2) {
-          System.out.println("Wrong args");
+            banner = args[0];
+        } else {
+          System.out.println("Only one argument: name of RM server being created");
         }
 
         try {
@@ -46,7 +42,7 @@ public class ResourceManagerImpl implements ResourceManager
             // Bind the remote object's stub in the registry
             Registry registry = LocateRegistry.getRegistry(port);
             registry.rebind("group_21", rm);
-            System.err.println("RM Server ready");
+            System.err.println(banner + " RM Server ready");
           } catch (Exception e) {
             System.err.println("RM Server exception: " + e.toString());
             e.printStackTrace();
@@ -476,7 +472,6 @@ public class ResourceManagerImpl implements ResourceManager
         // Copy the hashtable and use is as a backup
         transactionImages.put(transactionId, (RMHashtable) m_itemHT.clone());
         System.out.println("Transaction: " + transactionId + " Started");
-        transactionImages.get(transactionId).dump();
         return 0;
     }
 
@@ -497,7 +492,6 @@ public class ResourceManagerImpl implements ResourceManager
             // Reset DB from transaction image
             RMHashtable reset = transactionImages.get(transactionId);
             if(reset != null) {
-                reset.dump();
                 System.out.println("reseting transaction: "+ transactionId);
                 m_itemHT = (RMHashtable) reset.clone();
             }
@@ -515,19 +509,19 @@ public class ResourceManagerImpl implements ResourceManager
         return true;
     }
 
-    public void store(String filename) {
-      m_itemHT.store(filename);
-    }
+    // public void store(String filename) {
+    //   m_itemHT.store(filename);
+    // }
 
     public String getBanner() {
       return banner;
     }
 
-    public RMHashtable getHash() {
-      return m_itemHT;
-    }
+    // public RMHashtable getHash() {
+    //   return m_itemHT;
+    // }
 
-    public RMHashtable setHash(RMHashtable shadow) {
-      return m_itemHT = shadow;
-    }
+    // public RMHashtable setHash(RMHashtable shadow) {
+    //   return m_itemHT = shadow;
+    // }
 }

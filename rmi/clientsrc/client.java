@@ -13,8 +13,6 @@ public class client
 {
 	static String message = "blank";
 	static ResourceManager rm = null;
-	static int transactionId;
-
 
 	public static void main(String args[])
 	{
@@ -693,7 +691,7 @@ public class client
 			break;
 
 		case 27: // commit
-			System.out.println("Attempting to Commit Transaction " + transactionId);
+			System.out.println("Attempting to Commit Transaction " + Id);
 			try {
 				boolean commitWorthy = rm.commit(Id);
 				if (commitWorthy) {

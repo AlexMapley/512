@@ -1,0 +1,5 @@
+grant codeBase "file:/home/2015/gbryan/512/rmi/servercode/" {
+    permission java.security.AllPermission;
+};
+
+
