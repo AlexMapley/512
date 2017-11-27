@@ -11,6 +11,7 @@ javac ResInterface/ResourceManager.java
 jar cvf ResInterface.jar ResInterface/*.class
 javac ResImpl/MiddleWareImpl.java
 javac TransImpl/CrashDetection.java
+javac ResImpl/RMHashtable.java
 
 
 # Setting permissions
