@@ -2,6 +2,7 @@ package TransImpl;
 
 import ResInterface.*;
 import java.util.*;
+import java.rmi.RemoteException;
 
 public class Transaction
 {
