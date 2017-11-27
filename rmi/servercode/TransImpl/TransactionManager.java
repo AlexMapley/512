@@ -46,7 +46,7 @@ public class TransactionManager
 
 
 						// Initialize File/Serailization Streams
-						FileInputStream file_pipe = new FileInputStream(new File("shadows/" + rm_pointer.getBanner() + "_saved.ser"));
+						FileInputStream file_pipe = new FileInputStream("shadows/" + rm_pointer.getBanner() + "_saved.ser");
 						InputStream input_buffer = new BufferedInputStream(file_pipe);
 						ObjectInputStream object_pipe = new ObjectInputStream(input_buffer);
 
