@@ -157,9 +157,6 @@ public interface ResourceManager extends Remote
     public void store(String filename)
   throws RemoteException, IOException;
 
-    public void setBanner(String name)
-  throws RemoteException, IOException;
-
     public String getBanner()
   throws RemoteException;
 

@@ -65,21 +65,6 @@ public class MiddleWareImpl implements ResourceManager
         CarRM = rms.get(0);
         HotelRM = rms.get(1);
         FlightRM = rms.get(2);
-        String banner1 = "Cars";
-        String banner2 = "Hotels";
-        String banner3 = "Flights";
-
-        try {
-            System.out.println(CarRM.getBanner());
-            System.out.println(HotelRM.getBanner());
-            System.out.println(FlightRM.getBanner());
-            CarRM.setBanner(banner1);
-            HotelRM.setBanner(banner2);
-            FlightRM.setBanner(banner3);
-        }
-        catch (Exception e) {
-          e.printStackTrace();
-        }
 
         //Start middleware server
         try {
@@ -656,8 +641,6 @@ public class MiddleWareImpl implements ResourceManager
       // Not yet at least, i'll do it later.
     }
 
-    public void setBanner(String name) {
-    }
     public String getBanner() {
       return "MiddleWare";
     }
