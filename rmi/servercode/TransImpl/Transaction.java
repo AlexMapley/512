@@ -2,6 +2,7 @@ package TransImpl;
 
 import ResInterface.*;
 import java.util.*;
+import java.io;
 import java.rmi.RemoteException;
 
 public class Transaction
@@ -30,7 +31,7 @@ public class Transaction
 				String filename = this.id + rm.getBanner() + ".ser";
 				rm.store(filename);
 		}
-		catch (RemoteException e) {
+		catch (Exception e) {
 			e.printStackTrace();
 		}
 
