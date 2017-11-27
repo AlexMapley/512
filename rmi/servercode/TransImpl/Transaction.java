@@ -2,6 +2,7 @@ package TransImpl;
 
 import ResInterface.*;
 import java.util.*;
+import
 
 public class Transaction
 {
@@ -20,6 +21,13 @@ public class Transaction
 
 	public void add(ResourceManager rm) {
 		this.activeRMs.add(rm);
+
+		// Create temporary rm shadow file:
+		// name should be `id``banner`.ser,
+		// where `id` is our transaction id,
+		// and banner is the name of our rm.
+		String filename = this.id + rm.banner + ".ser"
+		rm.store(filename)
 	}
 
 	public void setTime(long time) {

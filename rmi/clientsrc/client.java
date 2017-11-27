@@ -123,18 +123,18 @@ public class client
 
 		//Start Transaction error cases
 		if(!help && !shutdown) {
-			if(commandCase == 26) { 
+			if(commandCase == 26) {
 				if(started) { // Transaction has already been started
 					System.out.println("A new transaction cannot be started until you finish the current one");
 					System.out.println("Call commit/abort to proceed");
 					continue;
-				}	
+				}
 			}
 			else {
 				if(!started) { // A transaction hasn't been started yet
 					System.out.println("Transaction has not been started");
 					System.out.println("Call start to proceed");
-					continue;	
+					continue;
 				}
 			}
 		}
@@ -747,6 +747,8 @@ public class client
 		// 		}
 		// 	}
 
+
+		// UNCOMMENT THIS FOR TIME TESTING
 		// 	// Write Metric
 		// 	endTime = System.currentTimeMillis();
 		// 	FileWriter metricWriter = null;

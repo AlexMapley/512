@@ -62,7 +62,12 @@ public class MiddleWareImpl implements ResourceManager
             System.exit(1);
         }
         // Associate inputted machines to respective RMs
-        CarRM = rms.get(0); HotelRM = rms.get(1); FlightRM = rms.get(2);
+        CarRM = rms.get(0);
+        HotelRM = rms.get(1);
+        FlightRM = rms.get(2);
+        CarRM.banner = "Cars";
+        HotelRM.banner = "Hotels";
+        FlightRM.banner = "Flights";
 
         //Start middleware server
         try {
@@ -187,10 +192,8 @@ public class MiddleWareImpl implements ResourceManager
             }
         }
         catch(Exception e){
-            System.out.println("EXCEPTION:");
-            // System.out.println(e.getMessage());
-            e.printStackTrace();
-            throw e;
+          System.out.println("EXCEPTION:");
+          System.out.println(e.getMessage());
         }
         return(true);
     }
@@ -222,7 +225,6 @@ public class MiddleWareImpl implements ResourceManager
         catch(Exception e){
             System.out.println("EXCEPTION:");
             System.out.println(e.getMessage());
-            e.printStackTrace();
         }
         return(true);
     }
@@ -255,7 +257,6 @@ public class MiddleWareImpl implements ResourceManager
         catch(Exception e){
             System.out.println("EXCEPTION:");
             System.out.println(e.getMessage());
-            e.printStackTrace();
         }
         return(true);
     }
@@ -411,7 +412,6 @@ public class MiddleWareImpl implements ResourceManager
             catch(Exception e) {
                 System.out.println("EXCEPTION:");
                 System.out.println(e.getMessage());
-                e.printStackTrace();
             }
         return cid;
     }
@@ -439,7 +439,6 @@ public class MiddleWareImpl implements ResourceManager
             catch(Exception e) {
                 System.out.println("EXCEPTION:");
                 System.out.println(e.getMessage());
-                e.printStackTrace();
             }
 
             return true;
@@ -555,7 +554,6 @@ public class MiddleWareImpl implements ResourceManager
         } catch(Exception e) {
             System.out.println("EXCEPTION:");
             System.out.println(e.getMessage());
-            e.printStackTrace();
         }
 
         return success;
@@ -579,7 +577,6 @@ public class MiddleWareImpl implements ResourceManager
         } catch(Exception e) {
             System.out.println("EXCEPTION:");
             System.out.println(e.getMessage());
-            e.printStackTrace();
         }
 
     }
@@ -597,12 +594,11 @@ public class MiddleWareImpl implements ResourceManager
             if(FlightRM.addFlight(transactionId,3,1,1))
                 Trace.info("RM::addFlight(" + transactionId + ") created or modified flight " + 3 + ", seats=" +
                     1 + ", price=$" + 1 );
-            
+
         } catch(Exception e){
-                System.out.println("EXCEPTION:");
-                System.out.println(e.getMessage());
-                e.printStackTrace();
-            }
+            System.out.println("EXCEPTION:");
+            System.out.println(e.getMessage());
+        }
 
     }
 
@@ -614,12 +610,19 @@ public class MiddleWareImpl implements ResourceManager
 
     public boolean commit(int transactionId) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
         boolean result = TM.commit(transactionId);
+
+        // Removes image from hashtable if transaction commits
+        // I ended up smashing the stack a couple weeks ago while testing,
+        // we might have to start being careful about memory allocation.
+        if (result == true) {
+          transactionImages = transactionImages.remove(transactionId);
+        }
+
         return result;
     }
 
     public void abort(int transactionId) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
         // Reset DB from transaction image
-
         // System.out.println(m_itemHT.get(Customer.getKey(customerID)));
         RMHashtable reset = transactionImages.get(transactionId);
         if(reset != null) {
@@ -649,6 +652,11 @@ public class MiddleWareImpl implements ResourceManager
         }
 
         return true;
+    }
+
+    public void store(String filename) {
+      // Do nothing. We don't shadow the MiddleWare Hashtable.
+      // Not yet at least, i'll do it later.
     }
 
 }
