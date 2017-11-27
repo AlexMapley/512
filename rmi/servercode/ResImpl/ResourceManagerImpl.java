@@ -528,9 +528,6 @@ public class ResourceManagerImpl implements ResourceManager
       else if (option.equals("Hotels")) {
         banner = "Hotels";
       }
-      else (option.equals("Cars")) {
-        banner = "default";
-      }
     }
 
     public String getBanner() {
