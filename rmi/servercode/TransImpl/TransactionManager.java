@@ -46,7 +46,7 @@ public class TransactionManager
 
 
 						// Initialize File/Serailization Streams
-						FileInputStream file_pipe = new FileInputStream(new File("shadows/" + rm_pointer.banner + "_saved.ser"));
+						FileInputStream file_pipe = new FileInputStream(new File("shadows/" + rm_pointer.getbanner() + "_saved.ser"));
 						InputStream input_buffer = new BufferedInputStream(file_pipe);
 						ObjectInputStream object_pipe = new ObjectInputStream(input_buffer);
 
@@ -93,7 +93,7 @@ public class TransactionManager
 
 						// Update Shadow File
 						if (result) {
-							String filename = rm_pointer.banner + "_saved.ser";
+							String filename = rm_pointer.getbanner() + "_saved.ser";
 							rm_clone.store(filename);
 						}
 

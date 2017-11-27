@@ -664,7 +664,7 @@ public class MiddleWareImpl implements ResourceManager
 
     public void setBanner(String name) {
     }
-    public void getBanner(String name) {
+    public void getBanner() {
     }
 
     public RMHashtable getHash() {

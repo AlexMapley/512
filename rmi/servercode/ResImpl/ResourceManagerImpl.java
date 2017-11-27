@@ -522,14 +522,14 @@ public class ResourceManagerImpl implements ResourceManager
       this.banner = name;
     }
 
-    public void getBanner(String name) {
+    public void getBanner() {
       return this.banner;
     }
 
     public RMHashtable getHash() {
       return this.m_itemHT;
     }
-    
+
     public RMHashtable setHash(RMHashtable shadow) {
       return this.m_itemHT = shadow;
     }
