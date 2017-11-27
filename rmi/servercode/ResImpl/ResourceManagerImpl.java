@@ -519,16 +519,16 @@ public class ResourceManagerImpl implements ResourceManager
     }
 
     public void setBanner(String option) {
-      if (option == "Cars") {
+      if (option.equals("Cars")) {
         banner = "Cars";
       }
-      else if (option == "Flights") {
+      else if (option.equals("Flights")) {
         banner = "Flights";
       }
-      else if (option == "Hotels") {
+      else if (option.equals("Hotels")) {
         banner = "Hotels";
       }
-      else (option == "Cars") {
+      else (option.equals("Cars")) {
         banner = "default";
       }
     }
