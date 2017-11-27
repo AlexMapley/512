@@ -159,5 +159,9 @@ public interface ResourceManager extends Remote
   throws RemoteException, IOException;
 
     public void getBanner(String name)
-  throws Exception;
+  throws RemoteException;
+
+    public RMHashtable getHash()
+  throws RemoteException;
+
 }

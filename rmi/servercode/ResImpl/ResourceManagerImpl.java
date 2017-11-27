@@ -526,4 +526,7 @@ public class ResourceManagerImpl implements ResourceManager
       return this.banner;
     }
 
+    public RMHashtable getHash() {
+      return this.m_itemHT;
+    }
 }
