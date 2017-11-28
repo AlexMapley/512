@@ -30,18 +30,34 @@ public class TransactionManager
 		CD = new CrashDetection(this);
 		System.out.println("Transaction Manager Started...");
 
+
 		// initialize Vault
-		System.out.println("Creating Empty Vault...");
 		ArrayList<RMHashtable> default_Maps = new ArrayList<RMHashtable>();
 		for (int i = 0; i < hashKey_index_start; i++) {
-			RMHashtable empty_table = new RMHashtable();
-			default_Maps.add(empty_table);
+				RMHashtable empty_table = new RMHashtable();
+				default_Maps.add(empty_table);
 		}
+		System.out.println("Creating Empty Vault...");
 		shadowVault = new HashVault(default_Maps);
 
-		//Serialize Vault
-		shadowVault.serialize_out();
-
+		// Do we have a Vault already?
+		File vault_spy = new File("shadowVault.ser");
+		if ( vault_spy.exists() ) {
+			try {
+				shadowVault.serialize_in();
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		else {
+			try {
+				shadowVault.serialize_out();
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public synchronized int start() {
