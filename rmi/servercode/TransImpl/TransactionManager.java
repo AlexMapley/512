@@ -121,6 +121,34 @@ public class TransactionManager
 		}
 	}
 
+	public boolean prepare(int id) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
+	    Transaction toPrepare = transactions.get(id);
+	    boolean result = true;
+
+	    if(toPrepare != null) {
+		    Iterator<ResourceManager> rm_Iterator = toPrepare.activeRMs.iterator();
+			while(rm_Iterator.hasNext()) {
+				try {
+					ResourceManager rm_pointer = rm_Iterator.next();
+					//accumulate votes
+					result = result && rm_pointer.vote(id);
+				} catch (Exception e) {
+					System.out.println("Transaction " + transactionCounter + " Error while receiving votes");
+					return false;
+				}
+				if (!result) {
+					break;
+				}
+			}
+			if (!result)
+				return false;
+			else 
+				return true;
+		}
+		else
+			throw new InvalidTransactionException(id, "Transaction not found for prepare");
+	}
+
 	public void startDetector() {
 		// CD.start();
 	}
