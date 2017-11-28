@@ -514,20 +514,4 @@ public class ResourceManagerImpl implements ResourceManager
         System.out.println("Sending NO vote for transaction: " + transactionId);
         return false;
     }
-
-    // public void store(String filename) {
-    //   m_itemHT.store(filename);
-    // }
-
-    public String getBanner() {
-      return banner;
-    }
-
-    // public RMHashtable getHash() {
-    //   return m_itemHT;
-    // }
-
-    // public RMHashtable setHash(RMHashtable shadow) {
-    //   return m_itemHT = shadow;
-    // }
 }

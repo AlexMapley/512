@@ -11,6 +11,10 @@ import java.rmi.RemoteException;
 public class TransactionManager
 {
 	private static volatile int transactionCounter;
+	private static volatile int hashKey;
+
+	// We want indexe's 0,1,2,3 in our Vault to be reserved for our master records
+	private int hashKey_index_start = 4;
 
 	// Hashmap of ongoing transactions, compared to key value
 	public static HashMap<Integer, Transaction> transactions = new HashMap<Integer, Transaction>();
@@ -19,6 +23,7 @@ public class TransactionManager
 	//Instantiate with access to MiddleWareImpl
 	public TransactionManager() {
 		transactionCounter = 0;
+		hashKey = hashKey_index_start;
 		CD = new CrashDetection(this);
 		// startDetector();
 		System.out.println("Transaction Manager Started...");
@@ -43,26 +48,6 @@ public class TransactionManager
 					try {
 						ResourceManager rm_pointer = rm_Iterator.next();
 						rm_pointer.abort(id);
-
-
-
-						// // Initialize File/Serailization Streams
-						// FileInputStream file_pipe = new FileInputStream("shadows/" + rm_pointer.getBanner() + "_saved.ser");
-						// InputStream input_buffer = new BufferedInputStream(file_pipe);
-						// ObjectInputStream object_pipe = new ObjectInputStream(input_buffer);
-
-						// // TODO: NEEDS VALIDATION
-						// // Will this change the value of the object
-						// // being pointed to, or just change the value
-						// // of the pointer as a separate object
-						// RMHashtable shadow = (RMHashtable) object_pipe.readObject();
-						// rm_pointer.setHash(shadow);
-
-						// // Closes Streams
-				  //   file_pipe.close();
-				  //   input_buffer.close();
-						// object_pipe.close();
-
 					}
 					catch (Exception e) {
 						throw new TransactionAbortedException(id, "RM abort encountered an error");
@@ -92,13 +77,6 @@ public class TransactionManager
 					try {
 						ResourceManager rm_pointer = rm_Iterator.next();
 						result = rm_pointer.commit(id);
-
-						// Update Shadow File
-						// if (result) {
-						// 	String filename = "shadows/" + rm_pointer.getBanner() + "_saved.ser";
-						// 	rm_pointer.store(filename);
-						// }
-
 					} catch (Exception e) {
 						throw new TransactionAbortedException(id, "RM commit encountered an error and needs to abort");
 					}
@@ -142,7 +120,7 @@ public class TransactionManager
 			}
 			if (!result)
 				return false;
-			else 
+			else
 				return true;
 		}
 		else
@@ -155,7 +133,9 @@ public class TransactionManager
 
 	public void enlist(int id, ResourceManager rm) throws RemoteException, TransactionAbortedException {
 		Transaction transaction = transactions.get(id);
-		transaction.add(rm);
+
+		// Add rm to transaction, with it's associated Vault hash key
+		transaction.add(rm, hashKey++);
 		transaction.setTime((new Date()).getTime());
 		rm.start(id);
 	}

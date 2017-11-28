@@ -43,7 +43,6 @@ public class MiddleWareImpl implements ResourceManager
                     if(rms.get(i) != null)
                     {
                         System.out.println("Successful Connection to RM: " + i);
-                    }
                     else
                     {
                         System.out.println("Unsuccessful Connecting to RM: " + i);
@@ -60,21 +59,6 @@ public class MiddleWareImpl implements ResourceManager
             System.err.println ("Wrong usage");
             System.out.println("Usage: java ResImpl.MiddleWareImpl [rmaddress] X 3 ");
             System.exit(1);
-        }
-        
-        // Associate inputted machines to respective RMs
-        for(int i=0;i<3;i++) {
-            try {
-                String banner = rms.get(i).getBanner().trim();
-                if(banner.equals("Car"))
-                    CarRM = rms.get(i);
-                else if(banner.equals("Flight"))
-                    FlightRM = rms.get(i);
-                else if(banner.equals("Hotel"))
-                    HotelRM = rms.get(i);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
         }
 
         //Start middleware server
@@ -606,7 +590,7 @@ public class MiddleWareImpl implements ResourceManager
 
     public boolean commit(int transactionId) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
         boolean result = TM.prepare(transactionId);
-        
+
         if(result) {
             TM.commit(transactionId);
         }
@@ -653,22 +637,4 @@ public class MiddleWareImpl implements ResourceManager
         // MW does not vote
         return false;
     }
-
-    // public void store(String filename) {
-    //   // Do nothing. We don't shadow the MiddleWare Hashtable.
-    //   // Not yet at least, i'll do it later.
-    // }
-
-    public String getBanner() {
-      return "MiddleWare";
-    }
-
-    // public RMHashtable getHash() {
-    //   return this.m_itemHT;
-    // }
-
-    // public RMHashtable setHash(RMHashtable shadow) {
-    //   return this.m_itemHT = shadow;
-    // }
-
 }
