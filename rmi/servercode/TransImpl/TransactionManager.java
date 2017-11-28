@@ -12,6 +12,7 @@ public class TransactionManager
 {
 	private static volatile int transactionCounter;
 	private static volatile int hashKey;
+	private static HashVault shadowVault;
 
 	// We want indexe's 0,1,2,3 in our Vault to be reserved for our master records
 	private int hashKey_index_start = 4;
@@ -24,9 +25,18 @@ public class TransactionManager
 	public TransactionManager() {
 		transactionCounter = 0;
 		hashKey = hashKey_index_start;
-		CD = new CrashDetection(this);
+
 		// startDetector();
+		CD = new CrashDetection(this);
 		System.out.println("Transaction Manager Started...");
+
+		// initialize Vault
+		ArrayList<RMHashtable> default_Maps = new ArrayList<RMHashtable>();
+		for (int i = 0; i < hashKey_index_start; i++) {
+			RMHashtable empty_table = new RMHashtable();
+			default_Maps.add(empty_table);
+		}
+		shadowVault = new HashVault(default_Maps);
 	}
 
 	public synchronized int start() {
@@ -77,6 +87,9 @@ public class TransactionManager
 					try {
 						ResourceManager rm_pointer = rm_Iterator.next();
 						result = rm_pointer.commit(id);
+
+
+						//
 					} catch (Exception e) {
 						throw new TransactionAbortedException(id, "RM commit encountered an error and needs to abort");
 					}
@@ -165,5 +178,9 @@ public class TransactionManager
 
 	public int getCounter() {
 		return this.transactionCounter;
+	}
+
+	public void createVault(ArrayList<RMHashtable> masterRecords) {
+		this.shadowVault = new HashVault(masterRecords);
 	}
 }

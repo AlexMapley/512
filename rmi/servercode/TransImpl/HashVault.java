@@ -14,10 +14,17 @@ public class HashVault
   // Each Key is unique int, the hashKey referenced in TransactionManager
   // Each Value is a temporary or master hashtable
   private static HashMap<Integer, RMHashtable> vault;
+  private static int default_tables = 4;
 
 
-	public HashVault() {
-    this.shadowVault = new HashMap<Integer, RMHashtable>();
+	public HashVault(ArrayList<RMHashtable> masterRecords) {
+    this.vault = new HashMap<Integer, RMHashtable>();
+
+    // Add default RMHashtables
+    for (int i = 0; i < default_tables; i++) {
+      this.vault.put(i, masterRecords.get(i));
+    }
+
 	}
 
 	public void store(int hashKey, RMHashtable shadow) {
@@ -44,9 +51,6 @@ public class HashVault
     catch (IOException e) {
       e.printStackTrace();
     }
-    catch (REmoteExcpetion e) {
-      e.printStackTrace();
-    }
   }
 
   public void serialize_in() {
@@ -68,7 +72,7 @@ public class HashVault
     catch (IOException e) {
       e.printStackTrace();
     }
-    catch (REmoteExcpetion e) {
+    catch (ClassNotFoundException e) {
       e.printStackTrace();
     }
   }

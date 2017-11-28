@@ -24,20 +24,7 @@ public class Transaction
 
 	public void add(ResourceManager rm, int hashKey) {
 		this.activeRMs.add(rm);
-		this.activeRM_Ids.add(hashKey)
-
-		// Create temporary rm shadow file:
-		// name should be `id``banner`.ser,
-		// where `id` is our transaction id,
-		// and banner is the name of our rm.
-		// try {
-		// 		String filename = this.id + rm.getBanner() + ".ser";
-		// 		rm.store(filename);
-		// }
-		// catch (Exception e) {
-		// 	e.printStackTrace();
-		// }
-
+		this.activeRM_Ids.add(hashKey);
 	}
 
 	public void setTime(long time) {

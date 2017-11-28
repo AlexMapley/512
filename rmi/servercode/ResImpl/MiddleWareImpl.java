@@ -15,13 +15,14 @@ import java.rmi.RMISecurityManager;
 public class MiddleWareImpl implements ResourceManager
 {
 
-    protected RMHashtable m_itemHT = new RMHashtable();
+    private static RMHashtable m_itemHT = new RMHashtable();
     private static HashMap<Integer, RMHashtable> transactionImages = new HashMap<Integer, RMHashtable>();
 
     static ResourceManager CarRM = null;
     static ResourceManager HotelRM = null;
     static ResourceManager FlightRM = null;
     static ArrayList<ResourceManager> rms;
+    static ArrayList<RMHashtable> defaultHashtables = new ArrayList<RMHashtable>();
 
     private static TransactionManager TM;
 
@@ -43,11 +44,15 @@ public class MiddleWareImpl implements ResourceManager
                     if(rms.get(i) != null)
                     {
                         System.out.println("Successful Connection to RM: " + i);
+                    }
                     else
                     {
                         System.out.println("Unsuccessful Connecting to RM: " + i);
                     }
                 }
+                CarRM = rms.get(0);
+                HotelRM = rms.get(1);
+                FlightRM = rms.get(2);
             }
             catch (Exception e)
             {
@@ -86,7 +91,6 @@ public class MiddleWareImpl implements ResourceManager
 
         // Setup transaction manager
         TM = new TransactionManager();
-
     }
 
     public MiddleWareImpl() throws RemoteException {
@@ -636,5 +640,9 @@ public class MiddleWareImpl implements ResourceManager
     public boolean vote(int transactionId) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
         // MW does not vote
         return false;
+    }
+
+    public RMHashtable getHash() {
+      return m_itemHT;
     }
 }

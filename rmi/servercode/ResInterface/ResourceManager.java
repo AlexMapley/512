@@ -157,4 +157,7 @@ public interface ResourceManager extends Remote
     public boolean vote(int transactionId)
   throws RemoteException, InvalidTransactionException, TransactionAbortedException;
 
+    public RMHashtable getHash()
+  throws RemoteException, IOException;
+
 }

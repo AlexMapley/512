@@ -28,12 +28,6 @@ public class ResourceManagerImpl implements ResourceManager
         String server = "localhost";
         int port = 5959;
 
-        if (args.length == 1) {
-            banner = args[0];
-        } else {
-          System.out.println("Only one argument: name of RM server being created");
-        }
-
         try {
             // create a new Server object
             ResourceManagerImpl obj = new ResourceManagerImpl();
@@ -42,7 +36,7 @@ public class ResourceManagerImpl implements ResourceManager
             // Bind the remote object's stub in the registry
             Registry registry = LocateRegistry.getRegistry(port);
             registry.rebind("group_21", rm);
-            System.err.println(banner + " RM Server ready");
+            System.err.println("RM Server ready");
           } catch (Exception e) {
             System.err.println("RM Server exception: " + e.toString());
             e.printStackTrace();
@@ -513,5 +507,9 @@ public class ResourceManagerImpl implements ResourceManager
         // Do something more here??
         System.out.println("Sending NO vote for transaction: " + transactionId);
         return false;
+    }
+
+    public RMHashtable getHash() {
+      return m_itemHT;
     }
 }
