@@ -32,9 +32,10 @@ public class HashVault
 	}
 
   public RMHashtable retrieve(int hashKey) {
-    return this.vault.get(hashKey);
+    return (RMHashtable) this.vault.get(hashKey);
   }
 
+  // Want to store the vault to its stable file? Call this function
   public void serialize_out() {
     try {
       // Initialize File/Serailization Streams
@@ -53,6 +54,7 @@ public class HashVault
     }
   }
 
+  // Want to retrive the vault from its stable file? Call this function
   public void serialize_in() {
 
     try {

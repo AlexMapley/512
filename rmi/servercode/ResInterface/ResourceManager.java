@@ -159,5 +159,4 @@ public interface ResourceManager extends Remote
 
     public RMHashtable getHash()
   throws RemoteException, IOException;
-
 }

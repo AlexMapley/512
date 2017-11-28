@@ -9,20 +9,30 @@ public class Transaction
 {
 	public static final int TIME2LIVE = 1000; // 1s in ms
 	public int id;
-	public HashSet<Integer> activeRM_Ids;
-	public Set<ResourceManager> activeRMs;
+	public ArrayList<Integer> activeRM_Ids;
+	public ArrayList<ResourceManager> activeRMs;
 	public int status; // 1 for active, 0 for finished
 	private long time;
 
 	public Transaction(int id) {
 	 	this.id = id;
-		this.activeRM_Ids = new HashSet<Integer>();
-	 	this.activeRMs = new HashSet<ResourceManager>();
+		this.activeRM_Ids = new ArrayList<Integer>();
+	 	this.activeRMs = new ArrayList<ResourceManager>();
 	 	this.status = 1;
 	 	this.time = (new Date()).getTime();
 	}
 
 	public void add(ResourceManager rm, int hashKey) {
+
+		/* Each Transaction keeps a set of hashmaps,
+		as well as a corresponding set of keys.
+		If it wishes to store or retreive a hashmap shadow,
+		from or into one of the activeRM's hashtables,
+		it will use the corresponding key at the same index
+		of the ActiveRM_Id's ArrayList.
+		Note that these datastructures are ArrayLists so that they are
+		both indexed as well as iterable.
+		*/
 		this.activeRMs.add(rm);
 		this.activeRM_Ids.add(hashKey);
 	}
