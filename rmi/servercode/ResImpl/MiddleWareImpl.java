@@ -605,7 +605,14 @@ public class MiddleWareImpl implements ResourceManager
     }
 
     public boolean commit(int transactionId) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
-        boolean result = TM.commit(transactionId);
+        boolean result = TM.prepare(transactionId);
+        
+        if(result) {
+            TM.commit(transactionId);
+        }
+        else {
+            throw new TransactionAbortedException(transactionId, "Unable to commit");
+        }
         return result;
     }
 
@@ -640,6 +647,11 @@ public class MiddleWareImpl implements ResourceManager
         }
 
         return true;
+    }
+
+    public boolean vote(int transactionId) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
+        // MW does not vote
+        return false;
     }
 
     // public void store(String filename) {

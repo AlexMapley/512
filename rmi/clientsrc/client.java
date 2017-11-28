@@ -703,7 +703,7 @@ public class client
 				started = false;
 			} catch (Exception e) {
 				System.out.println("Transaction error: " + Id + " commit error " + e);
-				System.out.println("Client should abort: " + Id);
+				System.out.println("Client should abort");
 			}
 			break;
 

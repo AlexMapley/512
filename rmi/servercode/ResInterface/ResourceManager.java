@@ -154,6 +154,9 @@ public interface ResourceManager extends Remote
     public boolean shutdown()
   throws RemoteException;
 
+    public boolean vote(int transactionId)
+  throws RemoteException, InvalidTransactionException, TransactionAbortedException;
+
   //   public void store(String filename)
   // throws RemoteException, IOException;
 

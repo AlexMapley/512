@@ -492,7 +492,7 @@ public class ResourceManagerImpl implements ResourceManager
             // Reset DB from transaction image
             RMHashtable reset = transactionImages.get(transactionId);
             if(reset != null) {
-                System.out.println("reseting transaction: "+ transactionId);
+                // System.out.println("reseting transaction: "+ transactionId);
                 m_itemHT = (RMHashtable) reset.clone();
             }
             System.out.println("Transaction: " + transactionId + " Aborted");
@@ -507,6 +507,12 @@ public class ResourceManagerImpl implements ResourceManager
         LM = new LockManager();
         transactionImages.clear();
         return true;
+    }
+
+    public boolean vote(int transactionId) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
+        // Do something more here??
+        System.out.println("Sending NO vote for transaction: " + transactionId);
+        return false;
     }
 
     // public void store(String filename) {
