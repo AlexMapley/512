@@ -686,6 +686,7 @@ public class client
 				started = true;
 				System.out.println("\nStarting Transaction " + Id + "\n");
 			} catch(Exception e){
+				e.printStackTrace();
 				System.out.println("Error starting a transaction, please try again");
 			}
 			break;
