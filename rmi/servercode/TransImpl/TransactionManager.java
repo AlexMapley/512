@@ -11,6 +11,11 @@ import java.rmi.RemoteException;
 public class TransactionManager
 {
 	private static volatile int transactionCounter;
+	private static volatile int hashKey;
+	private static HashVault shadowVault;
+
+	// We want indexe's 0,1,2,3 in our Vault to be reserved for our master records
+	private int hashKey_index_start = 4;
 
 	// Hashmap of ongoing transactions, compared to key value
 	public static HashMap<Integer, Transaction> transactions = new HashMap<Integer, Transaction>();
@@ -19,9 +24,40 @@ public class TransactionManager
 	//Instantiate with access to MiddleWareImpl
 	public TransactionManager() {
 		transactionCounter = 0;
-		CD = new CrashDetection(this);
+		hashKey = hashKey_index_start;
+
 		// startDetector();
+		CD = new CrashDetection(this);
 		System.out.println("Transaction Manager Started...");
+
+
+		// initialize Vault
+		ArrayList<RMHashtable> default_Maps = new ArrayList<RMHashtable>();
+		for (int i = 0; i < hashKey_index_start; i++) {
+				RMHashtable empty_table = new RMHashtable();
+				default_Maps.add(empty_table);
+		}
+		System.out.println("Creating Empty Vault...");
+		shadowVault = new HashVault(default_Maps);
+
+		// Do we have a Vault already?
+		File vault_spy = new File("shadowVault.ser");
+		if ( vault_spy.exists() ) {
+			try {
+				shadowVault.serialize_in();
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		else {
+			try {
+				shadowVault.serialize_out();
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public synchronized int start() {
@@ -43,26 +79,6 @@ public class TransactionManager
 					try {
 						ResourceManager rm_pointer = rm_Iterator.next();
 						rm_pointer.abort(id);
-
-
-
-						// // Initialize File/Serailization Streams
-						// FileInputStream file_pipe = new FileInputStream("shadows/" + rm_pointer.getBanner() + "_saved.ser");
-						// InputStream input_buffer = new BufferedInputStream(file_pipe);
-						// ObjectInputStream object_pipe = new ObjectInputStream(input_buffer);
-
-						// // TODO: NEEDS VALIDATION
-						// // Will this change the value of the object
-						// // being pointed to, or just change the value
-						// // of the pointer as a separate object
-						// RMHashtable shadow = (RMHashtable) object_pipe.readObject();
-						// rm_pointer.setHash(shadow);
-
-						// // Closes Streams
-				  //   file_pipe.close();
-				  //   input_buffer.close();
-						// object_pipe.close();
-
 					}
 					catch (Exception e) {
 						throw new TransactionAbortedException(id, "RM abort encountered an error");
@@ -93,12 +109,8 @@ public class TransactionManager
 						ResourceManager rm_pointer = rm_Iterator.next();
 						result = rm_pointer.commit(id);
 
-						// Update Shadow File
-						// if (result) {
-						// 	String filename = "shadows/" + rm_pointer.getBanner() + "_saved.ser";
-						// 	rm_pointer.store(filename);
-						// }
 
+						//
 					} catch (Exception e) {
 						throw new TransactionAbortedException(id, "RM commit encountered an error and needs to abort");
 					}
@@ -142,7 +154,7 @@ public class TransactionManager
 			}
 			if (!result)
 				return false;
-			else 
+			else
 				return true;
 		}
 		else
@@ -155,7 +167,9 @@ public class TransactionManager
 
 	public void enlist(int id, ResourceManager rm) throws RemoteException, TransactionAbortedException {
 		Transaction transaction = transactions.get(id);
-		transaction.add(rm);
+
+		// Add rm to transaction, with it's associated Vault hash key
+		transaction.add(rm, hashKey++);
 		transaction.setTime((new Date()).getTime());
 		rm.start(id);
 	}
@@ -185,5 +199,9 @@ public class TransactionManager
 
 	public int getCounter() {
 		return this.transactionCounter;
+	}
+
+	public void createVault(ArrayList<RMHashtable> masterRecords) {
+		this.shadowVault = new HashVault(masterRecords);
 	}
 }

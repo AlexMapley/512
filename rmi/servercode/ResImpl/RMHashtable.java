@@ -14,7 +14,7 @@ import java.io.*;
 public class RMHashtable extends Hashtable {
 
 
-    RMHashtable() {
+    public RMHashtable() {
 		    super();
   	}
 
