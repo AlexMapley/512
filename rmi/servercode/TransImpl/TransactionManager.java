@@ -131,6 +131,11 @@ public class TransactionManager
 					try {
 						// Storing temporary HashVault Backup
 						masterClone.store(toCommit.RM_Commit_Ids.get(i), toCommit.activeRMs.get(i).getHash());
+
+						// Committing to temporary Master Records
+						masterClone.store(toCommit.activeRMs.get(i).getIndex(), toCommit.activeRMs.get(i).getHash());
+
+						// Serializing temporary vault at each step
 						masterClone.serialize_out_temp(id);
 					}
 					catch (IOException e) {

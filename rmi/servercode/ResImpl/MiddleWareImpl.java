@@ -14,7 +14,7 @@ import java.rmi.RMISecurityManager;
 
 public class MiddleWareImpl implements ResourceManager
 {
-
+    public static int RM_Index = 0;
     private static RMHashtable m_itemHT = new RMHashtable();
     private static HashMap<Integer, RMHashtable> transactionImages = new HashMap<Integer, RMHashtable>();
 
@@ -50,8 +50,11 @@ public class MiddleWareImpl implements ResourceManager
                     }
                 }
                 CarRM = rms.get(0);
+                CarRM.setIndex(1);
                 HotelRM = rms.get(1);
+                HotelRM.setIndex(2);
                 FlightRM = rms.get(2);
+                FlightRM.setIndex(3);
             }
             catch (Exception e)
             {
@@ -663,5 +666,13 @@ public class MiddleWareImpl implements ResourceManager
 
     public void setHash(RMHashtable replacement) {
       m_itemHT = replacement;
+    }
+
+    public void setIndex(int index) {
+      RM_Index = index;
+    }
+
+    public int getIndex() {
+      return RM_Index;
     }
 }

@@ -32,6 +32,7 @@ public class HashVault
 	}
 
   public RMHashtable retrieve(int hashKey) {
+    System.out.println("Retrieving table for key " + hashKey);
     return (RMHashtable) this.vault.get(hashKey);
   }
 
