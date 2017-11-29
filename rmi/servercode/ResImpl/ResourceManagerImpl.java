@@ -505,11 +505,16 @@ public class ResourceManagerImpl implements ResourceManager
 
     public boolean vote(int transactionId) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
         // Do something more here??
-        System.out.println("Sending NO vote for transaction: " + transactionId);
-        return false;
+        System.out.println("Sending YES vote for transaction: " + transactionId);
+        return true;
     }
 
     public RMHashtable getHash() {
       return m_itemHT;
     }
+
+    public void setHash(RMHashtable replacement) {
+      m_itemHT = replacement;
+    }
+
 }

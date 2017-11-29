@@ -22,7 +22,6 @@ public class MiddleWareImpl implements ResourceManager
     static ResourceManager HotelRM = null;
     static ResourceManager FlightRM = null;
     static ArrayList<ResourceManager> rms;
-    static ArrayList<RMHashtable> defaultHashtables = new ArrayList<RMHashtable>();
 
     private static TransactionManager TM;
 
@@ -91,6 +90,22 @@ public class MiddleWareImpl implements ResourceManager
 
         // Setup transaction manager
         TM = new TransactionManager();
+
+        // Restore Master HashTables
+        System.out.println("Retreiving Master Records from Storage...");
+        RMHashtable[] master_records = TM.get_Masters();
+        m_itemHT = master_records[0];
+        try {
+          CarRM.setHash(master_records[1]);
+          HotelRM.setHash(master_records[2]);
+          FlightRM.setHash(master_records[3]);
+        }
+        catch (RemoteException e) {
+          e.printStackTrace();
+        }
+        catch (IOException e) {
+          e.printStackTrace();
+        }
     }
 
     public MiddleWareImpl() throws RemoteException {
@@ -644,5 +659,9 @@ public class MiddleWareImpl implements ResourceManager
 
     public RMHashtable getHash() {
       return m_itemHT;
+    }
+
+    public void setHash(RMHashtable replacement) {
+      m_itemHT = replacement;
     }
 }
