@@ -44,25 +44,6 @@ public class TransactionManager
 						ResourceManager rm_pointer = rm_Iterator.next();
 						rm_pointer.abort(id);
 
-
-
-						// // Initialize File/Serailization Streams
-						// FileInputStream file_pipe = new FileInputStream("shadows/" + rm_pointer.getBanner() + "_saved.ser");
-						// InputStream input_buffer = new BufferedInputStream(file_pipe);
-						// ObjectInputStream object_pipe = new ObjectInputStream(input_buffer);
-
-						// // TODO: NEEDS VALIDATION
-						// // Will this change the value of the object
-						// // being pointed to, or just change the value
-						// // of the pointer as a separate object
-						// RMHashtable shadow = (RMHashtable) object_pipe.readObject();
-						// rm_pointer.setHash(shadow);
-
-						// // Closes Streams
-				  //   file_pipe.close();
-				  //   input_buffer.close();
-						// object_pipe.close();
-
 					}
 					catch (Exception e) {
 						throw new TransactionAbortedException(id, "RM abort encountered an error");
@@ -92,12 +73,6 @@ public class TransactionManager
 					try {
 						ResourceManager rm_pointer = rm_Iterator.next();
 						result = rm_pointer.commit(id);
-
-						// Update Shadow File
-						// if (result) {
-						// 	String filename = "shadows/" + rm_pointer.getBanner() + "_saved.ser";
-						// 	rm_pointer.store(filename);
-						// }
 
 					} catch (Exception e) {
 						throw new TransactionAbortedException(id, "RM commit encountered an error and needs to abort");

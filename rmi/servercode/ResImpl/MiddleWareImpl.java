@@ -15,7 +15,8 @@ import java.rmi.RMISecurityManager;
 public class MiddleWareImpl implements ResourceManager
 {
 
-    protected RMHashtable m_itemHT = new RMHashtable();
+    private static String banner = "MW";
+    protected static RMHashtable m_itemHT = new RMHashtable();
     private static HashMap<Integer, RMHashtable> transactionImages = new HashMap<Integer, RMHashtable>();
 
     static ResourceManager CarRM = null;
@@ -102,7 +103,6 @@ public class MiddleWareImpl implements ResourceManager
 
         // Setup transaction manager
         TM = new TransactionManager();
-
     }
 
     public MiddleWareImpl() throws RemoteException {
@@ -111,26 +111,40 @@ public class MiddleWareImpl implements ResourceManager
 
 
     // Reads a data item
-    private RMItem readData( int id, String key )
+    private RMItem readData( int id, String key ) throws TransactionAbortedException
     {
-        synchronized(m_itemHT) {
-            return (RMItem) m_itemHT.get(key);
-        }
+        // RMItem item;
+        // synchronized(m_itemHT) {
+        //     RMHashtable masterTable = (RMHashtable) readFile(master);
+        //     item = (RMItem) masterTable.get(key);
+        // }
+
+        return null;
     }
 
     // Writes a data item
-    private void writeData( int id, String key, RMItem value )
+    private void writeData( int id, String key, RMItem value ) throws TransactionAbortedException
     {
-        synchronized(m_itemHT) {
-            m_itemHT.put(key, value);
-        }
+        // synchronized(m_itemHT) {
+        //     // write to in memory hashtable
+        //     m_itemHT.put(key, value);
+                
+        //     // write to hashtable in file    
+        //     writeFile(master, m_itemHT);
+        // }
     }
 
     // Remove the item out of storage
     protected RMItem removeData(int id, String key) {
-        synchronized(m_itemHT) {
-            return (RMItem)m_itemHT.remove(key);
-        }
+        // RMItem item;
+        // synchronized(m_itemHT) {
+        //     // write to in memory hashtable
+        //     item = (RMItem) m_itemHT.remove(key);
+                
+        //     // write to hashtable in file    
+        //     writeFile(master, m_itemHT);;
+        // }
+        return null;
     }
 
 
@@ -153,32 +167,7 @@ public class MiddleWareImpl implements ResourceManager
 
     // reserve an item
     protected boolean reserveItem(int id, int customerID, String key, String location) {
-        Trace.info("RM::reserveItem( " + id + ", customer=" + customerID + ", " +key+ ", "+location+" ) called" );
-        // Read customer object if it exists (and read lock it)
-        Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
-        if ( cust == null ) {
-            Trace.warn("RM::reserveCar( " + id + ", " + customerID + ", " + key + ", "+location+")  failed--customer doesn't exist" );
-            return false;
-        }
-
-        // check if the item is available
-        ReservableItem item = (ReservableItem)readData(id, key);
-        if ( item == null ) {
-            Trace.warn("RM::reserveItem( " + id + ", " + customerID + ", " + key+", " +location+") failed--item doesn't exist" );
-            return false;
-        } else if (item.getCount()==0) {
-            Trace.warn("RM::reserveItem( " + id + ", " + customerID + ", " + key+", " + location+") failed--No more items" );
-            return false;
-        } else {
-            cust.reserve( key, location, item.getPrice());
-            writeData( id, cust.getKey(), cust );
-            // decrease the number of available items in the storage
-            item.setCount(item.getCount() - 1);
-            item.setReserved(item.getReserved()+1);
-
-            Trace.info("RM::reserveItem( " + id + ", " + customerID + ", " + key + ", " +location+") succeeded" );
-            return true;
-        }
+        return false;
     }
 
     //  Create a new flight, or add seats to existing flight
@@ -188,19 +177,13 @@ public class MiddleWareImpl implements ResourceManager
     {
         TM.enlist(id, FlightRM);
         Trace.info("RM::addFlight(" + id + ", " + flightNum + ", $" + flightPrice + ", " + flightSeats + ") called" );
-        try {
-            if(FlightRM.addFlight(id,flightNum,flightSeats,flightPrice))
-                // call succesfull
-                Trace.info("RM::addFlight(" + id + ") created or modified flight " + flightNum + ", seats=" +
-                    flightSeats + ", price=$" + flightPrice );
+        if(FlightRM.addFlight(id,flightNum,flightSeats,flightPrice))
+            // call succesfull
+            Trace.info("RM::addFlight(" + id + ") created or modified flight " + flightNum + ", seats=" +
+                flightSeats + ", price=$" + flightPrice );
 
-            else {
-                Trace.info("RM::addFlight encountered an unknown error");
-            }
-        }
-        catch(Exception e){
-          System.out.println("EXCEPTION:");
-          System.out.println(e.getMessage());
+        else {
+            Trace.info("RM::addFlight encountered an unknown error");
         }
         return(true);
     }
@@ -219,18 +202,13 @@ public class MiddleWareImpl implements ResourceManager
     {
         TM.enlist(id, HotelRM);
         Trace.info("RM::addRooms(" + id + ", " + location + ", " + count + ", $" + price + ") called" );
-        try {
-            if(HotelRM.addRooms(id,location,count,price))
-                // call succesfull
-                Trace.info("RM::addRooms(" + id + ") created or modified room location " + location + ", count=" + count + ", price=$" + price );
-            else {
-                Trace.info("RM::addRooms encountered an unknown error");
-            }
+        if(HotelRM.addRooms(id,location,count,price))
+            // call succesfull
+            Trace.info("RM::addRooms(" + id + ") created or modified room location " + location + ", count=" + count + ", price=$" + price );
+        else {
+            Trace.info("RM::addRooms encountered an unknown error");
         }
-        catch(Exception e){
-            System.out.println("EXCEPTION:");
-            System.out.println(e.getMessage());
-        }
+        
         return(true);
     }
 
@@ -248,19 +226,14 @@ public class MiddleWareImpl implements ResourceManager
     public boolean addCars(int id, String location, int count, int price)
         throws RemoteException, TransactionAbortedException
     {
-        TM.enlist(id, CarRM);
-        try {
-            if(CarRM.addCars(id,location,count,price))
-                // call succesfull
-                Trace.info("RM::addCars(" + id + ") created or modified location " + location + ", count=" + count + ", price=$" + price );
-            else {
-                Trace.info("RM::addCar encountered an unknown error");
-            }
+
+        if(CarRM.addCars(id,location,count,price))
+            // call succesfull
+            Trace.info("RM::addCars(" + id + ") created or modified location " + location + ", count=" + count + ", price=$" + price );
+        else {
+            Trace.info("RM::addCar encountered an unknown error");
         }
-        catch(Exception e){
-            System.out.println("EXCEPTION:");
-            System.out.println(e.getMessage());
-        }
+        
         return(true);
     }
 
@@ -364,11 +337,11 @@ public class MiddleWareImpl implements ResourceManager
         TM.enlist(id, FlightRM);
         TM.enlist(id, HotelRM);
         Trace.info("RM::queryCustomerInfo(" + id + ", " + customerID + ") called" );
-        Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
-        if ( cust == null ) {
-            Trace.warn("RM::queryCustomerInfo(" + id + ", " + customerID + ") failed--customer doesn't exist" );
-            return "";   // NOTE: don't change this--WC counts on this value indicating a customer does not exist...
-        } else {
+        // Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
+        // if ( cust == null ) {
+        //     Trace.warn("RM::queryCustomerInfo(" + id + ", " + customerID + ") failed--customer doesn't exist" );
+        //     return "";   // NOTE: don't change this--WC counts on this value indicating a customer does not exist...
+        // } else {
             // Do this for each RM and concat the strings for return
             String c = CarRM.queryCustomerInfo(id, customerID);
             String f = FlightRM.queryCustomerInfo(id, customerID);
@@ -378,7 +351,7 @@ public class MiddleWareImpl implements ResourceManager
             // Could make this look nicer
             System.out.println( c + f + h );
             return c + f + h;
-        } // if
+        // } // if
     }
 
     // customer functions
@@ -391,25 +364,13 @@ public class MiddleWareImpl implements ResourceManager
         TM.enlist(id, FlightRM);
         TM.enlist(id, HotelRM);
         Trace.info("INFO: RM::newCustomer(" + id + ") called" );
-        // Generate a globally unique ID for the new customer
-        int cid = Integer.parseInt( String.valueOf(id) +
-                                String.valueOf(Calendar.getInstance().get(Calendar.MILLISECOND)) +
-                                String.valueOf( Math.round( Math.random() * 100 + 1 )));
-        Customer cust = new Customer( cid );
-        writeData( id, cust.getKey(), cust );
-        Trace.info("RM::newCustomer(" + cid + ") returns ID=" + cid );
 
-        // Create this customer on every rm but pass in the created cid
-         try {
-                CarRM.newCustomer(id,cid);
-                FlightRM.newCustomer(id,cid);
-                HotelRM.newCustomer(id,cid);
-            }
-            catch(Exception e) {
-                System.out.println("EXCEPTION:");
-                System.out.println(e.getMessage());
-            }
-        return cid;
+        // Have Car rm decide the id then
+        int decision = CarRM.newCustomer(id);
+        FlightRM.newCustomer(id,decision);
+        HotelRM.newCustomer(id,decision);
+        Trace.info("RM::newCustomer(" + decision + ") returns ID=" + decision );
+        return decision;
     }
 
     // I opted to pass in customerID instead. This makes testing easier
@@ -420,28 +381,19 @@ public class MiddleWareImpl implements ResourceManager
         TM.enlist(id, FlightRM);
         TM.enlist(id, HotelRM);
         Trace.info("INFO: RM::newCustomer(" + id + ", " + customerID + ") called" );
-        Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
-        if ( cust == null ) {
-            cust = new Customer(customerID);
-            writeData( id, cust.getKey(), cust );
+
+        boolean result = CarRM.newCustomer(id,customerID);
+        result = result && FlightRM.newCustomer(id,customerID);
+        result = result && HotelRM.newCustomer(id,customerID);
+
+        if(result) {
             Trace.info("INFO: RM::newCustomer(" + id + ", " + customerID + ") created a new customer" );
-
-            try {
-                // If customer doesn't exist in middleware it won't exist in any rms
-                CarRM.newCustomer(id,customerID);
-                FlightRM.newCustomer(id,customerID);
-                HotelRM.newCustomer(id,customerID);
-            }
-            catch(Exception e) {
-                System.out.println("EXCEPTION:");
-                System.out.println(e.getMessage());
-            }
-
             return true;
-        } else {
+        }
+        else {
             Trace.info("INFO: RM::newCustomer(" + id + ", " + customerID + ") failed--customer already exists");
             return false;
-        } // else
+        }
     }
 
 
@@ -453,22 +405,20 @@ public class MiddleWareImpl implements ResourceManager
         TM.enlist(id, FlightRM);
         TM.enlist(id, HotelRM);
         Trace.info("RM::deleteCustomer(" + id + ", " + customerID + ") called" );
-        Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
-        if ( cust == null ) {
-            Trace.warn("RM::deleteCustomer(" + id + ", " + customerID + ") failed--customer doesn't exist" );
-            return false;
-        } else {
-            // remove customer info from all rms
-            CarRM.deleteCustomer(id, customerID);
-            FlightRM.deleteCustomer(id, customerID);
-            HotelRM.deleteCustomer(id, customerID);
 
-            // remove the customer from the middleware storage
-            removeData(id, cust.getKey());
+        // remove customer info from all rms
+        boolean result = CarRM.deleteCustomer(id, customerID);
+        result = result && FlightRM.deleteCustomer(id, customerID);
+        result = result && HotelRM.deleteCustomer(id, customerID);
 
+        if(result) {
             Trace.info("RM::deleteCustomer(" + id + ", " + customerID + ") succeeded" );
             return true;
-        } // if
+        }
+        else {
+            Trace.warn("RM::deleteCustomer(" + id + ", " + customerID + ") failed--customer doesn't exist" );
+            return false;
+        }
     }
 
     /*
@@ -555,49 +505,6 @@ public class MiddleWareImpl implements ResourceManager
         return success;
     }
 
-    public void spamAllNewItem(int transactionId) throws RemoteException, TransactionAbortedException {
-        Trace.info("RM::spamAllNewItem(" + transactionId + ") called" );
-        TM.enlist(transactionId, CarRM);
-        TM.enlist(transactionId, HotelRM);
-        TM.enlist(transactionId, FlightRM);
-        try {
-            if(CarRM.addCars(transactionId,"a",1,1))
-                Trace.info("RM::addCars(" + transactionId + ") created or modified location " + "a" + ", count=" + 1 + ", price=$" + 1 );
-
-            if(HotelRM.addRooms(transactionId,"a",1,1))
-                Trace.info("RM::addRooms(" + transactionId + ") created or modified flight " + 1 + ", seats=" +
-                    1 + ", price=$" + 1 );
-            if(FlightRM.addFlight(transactionId,1,1,1))
-                Trace.info("RM::addFlight(" + transactionId + ") created or modified flight " + 1 + ", seats=" +
-                    1 + ", price=$" + 1 );
-        } catch(Exception e) {
-            System.out.println("EXCEPTION:");
-            System.out.println(e.getMessage());
-        }
-
-    }
-
-    public void spamFlightNewItem(int transactionId) throws RemoteException, TransactionAbortedException {
-        Trace.info("RM::spamAllNewItem(" + transactionId + ") called" );
-        TM.enlist(transactionId, FlightRM);
-        try {
-            if(FlightRM.addFlight(transactionId,1,1,1))
-                Trace.info("RM::addFlight(" + transactionId + ") created or modified flight " + 1 + ", seats=" +
-                    1 + ", price=$" + 1 );
-            if(FlightRM.addFlight(transactionId,2,1,1))
-                Trace.info("RM::addFlight(" + transactionId + ") created or modified flight " + 2 + ", seats=" +
-                    1 + ", price=$" + 1 );
-            if(FlightRM.addFlight(transactionId,3,1,1))
-                Trace.info("RM::addFlight(" + transactionId + ") created or modified flight " + 3 + ", seats=" +
-                    1 + ", price=$" + 1 );
-
-        } catch(Exception e){
-            System.out.println("EXCEPTION:");
-            System.out.println(e.getMessage());
-        }
-
-    }
-
     public int start(int transactionId) throws RemoteException {
         transactionId = TM.start();
         transactionImages.put(transactionId, (RMHashtable) m_itemHT.clone());
@@ -654,21 +561,8 @@ public class MiddleWareImpl implements ResourceManager
         return false;
     }
 
-    // public void store(String filename) {
-    //   // Do nothing. We don't shadow the MiddleWare Hashtable.
-    //   // Not yet at least, i'll do it later.
-    // }
-
     public String getBanner() {
-      return "MiddleWare";
+      return null;
     }
-
-    // public RMHashtable getHash() {
-    //   return this.m_itemHT;
-    // }
-
-    // public RMHashtable setHash(RMHashtable shadow) {
-    //   return this.m_itemHT = shadow;
-    // }
 
 }
