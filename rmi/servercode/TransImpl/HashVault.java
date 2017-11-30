@@ -32,6 +32,7 @@ public class HashVault
 	}
 
   public RMHashtable retrieve(int hashKey) {
+    System.out.println("Retrieving table for key " + hashKey);
     return (RMHashtable) this.vault.get(hashKey);
   }
 
@@ -60,6 +61,48 @@ public class HashVault
     try {
       // Initialize File/Serailization Streams
       FileInputStream file_pipe = new FileInputStream("shadowVault.ser");
+      ObjectInputStream object_pipe = new ObjectInputStream(file_pipe);
+
+      // Serialize stable Vault into runtime Vault
+      this.vault = (HashMap<Integer, RMHashtable>) object_pipe.readObject();
+
+      // Closes Streams
+      file_pipe.close();
+      object_pipe.close();
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+    }
+    catch (ClassNotFoundException e) {
+      e.printStackTrace();
+    }
+  }
+
+  // Want to store the vault to its stable file? Call this function
+  public void serialize_out_temp(int transactionId) {
+    try {
+      // Initialize File/Serailization Streams
+      FileOutputStream file_pipe = new FileOutputStream("shadowVault_" + transactionId + ".ser");
+      ObjectOutputStream object_pipe = new ObjectOutputStream(file_pipe);
+
+      // Serialize runtime Vault into stable Vault
+      object_pipe.writeObject(this.vault);
+
+      // Closes Streams
+      file_pipe.close();
+      object_pipe.close();
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  // Want to retrive the vault from its stable file? Call this function
+  public void serialize_in_temp(int transactionId) {
+
+    try {
+      // Initialize File/Serailization Streams
+      FileInputStream file_pipe = new FileInputStream("shadowVault_" + transactionId + ".ser");
       InputStream input_buffer = new BufferedInputStream(file_pipe);
       ObjectInputStream object_pipe = new ObjectInputStream(input_buffer);
 
@@ -78,4 +121,5 @@ public class HashVault
       e.printStackTrace();
     }
   }
+
 }

@@ -30,20 +30,14 @@ public class TransactionManager
 		CD = new CrashDetection(this);
 		System.out.println("Transaction Manager Started...");
 
-
-		// initialize Vault
-		ArrayList<RMHashtable> default_Maps = new ArrayList<RMHashtable>();
-		for (int i = 0; i < hashKey_index_start; i++) {
-				RMHashtable empty_table = new RMHashtable();
-				default_Maps.add(empty_table);
-		}
-		System.out.println("Creating Empty Vault...");
-		shadowVault = new HashVault(default_Maps);
+		// Create empty vault
+		shadowVault = createNewVault();
 
 		// Do we have a Vault already?
 		File vault_spy = new File("shadowVault.ser");
 		if ( vault_spy.exists() ) {
 			try {
+				System.out.println("Serialized in Vault");
 				shadowVault.serialize_in();
 			}
 			catch (Exception e) {
@@ -121,7 +115,47 @@ public class TransactionManager
 				}
 				if (!result)
 					return false;
+
 				System.out.println("Transaction " + transactionCounter + " Committed in Manager");
+				// For NOW:
+				// We are committing our transactions to master record
+				// once all RM's have voted yes.
+
+				// Clone master record table
+				HashVault masterClone = createNewVault();
+				masterClone.serialize_in();
+
+				// Write transaction commits to masterClone
+				System.out.println("Storing temporary transaction tables...");
+				for (int i = 0; i < toCommit.RM_Commit_Ids.size(); i++) {
+					try {
+						// Storing temporary HashVault Backup
+						masterClone.store(toCommit.RM_Commit_Ids.get(i), toCommit.activeRMs.get(i).getHash());
+
+						// Committing to temporary Master Records
+						masterClone.store(toCommit.activeRMs.get(i).getIndex(), toCommit.activeRMs.get(i).getHash());
+
+						// Serializing temporary vault at each step
+						masterClone.serialize_out_temp(id);
+					}
+					catch (IOException e) {
+						e.printStackTrace();
+						return false;
+					}
+				}
+
+				// Serialize masterClone as the new Master Record
+				System.out.println("Commiting to master tables...");
+				masterClone.serialize_out();
+
+				// CURRENTLY COMMENTED OUT:
+				// This will destroy our temporary tables after we securely commit
+				// I just uncommented it for now we can debug anything to do
+				// with our shadows a bit more easily
+
+				//destroy(id);
+
+
 				return true;
 			}
 			else
@@ -154,8 +188,7 @@ public class TransactionManager
 			}
 			if (!result)
 				return false;
-			else
-				return true;
+			return true;
 		}
 		else
 			throw new InvalidTransactionException(id, "Transaction not found for prepare");
@@ -201,7 +234,35 @@ public class TransactionManager
 		return this.transactionCounter;
 	}
 
-	public void createVault(ArrayList<RMHashtable> masterRecords) {
-		this.shadowVault = new HashVault(masterRecords);
+	public HashVault createNewVault() {
+		// initialize Vault
+		ArrayList<RMHashtable> default_tables = new ArrayList<RMHashtable>();
+		for (int i = 0; i < hashKey_index_start; i++) {
+				RMHashtable empty_table = new RMHashtable();
+				default_tables.add(empty_table);
+		}
+		System.out.println("Creating Empty Vault...");
+		HashVault emptyVault = new HashVault(default_tables);
+		return emptyVault;
 	}
+
+	// Want to store the vault to its stable file? Call this function
+  public void destroy(int transactionId) {
+    File shadowFile = new File("shadowVault_" + transactionId + ".ser");
+    if (shadowFile.exists()) {
+      shadowFile.delete();
+    }
+  }
+
+	public RMHashtable[] get_Masters() {
+		shadowVault.serialize_in();
+		RMHashtable[] master_tables = { shadowVault.retrieve(0), shadowVault.retrieve(1), shadowVault.retrieve(2), shadowVault.retrieve(3) };
+		System.out.println("\n\n" + master_tables);
+		System.out.println(master_tables[0]);
+		System.out.println(master_tables[1]);
+		System.out.println(master_tables[2]);
+		System.out.println(master_tables[3]);
+		return master_tables;
+	}
+
 }

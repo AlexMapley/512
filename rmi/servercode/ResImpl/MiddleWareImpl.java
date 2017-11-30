@@ -14,7 +14,7 @@ import java.rmi.RMISecurityManager;
 
 public class MiddleWareImpl implements ResourceManager
 {
-
+    public static int RM_Index = 0;
     private static RMHashtable m_itemHT = new RMHashtable();
     private static HashMap<Integer, RMHashtable> transactionImages = new HashMap<Integer, RMHashtable>();
 
@@ -22,7 +22,6 @@ public class MiddleWareImpl implements ResourceManager
     static ResourceManager HotelRM = null;
     static ResourceManager FlightRM = null;
     static ArrayList<ResourceManager> rms;
-    static ArrayList<RMHashtable> defaultHashtables = new ArrayList<RMHashtable>();
 
     private static TransactionManager TM;
 
@@ -51,8 +50,11 @@ public class MiddleWareImpl implements ResourceManager
                     }
                 }
                 CarRM = rms.get(0);
+                CarRM.setIndex(1);
                 HotelRM = rms.get(1);
+                HotelRM.setIndex(2);
                 FlightRM = rms.get(2);
+                FlightRM.setIndex(3);
             }
             catch (Exception e)
             {
@@ -91,6 +93,22 @@ public class MiddleWareImpl implements ResourceManager
 
         // Setup transaction manager
         TM = new TransactionManager();
+
+        // Restore Master HashTables
+        System.out.println("Retreiving Master Records from Storage...");
+        RMHashtable[] master_records = TM.get_Masters();
+        m_itemHT = master_records[0];
+        try {
+          CarRM.setHash(master_records[1]);
+          HotelRM.setHash(master_records[2]);
+          FlightRM.setHash(master_records[3]);
+        }
+        catch (RemoteException e) {
+          e.printStackTrace();
+        }
+        catch (IOException e) {
+          e.printStackTrace();
+        }
     }
 
     public MiddleWareImpl() throws RemoteException {
@@ -644,5 +662,17 @@ public class MiddleWareImpl implements ResourceManager
 
     public RMHashtable getHash() {
       return m_itemHT;
+    }
+
+    public void setHash(RMHashtable replacement) {
+      m_itemHT = replacement;
+    }
+
+    public void setIndex(int index) {
+      RM_Index = index;
+    }
+
+    public int getIndex() {
+      return RM_Index;
     }
 }
