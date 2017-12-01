@@ -16,33 +16,54 @@ public class MiddleWareImpl implements ResourceManager
 {
 
     private static String banner = "MW";
+    private static final int port = 5959;
+
     protected static RMHashtable m_itemHT = new RMHashtable();
     private static HashMap<Integer, RMHashtable> transactionImages = new HashMap<Integer, RMHashtable>();
 
     static ResourceManager CarRM = null;
     static ResourceManager HotelRM = null;
     static ResourceManager FlightRM = null;
-    static ArrayList<ResourceManager> rms;
+
+    static HashMap<String, ResourceManager> rms;
+    static HashMap<String, String> hostnames;
 
     private static TransactionManager TM;
 
     public static void main(String[] args) {
-        int port = 5959;  // hardcoded
         String server = "localhost";  // creates middlware on current machine
 
         // collect inputted RMs
-        rms = new ArrayList<ResourceManager>();
+        rms = new HashMap<String, ResourceManager>();
+        hostnames = new HashMap<String, String>();
 
         if (args.length == 3) {
             try
             {
                 for(int i=0; i<3;i++) {
+                    String name = "none";
+                    String hostname = args[i];
                     // get a reference to the rmiregistry
                     Registry registry = LocateRegistry.getRegistry(args[i], port);
                     // get the proxy and the remote reference by rmiregistry lookup
-                    rms.add((ResourceManager) registry.lookup("group_21"));
-                    if(rms.get(i) != null)
+                    ResourceManager rm = (ResourceManager) registry.lookup("group_21");
+                    if(rm != null)
                     {
+                        if(i == 0){
+                            CarRM = rm;
+                            name = "Car";
+                        }
+                        else if(i == 1){
+                            FlightRM = rm;
+                            name = "Flight";
+                        }
+                        else {
+                            HotelRM = rm;
+                            name = "Hotel";
+                        }
+                        
+                        rms.put(name, rm);
+                        hostnames.put(name, hostname);
                         System.out.println("Successful Connection to RM: " + i);
                     }
                     else
@@ -61,21 +82,6 @@ public class MiddleWareImpl implements ResourceManager
             System.err.println ("Wrong usage");
             System.out.println("Usage: java ResImpl.MiddleWareImpl [rmaddress] X 3 ");
             System.exit(1);
-        }
-        
-        // Associate inputted machines to respective RMs
-        for(int i=0;i<3;i++) {
-            try {
-                String banner = rms.get(i).getBanner().trim();
-                if(banner.equals("Car"))
-                    CarRM = rms.get(i);
-                else if(banner.equals("Flight"))
-                    FlightRM = rms.get(i);
-                else if(banner.equals("Hotel"))
-                    HotelRM = rms.get(i);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
         }
 
         //Start middleware server
@@ -113,37 +119,16 @@ public class MiddleWareImpl implements ResourceManager
     // Reads a data item
     private RMItem readData( int id, String key ) throws TransactionAbortedException
     {
-        // RMItem item;
-        // synchronized(m_itemHT) {
-        //     RMHashtable masterTable = (RMHashtable) readFile(master);
-        //     item = (RMItem) masterTable.get(key);
-        // }
-
         return null;
     }
 
     // Writes a data item
     private void writeData( int id, String key, RMItem value ) throws TransactionAbortedException
     {
-        // synchronized(m_itemHT) {
-        //     // write to in memory hashtable
-        //     m_itemHT.put(key, value);
-                
-        //     // write to hashtable in file    
-        //     writeFile(master, m_itemHT);
-        // }
     }
 
     // Remove the item out of storage
     protected RMItem removeData(int id, String key) {
-        // RMItem item;
-        // synchronized(m_itemHT) {
-        //     // write to in memory hashtable
-        //     item = (RMItem) m_itemHT.remove(key);
-                
-        //     // write to hashtable in file    
-        //     writeFile(master, m_itemHT);;
-        // }
         return null;
     }
 
@@ -175,24 +160,36 @@ public class MiddleWareImpl implements ResourceManager
     public boolean addFlight(int id, int flightNum, int flightSeats, int flightPrice)
         throws RemoteException, TransactionAbortedException
     {
-        TM.enlist(id, FlightRM);
-        Trace.info("RM::addFlight(" + id + ", " + flightNum + ", $" + flightPrice + ", " + flightSeats + ") called" );
-        if(FlightRM.addFlight(id,flightNum,flightSeats,flightPrice))
-            // call succesfull
-            Trace.info("RM::addFlight(" + id + ") created or modified flight " + flightNum + ", seats=" +
-                flightSeats + ", price=$" + flightPrice );
-
-        else {
-            Trace.info("RM::addFlight encountered an unknown error");
+        try {
+            TM.enlist(id, FlightRM);
+            Trace.info("RM::addFlight(" + id + ", " + flightNum + ", $" + flightPrice + ", " + flightSeats + ") called" );
+            if(FlightRM.addFlight(id,flightNum,flightSeats,flightPrice))
+                // call succesfull
+                Trace.info("RM::addFlight(" + id + ") created or modified flight " + flightNum + ", seats=" +
+                    flightSeats + ", price=$" + flightPrice );
+            else {
+                Trace.info("RM::addFlight encountered an unknown error");
+            }
+            return(true);
+        } catch (RemoteException e) {
+            System.out.println("Flight server crashed");
+            rebind("Flight");
+            throw e;
         }
-        return(true);
+
     }
 
     public boolean deleteFlight(int id, int flightNum)
         throws RemoteException, TransactionAbortedException
     {
-        TM.enlist(id, FlightRM);
-        return FlightRM.deleteFlight(id, flightNum);
+        try {
+            TM.enlist(id, FlightRM);
+            return FlightRM.deleteFlight(id, flightNum);
+        } catch (RemoteException e) {
+            System.out.println("Flight server crashed");
+            rebind("Flight");
+            throw e;
+        }
     }
 
     // Create a new room location or add rooms to an existing location
@@ -200,15 +197,21 @@ public class MiddleWareImpl implements ResourceManager
     public boolean addRooms(int id, String location, int count, int price)
         throws RemoteException, TransactionAbortedException
     {
-        TM.enlist(id, HotelRM);
-        Trace.info("RM::addRooms(" + id + ", " + location + ", " + count + ", $" + price + ") called" );
-        if(HotelRM.addRooms(id,location,count,price))
-            // call succesfull
-            Trace.info("RM::addRooms(" + id + ") created or modified room location " + location + ", count=" + count + ", price=$" + price );
-        else {
-            Trace.info("RM::addRooms encountered an unknown error");
+        try{
+            TM.enlist(id, HotelRM);
+            Trace.info("RM::addRooms(" + id + ", " + location + ", " + count + ", $" + price + ") called" );
+            if(HotelRM.addRooms(id,location,count,price))
+                // call succesfull
+                Trace.info("RM::addRooms(" + id + ") created or modified room location " + location + ", count=" + count + ", price=$" + price );
+            else {
+                Trace.info("RM::addRooms encountered an unknown error");
+            }
+        } catch (RemoteException e) {
+            System.out.println("Hotel server crashed");
+            rebind("Hotel");
+            throw e;
         }
-        
+            
         return(true);
     }
 
@@ -216,8 +219,14 @@ public class MiddleWareImpl implements ResourceManager
     public boolean deleteRooms(int id, String location)
         throws RemoteException, TransactionAbortedException
     {
-        TM.enlist(id, HotelRM);
-        return HotelRM.deleteRooms(id, location);
+        try {
+            TM.enlist(id, HotelRM);
+            return HotelRM.deleteRooms(id, location);
+        } catch (RemoteException e) {
+            System.out.println("Hotel server crashed");
+            rebind("Hotel");
+            throw e;
+        }
 
     }
 
@@ -226,12 +235,17 @@ public class MiddleWareImpl implements ResourceManager
     public boolean addCars(int id, String location, int count, int price)
         throws RemoteException, TransactionAbortedException
     {
-
-        if(CarRM.addCars(id,location,count,price))
-            // call succesfull
-            Trace.info("RM::addCars(" + id + ") created or modified location " + location + ", count=" + count + ", price=$" + price );
-        else {
-            Trace.info("RM::addCar encountered an unknown error");
+        try {
+            if(CarRM.addCars(id,location,count,price))
+                // call succesfull
+                Trace.info("RM::addCars(" + id + ") created or modified location " + location + ", count=" + count + ", price=$" + price );
+            else {
+                Trace.info("RM::addCar encountered an unknown error");
+            }
+        } catch (RemoteException e) {
+            System.out.println("Car server crashed");
+            rebind("Car");
+            throw e;
         }
         
         return(true);
@@ -242,8 +256,14 @@ public class MiddleWareImpl implements ResourceManager
     public boolean deleteCars(int id, String location)
         throws RemoteException, TransactionAbortedException
     {
-        TM.enlist(id, CarRM);
-        return CarRM.deleteCars(id, location);
+        try {
+            TM.enlist(id, CarRM);
+            return CarRM.deleteCars(id, location);
+        } catch (RemoteException e) {
+            System.out.println("Car server crashed");
+            rebind("Car");
+            throw e;
+        }
     }
 
 
@@ -252,30 +272,28 @@ public class MiddleWareImpl implements ResourceManager
     public int queryFlight(int id, int flightNum)
         throws RemoteException, TransactionAbortedException
     {
-        TM.enlist(id, FlightRM);
-        return FlightRM.queryFlight(id,flightNum);
+        try {
+            TM.enlist(id, FlightRM);
+            return FlightRM.queryFlight(id,flightNum);
+        } catch (RemoteException e) {
+            System.out.println("Flight server crashed");
+            rebind("Flight");
+            throw e;
+        }
     }
-
-    // Returns the number of reservations for this flight.
-//    public int queryFlightReservations(int id, int flightNum)
-//        throws RemoteException
-//    {
-//        Trace.info("RM::queryFlightReservations(" + id + ", #" + flightNum + ") called" );
-//        RMInteger numReservations = (RMInteger) readData( id, Flight.getNumReservationsKey(flightNum) );
-//        if ( numReservations == null ) {
-//            numReservations = new RMInteger(0);
-//        } // if
-//        Trace.info("RM::queryFlightReservations(" + id + ", #" + flightNum + ") returns " + numReservations );
-//        return numReservations.getValue();
-//    }
-
 
     // Returns price of this flight
     public int queryFlightPrice(int id, int flightNum )
         throws RemoteException, TransactionAbortedException
     {
-        TM.enlist(id, FlightRM);
-        return FlightRM.queryFlightPrice(id, flightNum);
+        try {
+            TM.enlist(id, FlightRM);
+            return FlightRM.queryFlightPrice(id, flightNum);
+        } catch (RemoteException e) {
+            System.out.println("Flight server crashed");
+            rebind("Flight");
+            throw e;
+        }
     }
 
 
@@ -283,16 +301,28 @@ public class MiddleWareImpl implements ResourceManager
     public int queryRooms(int id, String location)
         throws RemoteException, TransactionAbortedException
     {
-        TM.enlist(id, HotelRM);
-        return HotelRM.queryRooms(id, location);
+        try {
+            TM.enlist(id, HotelRM);
+            return HotelRM.queryRooms(id, location);
+        } catch (RemoteException e) {
+            System.out.println("Hotel server crashed");
+            rebind("Hotel");
+            throw e;
+        }
     }
 
     // Returns room price at this location
     public int queryRoomsPrice(int id, String location)
         throws RemoteException, TransactionAbortedException
     {
-        TM.enlist(id, HotelRM);
-        return HotelRM.queryRoomsPrice(id, location);
+        try {
+            TM.enlist(id, HotelRM);
+            return HotelRM.queryRoomsPrice(id, location);
+        } catch (RemoteException e) {
+            System.out.println("Hotel server crashed");
+            rebind("Hotel");
+            throw e;
+        }
     }
 
 
@@ -300,8 +330,14 @@ public class MiddleWareImpl implements ResourceManager
     public int queryCars(int id, String location)
         throws RemoteException, TransactionAbortedException
     {
-        TM.enlist(id, CarRM);
-        return CarRM.queryCars(id, location);
+        try {
+            TM.enlist(id, CarRM);
+            return CarRM.queryCars(id, location);
+        } catch (RemoteException e) {
+            System.out.println("Car server crashed");
+            rebind("Car");
+            throw e;
+        }
     }
 
 
@@ -309,8 +345,14 @@ public class MiddleWareImpl implements ResourceManager
     public int queryCarsPrice(int id, String location)
         throws RemoteException, TransactionAbortedException
     {
-        TM.enlist(id, CarRM);
-        return CarRM.queryCarsPrice(id, location);
+        try {
+            TM.enlist(id, CarRM);
+            return CarRM.queryCarsPrice(id, location);
+        } catch (RemoteException e) {
+            System.out.println("Car server crashed");
+            rebind("Car");
+            throw e;
+        }
     }
 
     // Returns data structure containing customer reservation info. Returns null if the
@@ -319,14 +361,21 @@ public class MiddleWareImpl implements ResourceManager
     public RMHashtable getCustomerReservations(int id, int customerID)
         throws RemoteException, TransactionAbortedException
     {
-        Trace.info("RM::getCustomerReservations(" + id + ", " + customerID + ") called" );
-        Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
-        if ( cust == null ) {
-            Trace.warn("RM::getCustomerReservations failed(" + id + ", " + customerID + ") failed--customer doesn't exist" );
-            return null;
-        } else {
-            return cust.getReservations();
-        } // if
+        // try {
+        //     Trace.info("RM::getCustomerReservations(" + id + ", " + customerID + ") called" );
+        //     Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
+        //     if ( cust == null ) {
+        //         Trace.warn("RM::getCustomerReservations failed(" + id + ", " + customerID + ") failed--customer doesn't exist" );
+        //         return null;
+        //     } else {
+        //         return cust.getReservations();
+        //     } // if
+        // } catch (RemoteException e) {
+        //     System.out.println("Flight server crashed");
+        //     rebind("Flight");
+        //     return null;
+        // }
+        return null;
     }
 
     // return a bill
@@ -336,22 +385,36 @@ public class MiddleWareImpl implements ResourceManager
         TM.enlist(id, CarRM);
         TM.enlist(id, FlightRM);
         TM.enlist(id, HotelRM);
+        String c,f,h;
         Trace.info("RM::queryCustomerInfo(" + id + ", " + customerID + ") called" );
-        // Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
-        // if ( cust == null ) {
-        //     Trace.warn("RM::queryCustomerInfo(" + id + ", " + customerID + ") failed--customer doesn't exist" );
-        //     return "";   // NOTE: don't change this--WC counts on this value indicating a customer does not exist...
-        // } else {
+        try { 
             // Do this for each RM and concat the strings for return
-            String c = CarRM.queryCustomerInfo(id, customerID);
-            String f = FlightRM.queryCustomerInfo(id, customerID);
-            String h = HotelRM.queryCustomerInfo(id, customerID);
-            Trace.info("RM::queryCustomerInfo(" + id + ", " + customerID + "), bill follows..." );
+            c = CarRM.queryCustomerInfo(id, customerID);
+        } catch (RemoteException e) {
+            System.out.println("Car server crashed");
+            rebind("Car");
+            throw e;
+        }    
+        try {
+            f = FlightRM.queryCustomerInfo(id, customerID);
+        } catch (RemoteException e) {
+            System.out.println("Flight server crashed");
+            rebind("Flight");
+            throw e;
+        } 
+        try {
+            h = HotelRM.queryCustomerInfo(id, customerID);
+        } catch (RemoteException e) {
+            System.out.println("Car server crashed");
+            rebind("Car");
+            throw e;
+        }     
+        Trace.info("RM::queryCustomerInfo(" + id + ", " + customerID + "), bill follows..." );
 
-            // Could make this look nicer
-            System.out.println( c + f + h );
-            return c + f + h;
-        // } // if
+        // Could make this look nicer
+        System.out.println( c + f + h );
+        return c + f + h;
+
     }
 
     // customer functions
@@ -360,40 +423,77 @@ public class MiddleWareImpl implements ResourceManager
     public int newCustomer(int id)
         throws RemoteException, TransactionAbortedException
     {
-        TM.enlist(id, CarRM);
-        TM.enlist(id, FlightRM);
-        TM.enlist(id, HotelRM);
-        Trace.info("INFO: RM::newCustomer(" + id + ") called" );
-
-        // Have Car rm decide the id then
-        int decision = CarRM.newCustomer(id);
-        FlightRM.newCustomer(id,decision);
-        HotelRM.newCustomer(id,decision);
-        Trace.info("RM::newCustomer(" + decision + ") returns ID=" + decision );
-        return decision;
+        
+            TM.enlist(id, CarRM);
+            TM.enlist(id, FlightRM);
+            TM.enlist(id, HotelRM);
+            Trace.info("INFO: RM::newCustomer(" + id + ") called" );
+            int decision;
+            // Have Car rm decide the id then
+            try {
+                decision = CarRM.newCustomer(id);
+            } catch (RemoteException e) {
+                System.out.println("Flight server crashed");
+                rebind("Flight");
+                throw e;
+            }
+            try {
+                FlightRM.newCustomer(id, decision);
+            } catch (RemoteException e) {
+                System.out.println("Flight server crashed");
+                rebind("Flight");
+                throw e;
+            }
+            try {
+                HotelRM.newCustomer(id, decision);
+            } catch (RemoteException e) {
+                System.out.println("Flight server crashed");
+                rebind("Flight");
+                throw e;
+            }
+            Trace.info("RM::newCustomer(" + decision + ") returns ID=" + decision );
+            return decision;
     }
 
     // I opted to pass in customerID instead. This makes testing easier
     public boolean newCustomer(int id, int customerID )
         throws RemoteException, TransactionAbortedException
     {
-        TM.enlist(id, CarRM);
-        TM.enlist(id, FlightRM);
-        TM.enlist(id, HotelRM);
-        Trace.info("INFO: RM::newCustomer(" + id + ", " + customerID + ") called" );
+            TM.enlist(id, CarRM);
+            TM.enlist(id, FlightRM);
+            TM.enlist(id, HotelRM);
+            Trace.info("INFO: RM::newCustomer(" + id + ", " + customerID + ") called" );
+            boolean result;
+            try {
+                result = CarRM.newCustomer(id,customerID);
+            } catch (RemoteException e) {
+                System.out.println("Flight server crashed");
+                rebind("Flight");
+                throw e;
+            }
+            try {
+                result = result && FlightRM.newCustomer(id,customerID);
+            } catch (RemoteException e) {
+                System.out.println("Flight server crashed");
+                rebind("Flight");
+                throw e;
+            }
+            try {
+                result = result && HotelRM.newCustomer(id,customerID);
+            } catch (RemoteException e) {
+                System.out.println("Flight server crashed");
+                rebind("Flight");
+                throw e;
+            }
 
-        boolean result = CarRM.newCustomer(id,customerID);
-        result = result && FlightRM.newCustomer(id,customerID);
-        result = result && HotelRM.newCustomer(id,customerID);
-
-        if(result) {
-            Trace.info("INFO: RM::newCustomer(" + id + ", " + customerID + ") created a new customer" );
-            return true;
-        }
-        else {
-            Trace.info("INFO: RM::newCustomer(" + id + ", " + customerID + ") failed--customer already exists");
-            return false;
-        }
+            if(result) {
+                Trace.info("INFO: RM::newCustomer(" + id + ", " + customerID + ") created a new customer" );
+                return true;
+            }
+            else {
+                Trace.info("INFO: RM::newCustomer(" + id + ", " + customerID + ") failed--customer already exists");
+                return false;
+            }
     }
 
 
@@ -401,51 +501,56 @@ public class MiddleWareImpl implements ResourceManager
     public boolean deleteCustomer(int id, int customerID)
         throws RemoteException, TransactionAbortedException
     {
-        TM.enlist(id, CarRM);
-        TM.enlist(id, FlightRM);
-        TM.enlist(id, HotelRM);
-        Trace.info("RM::deleteCustomer(" + id + ", " + customerID + ") called" );
+            TM.enlist(id, CarRM);
+            TM.enlist(id, FlightRM);
+            TM.enlist(id, HotelRM);
+            Trace.info("RM::deleteCustomer(" + id + ", " + customerID + ") called" );
+            boolean result;
+            // remove customer info from all rms
+            try {
+                result = FlightRM.newCustomer(id,customerID);
+            } catch (RemoteException e) {
+                System.out.println("Flight server crashed");
+                rebind("Flight");
+                throw e;
+            }
+            try {
+                result = result && CarRM.newCustomer(id,customerID);
+            } catch (RemoteException e) {
+                System.out.println("Flight server crashed");
+                rebind("Flight");
+                throw e;
+            }
+            try {
+                result = result && HotelRM.newCustomer(id,customerID);
+            } catch (RemoteException e) {
+                System.out.println("Flight server crashed");
+                rebind("Flight");
+                throw e;
+            }
 
-        // remove customer info from all rms
-        boolean result = CarRM.deleteCustomer(id, customerID);
-        result = result && FlightRM.deleteCustomer(id, customerID);
-        result = result && HotelRM.deleteCustomer(id, customerID);
-
-        if(result) {
-            Trace.info("RM::deleteCustomer(" + id + ", " + customerID + ") succeeded" );
-            return true;
-        }
-        else {
-            Trace.warn("RM::deleteCustomer(" + id + ", " + customerID + ") failed--customer doesn't exist" );
-            return false;
-        }
+            if(result) {
+                Trace.info("RM::deleteCustomer(" + id + ", " + customerID + ") succeeded" );
+                return true;
+            }
+            else {
+                Trace.warn("RM::deleteCustomer(" + id + ", " + customerID + ") failed--customer doesn't exist" );
+                return false;
+            }
     }
-
-    /*
-    // Frees flight reservation record. Flight reservation records help us make sure we
-    // don't delete a flight if one or more customers are holding reservations
-    public boolean freeFlightReservation(int id, int flightNum)
-        throws RemoteException
-    {
-        Trace.info("RM::freeFlightReservations(" + id + ", " + flightNum + ") called" );
-        RMInteger numReservations = (RMInteger) readData( id, Flight.getNumReservationsKey(flightNum) );
-        if ( numReservations != null ) {
-            numReservations = new RMInteger( Math.max( 0, numReservations.getValue()-1) );
-        } // if
-        writeData(id, Flight.getNumReservationsKey(flightNum), numReservations );
-        Trace.info("RM::freeFlightReservations(" + id + ", " + flightNum + ") succeeded, this flight now has "
-                + numReservations + " reservations" );
-        return true;
-    }
-    */
 
     // Adds car reservation to this customer.
     public boolean reserveCar(int id, int customerID, String location)
         throws RemoteException, TransactionAbortedException
     {
-        TM.enlist(id, CarRM);
-        return CarRM.reserveCar(id, customerID, location);
-        // return rm.reserveCar(id, customerID, location);
+        try {
+            TM.enlist(id, CarRM);
+            return CarRM.reserveCar(id, customerID, location);
+        } catch (RemoteException e) {
+            System.out.println("Flight server crashed");
+            rebind("Flight");
+            throw e;
+        }
     }
 
 
@@ -453,18 +558,28 @@ public class MiddleWareImpl implements ResourceManager
     public boolean reserveRoom(int id, int customerID, String location)
         throws RemoteException, TransactionAbortedException
     {
-        TM.enlist(id, HotelRM);
-        return HotelRM.reserveRoom(id, customerID, location);
-        // return rm.reserveRoom(id, customerID, location);
+        try {
+            TM.enlist(id, HotelRM);
+            return HotelRM.reserveRoom(id, customerID, location);
+        } catch (RemoteException e) {
+            System.out.println("Flight server crashed");
+            rebind("Flight");
+            throw e;
+        }
     }
 
     // Adds flight reservation to this customer.
     public boolean reserveFlight(int id, int customerID, int flightNum)
         throws RemoteException, TransactionAbortedException
     {
-        TM.enlist(id, FlightRM);
-        return FlightRM.reserveFlight(id, customerID, flightNum);
-        // return rm.reserveFlight(id, customerID, flightNum);
+        try {
+            TM.enlist(id, FlightRM);
+            return FlightRM.reserveFlight(id, customerID, flightNum);
+        } catch (RemoteException e) {
+            System.out.println("Flight server crashed");
+            rebind("Flight");
+            throw e;
+        }
     }
 
     // Reserve an itinerary
@@ -476,30 +591,42 @@ public class MiddleWareImpl implements ResourceManager
         TM.enlist(id, HotelRM);
         Trace.info("RM::itinerary(" + id + ", " + customer + ") called" );
         boolean success = true;
-        try {
-            if(!flightNumbers.isEmpty()) {
-                Iterator<Integer> flights = flightNumbers.iterator();
-                while(flights.hasNext()) {
-                // Reserve all flights
-                    // System.out.println(flights.next());
-                    int flightNum = flights.next();
+        
+        if(!flightNumbers.isEmpty()) {
+            Iterator<Integer> flights = flightNumbers.iterator();
+            while(flights.hasNext()) {
+            // Reserve all flights
+                int flightNum = flights.next();
+                try {
                     success = success && FlightRM.reserveFlight(id, customer, flightNum);
+                } catch (RemoteException e) {
+                    System.out.println("Flight server crashed");
+                    rebind("Flight");
+                    throw e;
                 }
+            }
 
-                //Reserve Car
+            //Reserve Car
+            try {
                 if(Car)
                     success = success && CarRM.reserveCar(id, customer, location);
-
-                //Reserve Room
+            } catch (RemoteException e) {
+                System.out.println("Car server crashed");
+                rebind("Car");
+                throw e;
+            }
+            //Reserve Room
+            try {
                 if(Room)
-                    success = success && HotelRM.reserveRoom(id, customer, location);
+                    success = success && HotelRM.reserveCar(id, customer, location);
+            } catch (RemoteException e) {
+                System.out.println("Hotel server crashed");
+                rebind("Hotel");
+                throw e;
             }
-            else {
-                return false;
-            }
-        } catch(Exception e) {
-            System.out.println("EXCEPTION:");
-            System.out.println(e.getMessage());
+        }
+        else {
+            return false;
         }
 
         return success;
@@ -535,23 +662,23 @@ public class MiddleWareImpl implements ResourceManager
     }
 
     public boolean shutdown() throws RemoteException {
-        Set<ResourceManager> active = TM.checkActive();
-        Set<ResourceManager> shutdown = new HashSet<ResourceManager>(rms);
-        shutdown.removeAll(active);
+        // Set<ResourceManager> active = TM.checkActive();
+        // Set<ResourceManager> shutdown = new HashSet<ResourceManager>(rms);
+        // shutdown.removeAll(active);
 
-        if(shutdown.size() != 0) {
-            Iterator<ResourceManager> iterator = shutdown.iterator();
-            while(iterator.hasNext()) {
-                iterator.next().shutdown();
-                System.out.println("Restarting a Resource Manager...");
-            }
-        }
+        // if(shutdown.size() != 0) {
+        //     Iterator<ResourceManager> iterator = shutdown.iterator();
+        //     while(iterator.hasNext()) {
+        //         iterator.next().shutdown();
+        //         System.out.println("Restarting a Resource Manager...");
+        //     }
+        // }
 
-        if(shutdown.size() == 3) {
-            System.out.println("Restarting Middleware...");
-            m_itemHT.clear();
-            TM.restart();
-        }
+        // if(shutdown.size() == 3) {
+        //     System.out.println("Restarting Middleware...");
+        //     m_itemHT.clear();
+        //     TM.restart();
+        // }
 
         return true;
     }
@@ -565,4 +692,33 @@ public class MiddleWareImpl implements ResourceManager
       return null;
     }
 
+    public static void rebind(String name) {
+        String hostname = hostnames.get(name);
+        System.out.println("Attempting reconnect with " + name + " RM");
+        int i = 0;
+        while(true) {
+            try {
+                Registry registry = LocateRegistry.getRegistry(hostname, port);
+                ResourceManager rm = (ResourceManager) registry.lookup("group_21");
+                rm.getBanner();
+
+                rms.put(name, rm);
+                CarRM = rms.get(name);
+                FlightRM = rms.get(name);
+                HotelRM = rms.get(name);
+
+                System.out.println(name + " RM successfully reconnected!");
+                return;
+            } catch (Exception e) {
+                System.out.print(".");
+                if(i % 5 == 0)
+                    System.out.println("");
+                try {
+                    Thread.sleep(3000); // sleep for 3 seconds
+                } catch(InterruptedException ee) {
+                    
+                }
+            }
+        }
+    }
 }

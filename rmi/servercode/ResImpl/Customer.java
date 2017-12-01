@@ -14,9 +14,8 @@ public class Customer extends RMItem
 
   Customer(int id) {
     super();
-    m_Reservations = new RMHashtable();
-    
-m_nID=id;
+    m_Reservations = new RMHashtable();   
+    m_nID=id;
   }
 
 

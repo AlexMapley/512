@@ -4,7 +4,6 @@ TODO:
 - MW runs transaction recovery after trying to rebind
 	- if successfull send send exact same call
 	- if unsuccessfull full system shut down
-- Lock table needs to be moved to a file?
 - Handle RM crash cases
 	- RM crashes after voting yes
 - handle MW crash cases
@@ -12,6 +11,3 @@ TODO:
 - MW recovery
 	- add attributes to transaction so that all cases can be covered upon recovery
 	- transaction manager needs to be its own file so that it can recover
-- Create artificial null values when deleting things from a hashtable
-	- need this to actually delete things
-	- make fake RMItem for this
