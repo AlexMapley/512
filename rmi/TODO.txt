@@ -1,0 +1,11 @@
+TODO:
+
+- Handle RM crash cases
+	- RM crashes after voting yes
+- handle MW crash cases
+	- MW crashes at various points in commit process
+- MW recovery
+	- add attributes to transaction so that all cases can be covered upon recovery
+	- transaction manager needs to be its own file so that it can recover
+	- transactions need to be resolved upon recovery
+- Client needs to be able to reconnect with MW after MW crashes
