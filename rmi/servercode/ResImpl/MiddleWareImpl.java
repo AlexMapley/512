@@ -90,12 +90,12 @@ public class MiddleWareImpl implements ResourceManager
         master = new File(path + "master.ser");
 
         // Attempt recovery
-        // if(recover()) {
-        //     System.out.println(banner + " recovered it's state");
-        // }
-        // else {
-        //     System.out.println(banner + " started fresh");
-        // }
+        if(recover()) {
+            System.out.println(banner + " recovered it's state");
+        }
+        else {
+            System.out.println(banner + " started fresh");
+        }
     }
 
     public MiddleWareImpl() throws RemoteException {
@@ -620,11 +620,9 @@ public class MiddleWareImpl implements ResourceManager
         return transactionId;
     }
 
-    public boolean commit(int transactionId) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
-        boolean result;
-        
+    public boolean commit(int transactionId) throws RemoteException, TransactionAbortedException, InvalidTransactionException {  
         try {
-            boolean result = TM.prepare(transactionId, rms);
+            TM.prepare(transactionId, rms);
             TM.commit(transactionId, rms);
         } catch (RemoteException e) {
             for(RMEnum rm : TM.transactions.get(transactionId).activeRMs) {
@@ -706,76 +704,76 @@ public class MiddleWareImpl implements ResourceManager
         }
     }
 
-    // public static Object readFile(File file) {
-    //     // helper function that returns a input stream 
-    //     // "master" for master file
-    //     // "transactions" for transaction file
-    //     // "history" for log file
-    //     try {
-    //         FileInputStream pipe = new FileInputStream(file.getAbsolutePath());
-    //         InputStream buffer = new BufferedInputStream(pipe);
-    //         ObjectInputStream object_pipe = new ObjectInputStream(buffer);
+    public static Object readFile(File file) {
+        // helper function that returns a input stream 
+        // "master" for master file
+        // "transactions" for transaction file
+        // "history" for log file
+        try {
+            FileInputStream pipe = new FileInputStream(file.getAbsolutePath());
+            InputStream buffer = new BufferedInputStream(pipe);
+            ObjectInputStream object_pipe = new ObjectInputStream(buffer);
             
-    //         Object object = object_pipe.readObject();
+            Object object = object_pipe.readObject();
 
-    //         pipe.close();
-    //         buffer.close();
-    //         object_pipe.close();
-    //         return object;
-    //     } catch (FileNotFoundException e) {
-    //         e.printStackTrace();
-    //     } catch (IOException e) {
-    //         e.printStackTrace();
-    //     } catch (ClassNotFoundException e) {
-    //         e.printStackTrace();
-    //     }
+            pipe.close();
+            buffer.close();
+            object_pipe.close();
+            return object;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
-    //     return null;
-    // }
+        return null;
+    }
 
-    // public static void writeFile(File file, Object object) {
-    //     // helper function that writes an object to a file
-    //     // "master" for master file
-    //     // "transactions" for transaction file
-    //     // "history" for log file
+    public static void writeFile(File file, Object object) {
+        // helper function that writes an object to a file
+        // "master" for master file
+        // "transactions" for transaction file
+        // "history" for log file
 
-    //     try {
-    //         FileOutputStream pipe = new FileOutputStream(file.getAbsolutePath());
-    //         ObjectOutputStream object_pipe = new ObjectOutputStream(pipe);
+        try {
+            FileOutputStream pipe = new FileOutputStream(file.getAbsolutePath());
+            ObjectOutputStream object_pipe = new ObjectOutputStream(pipe);
             
-    //         object_pipe.writeObject(object);
+            object_pipe.writeObject(object);
 
-    //         pipe.close();
-    //         object_pipe.close();
-    //     } catch (FileNotFoundException e) {
-    //         e.printStackTrace();
-    //     } catch (IOException e) {
-    //         e.printStackTrace();
-    //     }
-    // }
+            pipe.close();
+            object_pipe.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-    // public static boolean recover() {
-    //     // Assumes if master exists the rest do
-    //     if(master.exists()) {
-    //             System.out.println("recovery files found, recovering...");
-    //             // recover TM 
-    //             TM = (TransactionManager) readFile(master);
-    //         return true;
-    //     }
-    //     else {
-    //         // create master, transactions, history files
-    //         System.out.println("recovery files not found, creating new ones...");
+    public static boolean recover() {
+        // Assumes if master exists the rest do
+        if(master.exists()) {
+                System.out.println("recovery files found, recovering...");
+                // recover TM 
+                TM = (TransactionManager) readFile(master);
+            return true;
+        }
+        else {
+            // create master, transactions, history files
+            System.out.println("recovery files not found, creating new ones...");
             
-    //         try {
-    //             master.createNewFile();
+            try {
+                master.createNewFile();
 
-    //             // write TM into master class file
-    //             writeFile(master, TM);
+                // write TM into master class file
+                writeFile(master, TM);
 
-    //         } catch (IOException e) {
-    //             e.printStackTrace();
-    //         }
-    //         return false;
-    //     }
-    // }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+    }
 }

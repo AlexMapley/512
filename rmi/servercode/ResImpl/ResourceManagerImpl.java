@@ -573,12 +573,15 @@ public class ResourceManagerImpl implements ResourceManager
     }
 
     public boolean vote(int transactionId) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
-        // Do something more here??
         // check if that transaction has a table
         // if not throw exception
 
-        System.out.println("Sending Yes vote for transaction: " + transactionId);
-        return true;
+        if(transactionImages.get(transactionId) != null) {
+            System.out.println("Sending Yes vote for transaction: " + transactionId);
+            return true;
+        }
+        else // Shouldnt really ever happen
+            throw new InvalidTransactionException(transactionId, "Transaction does not exist at this RM");
     }
 
     public String getBanner() {

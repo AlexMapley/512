@@ -16,7 +16,7 @@ public class TransactionManager implements Serializable
 	public static HashMap<Integer, Transaction> transactions = new HashMap<Integer, Transaction>();
 	// private CrashDetection CD;
 
-	HashMap<RMEnum, ResourceManager> rms;
+	// HashMap<RMEnum, ResourceManager> rms;
 	//Instantiate with access to MiddleWareImpl
 	public TransactionManager() {
 		transactionCounter = 0;
