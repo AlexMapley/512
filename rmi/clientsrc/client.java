@@ -122,7 +122,7 @@ public class client
 
 		//Start Transaction error cases
 		if(!help && !shutdown) {
-			if(commandCase == 26) {
+			if(commandCase == 24) {
 				if(started) { // Transaction has already been started
 					System.out.println("A new transaction cannot be started until you finish the current one");
 					System.out.println("Call commit/abort to proceed");
@@ -648,39 +648,7 @@ public class client
 			}
 			break;
 
-		case 24: //spamall
-			if(arguments.size()!=2){
-			  obj.wrongNumber();
-			  break;
-			}
-			System.out.println("Spamming all RM's with one command");
-			try {
-				rm.spamAllNewItem(Id);
-			}
-			catch(Exception e) {
-				System.out.println("EXCEPTION:");
-				System.out.println(e.getMessage());
-				e.printStackTrace();
-			}
-			break;
-
-		case 25: // spamone
-			if(arguments.size()!=2){
-			  obj.wrongNumber();
-			  break;
-			}
-			System.out.println("Spamming one RM with one command");
-			try {
-				rm.spamFlightNewItem(Id);
-			}
-			catch(Exception e) {
-				System.out.println("EXCEPTION:");
-				System.out.println(e.getMessage());
-				e.printStackTrace();
-			}
-			break;
-
-		case 26: // start
+		case 24: // start
 			try {
 				Id = rm.start(0);
 				started = true;
@@ -691,7 +659,7 @@ public class client
 			}
 			break;
 
-		case 27: // commit
+		case 25: // commit
 			System.out.println("Attempting to Commit Transaction " + Id);
 			try {
 				boolean commitWorthy = rm.commit(Id);
@@ -705,10 +673,11 @@ public class client
 			} catch (Exception e) {
 				System.out.println("Transaction error: " + Id + " commit error " + e);
 				System.out.println("Client should abort");
+				e.printStackTrace();
 			}
 			break;
 
-		case 28:
+		case 26:
 			System.out.println("Attempting to Abort Transaction " + Id);
 			try {
 				rm.abort(Id);
@@ -834,16 +803,12 @@ public class client
 		return 22;
 	else if (argument.compareToIgnoreCase("shutdown")==0)
 		return 23;
-	else if (argument.compareToIgnoreCase("spamall")==0)
-		return 24;
-	else if (argument.compareToIgnoreCase("spamone")==0)
-		return 25;
 	else if (argument.compareToIgnoreCase("start")==0)
-		return 26;
+		return 24;
 	else if (argument.compareToIgnoreCase("commit")==0)
-		return 27;
+		return 25;
 	else if (argument.compareToIgnoreCase("abort")==0)
-		return 28;
+		return 26;
 	else
 		return 666;
 
@@ -1053,34 +1018,20 @@ public class client
 			break;
 
 		case 24:
-			System.out.println("Spam each RM with commands");
-			System.out.println("Purpose: tests performance on middleware for each RM");
-			System.out.println("\nUsage:");
-			System.out.println("\tspamall, <id>");
-			break;
-
-		case 25:
-			System.out.println("Spam each RM with commands");
-			System.out.println("Purpose: tests performance on middleware for one RM");
-			System.out.println("\nUsage:");
-			System.out.println("\tspamone, <id>");
-			break;
-
-		case 26:
 			System.out.println("Start a transaction");
 			System.out.println("Purpose: asks the Middlware for a transaction id");
 			System.out.println("\nUsage:");
 			System.out.println("\tstart");
 			break;
 
-		case 27:
+		case 25:
 			System.out.println("Commit a transaction");
 			System.out.println("Purpose: commit the transaction currently started at this client");
 			System.out.println("\nUsage:");
 			System.out.println("\tcommit");
 			break;
 
-		case 28:
+		case 26:
 			System.out.println("Abort a transaction");
 			System.out.println("Purpose: abort the transaction currently started at this client");
 			System.out.println("\nUsage:");

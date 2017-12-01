@@ -1,10 +1,10 @@
 package LockImpl;
 
-
 import java.util.BitSet;
 import java.util.Vector;
+import java.io.*;
 
-public class LockManager
+public class LockManager implements Serializable
 {
     public static final int READ = 0;
     public static final int WRITE = 1;
