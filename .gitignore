@@ -2,3 +2,4 @@
 /servercode/java.policy
 *.class
 *.jar
+*.policy

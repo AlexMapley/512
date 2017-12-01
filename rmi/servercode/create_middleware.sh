@@ -12,7 +12,7 @@ jar cvf ResInterface.jar ResInterface/*.class
 javac ResImpl/MiddleWareImpl.java
 javac ResImpl/RMHashtable.java
 jar cvf ResImpl.jar ResImpl/*.class
-javac TransImpl/CrashDetection.java
+javac TransImpl/*.java
 
 
 

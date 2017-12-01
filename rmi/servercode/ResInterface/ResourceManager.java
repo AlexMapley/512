@@ -157,16 +157,6 @@ public interface ResourceManager extends Remote
     public boolean vote(int transactionId)
   throws RemoteException, InvalidTransactionException, TransactionAbortedException;
 
-  //   public void store(String filename)
-  // throws RemoteException, IOException;
-
-    public String getBanner()
-  throws RemoteException;
-
-  //   public RMHashtable getHash()
-  // throws RemoteException;
-
-  //   public RMHashtable setHash(RMHashtable shadow)
-  // throws RemoteException;
-
+    public RMHashtable getHash()
+  throws RemoteException, IOException;
 }

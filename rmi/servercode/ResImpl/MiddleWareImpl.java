@@ -15,13 +15,14 @@ import java.rmi.RMISecurityManager;
 public class MiddleWareImpl implements ResourceManager
 {
 
-    protected RMHashtable m_itemHT = new RMHashtable();
+    private static RMHashtable m_itemHT = new RMHashtable();
     private static HashMap<Integer, RMHashtable> transactionImages = new HashMap<Integer, RMHashtable>();
 
     static ResourceManager CarRM = null;
     static ResourceManager HotelRM = null;
     static ResourceManager FlightRM = null;
     static ArrayList<ResourceManager> rms;
+    static ArrayList<RMHashtable> defaultHashtables = new ArrayList<RMHashtable>();
 
     private static TransactionManager TM;
 
@@ -49,6 +50,9 @@ public class MiddleWareImpl implements ResourceManager
                         System.out.println("Unsuccessful Connecting to RM: " + i);
                     }
                 }
+                CarRM = rms.get(0);
+                HotelRM = rms.get(1);
+                FlightRM = rms.get(2);
             }
             catch (Exception e)
             {
@@ -60,21 +64,6 @@ public class MiddleWareImpl implements ResourceManager
             System.err.println ("Wrong usage");
             System.out.println("Usage: java ResImpl.MiddleWareImpl [rmaddress] X 3 ");
             System.exit(1);
-        }
-        
-        // Associate inputted machines to respective RMs
-        for(int i=0;i<3;i++) {
-            try {
-                String banner = rms.get(i).getBanner().trim();
-                if(banner.equals("Car"))
-                    CarRM = rms.get(i);
-                else if(banner.equals("Flight"))
-                    FlightRM = rms.get(i);
-                else if(banner.equals("Hotel"))
-                    HotelRM = rms.get(i);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
         }
 
         //Start middleware server
@@ -102,7 +91,6 @@ public class MiddleWareImpl implements ResourceManager
 
         // Setup transaction manager
         TM = new TransactionManager();
-
     }
 
     public MiddleWareImpl() throws RemoteException {
@@ -606,7 +594,7 @@ public class MiddleWareImpl implements ResourceManager
 
     public boolean commit(int transactionId) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
         boolean result = TM.prepare(transactionId);
-        
+
         if(result) {
             TM.commit(transactionId);
         }
@@ -654,21 +642,7 @@ public class MiddleWareImpl implements ResourceManager
         return false;
     }
 
-    // public void store(String filename) {
-    //   // Do nothing. We don't shadow the MiddleWare Hashtable.
-    //   // Not yet at least, i'll do it later.
-    // }
-
-    public String getBanner() {
-      return "MiddleWare";
+    public RMHashtable getHash() {
+      return m_itemHT;
     }
-
-    // public RMHashtable getHash() {
-    //   return this.m_itemHT;
-    // }
-
-    // public RMHashtable setHash(RMHashtable shadow) {
-    //   return this.m_itemHT = shadow;
-    // }
-
 }
