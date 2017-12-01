@@ -36,10 +36,10 @@ public class MiddleWareImpl implements ResourceManager
                 for(int i=0; i<3;i++) {
                     // get a reference to the rmiregistry
                     Registry registry = LocateRegistry.getRegistry(args[i], port);
-                    
+
                     // get the proxy and the remote reference by rmiregistry lookup
                     ResourceManager rm = (ResourceManager) registry.lookup("group_21");
-                    
+
                     rm.getBanner();
                     rms.put(remotes[i], rm);
                     hostnames.put(remotes[i], args[i]);
@@ -84,7 +84,7 @@ public class MiddleWareImpl implements ResourceManager
         }
 
         // Setup transaction manager
-        TM = new TransactionManager();
+        TM = new TransactionManager(rms);
 
         String path = "Shadows/" + banner + "/";
         master = new File(path + "master.ser");
@@ -198,7 +198,7 @@ public class MiddleWareImpl implements ResourceManager
             rebind(RMEnum.HOTEL);
             return addRooms(id, location, count, price);
         }
-            
+
         return(true);
     }
 
@@ -235,7 +235,7 @@ public class MiddleWareImpl implements ResourceManager
             rebind(RMEnum.CAR);
             return addCars(id, location, count, price);
         }
-        
+
         return(true);
     }
 
@@ -368,7 +368,7 @@ public class MiddleWareImpl implements ResourceManager
     {
         String c,f,h;
         Trace.info("RM::queryCustomerInfo(" + id + ", " + customerID + ") called" );
-        try { 
+        try {
             TM.enlist(id, RMEnum.CAR,rms);
             // Do this for each RM and concat the strings for return
             c = rms.get(RMEnum.CAR).queryCustomerInfo(id, customerID);
@@ -376,14 +376,14 @@ public class MiddleWareImpl implements ResourceManager
             System.out.println("Car server crashed");
             rebind(RMEnum.CAR);
             return queryCustomerInfo(id, customerID);
-        }    
+        }
         try {
             TM.enlist(id, RMEnum.FLIGHT, rms);
             f = rms.get(RMEnum.FLIGHT).queryCustomerInfo(id, customerID);
         } catch (RemoteException e) {
             System.out.println("Flight server crashed");
             rebind(RMEnum.FLIGHT);
-            return queryCustomerInfo(id, customerID);        } 
+            return queryCustomerInfo(id, customerID);        }
         try {
             TM.enlist(id, RMEnum.HOTEL, rms);
             h = rms.get(RMEnum.HOTEL).queryCustomerInfo(id, customerID);
@@ -391,7 +391,7 @@ public class MiddleWareImpl implements ResourceManager
             System.out.println("Hotel server crashed");
             rebind(RMEnum.HOTEL);
             return queryCustomerInfo(id, customerID);
-        }     
+        }
         Trace.info("RM::queryCustomerInfo(" + id + ", " + customerID + "), bill follows..." );
 
         // Could make this look nicer
@@ -415,7 +415,7 @@ public class MiddleWareImpl implements ResourceManager
             } catch (RemoteException e) {
                 System.out.println("Car server crashed");
                 rebind(RMEnum.CAR);
-                return newCustomer(id);          
+                return newCustomer(id);
             }
             try {
                 TM.enlist(id, RMEnum.FLIGHT, rms);
@@ -569,7 +569,7 @@ public class MiddleWareImpl implements ResourceManager
     {
         Trace.info("RM::itinerary(" + id + ", " + customer + ") called" );
         boolean success = true;
-        
+
         if(!flightNumbers.isEmpty()) {
             Iterator<Integer> flights = flightNumbers.iterator();
             while(flights.hasNext()) {
@@ -620,7 +620,7 @@ public class MiddleWareImpl implements ResourceManager
         return transactionId;
     }
 
-    public boolean commit(int transactionId) throws RemoteException, TransactionAbortedException, InvalidTransactionException {  
+    public boolean commit(int transactionId) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
         try {
             TM.prepare(transactionId, rms);
             TM.commit(transactionId, rms);
@@ -685,7 +685,7 @@ public class MiddleWareImpl implements ResourceManager
             try {
                 Registry registry = LocateRegistry.getRegistry(hostnames.get(en), port);
                 ResourceManager rm = (ResourceManager) registry.lookup("group_21");
-                
+
                 rm.getBanner(); // ping rm
                 rms.put(en, rm); // reset rm object to new connected one
 
@@ -698,14 +698,14 @@ public class MiddleWareImpl implements ResourceManager
                 try {
                     Thread.sleep(3000); // sleep for 3 seconds
                 } catch(InterruptedException ee) {
-                    
+
                 }
             }
         }
     }
 
     public static Object readFile(File file) {
-        // helper function that returns a input stream 
+        // helper function that returns a input stream
         // "master" for master file
         // "transactions" for transaction file
         // "history" for log file
@@ -713,7 +713,7 @@ public class MiddleWareImpl implements ResourceManager
             FileInputStream pipe = new FileInputStream(file.getAbsolutePath());
             InputStream buffer = new BufferedInputStream(pipe);
             ObjectInputStream object_pipe = new ObjectInputStream(buffer);
-            
+
             Object object = object_pipe.readObject();
 
             pipe.close();
@@ -740,7 +740,7 @@ public class MiddleWareImpl implements ResourceManager
         try {
             FileOutputStream pipe = new FileOutputStream(file.getAbsolutePath());
             ObjectOutputStream object_pipe = new ObjectOutputStream(pipe);
-            
+
             object_pipe.writeObject(object);
 
             pipe.close();
@@ -756,14 +756,14 @@ public class MiddleWareImpl implements ResourceManager
         // Assumes if master exists the rest do
         if(master.exists()) {
                 System.out.println("recovery files found, recovering...");
-                // recover TM 
+                // recover TM
                 TM = (TransactionManager) readFile(master);
             return true;
         }
         else {
             // create master, transactions, history files
             System.out.println("recovery files not found, creating new ones...");
-            
+
             try {
                 master.createNewFile();
 

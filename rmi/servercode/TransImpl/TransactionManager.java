@@ -8,6 +8,12 @@ import java.util.*;
 import java.io.*;
 import java.rmi.RemoteException;
 
+import java.rmi.registry.Registry;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.rmi.RMISecurityManager;
+
 public class TransactionManager implements Serializable
 {
 	private static volatile int transactionCounter;
@@ -20,8 +26,6 @@ public class TransactionManager implements Serializable
 	//Instantiate with access to MiddleWareImpl
 	public TransactionManager() {
 		transactionCounter = 0;
-		this.rms = rms;
-
 		// CD = new CrashDetection(this);
 		// startDetector();
 		System.out.println("Transaction Manager Started...");
@@ -61,7 +65,7 @@ public class TransactionManager implements Serializable
 		}
 		else
 			throw new InvalidTransactionException(id, "Transaction not found for abort");
-	
+
 	}
 
 	public boolean commit(int id, HashMap<RMEnum, ResourceManager> rms) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
@@ -95,7 +99,7 @@ public class TransactionManager implements Serializable
 		}
 		else
 			throw new InvalidTransactionException(id, "Transaction not found for commit");
-	
+
 	}
 
 	public boolean prepare(int id, HashMap<RMEnum, ResourceManager> rms) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
@@ -105,7 +109,7 @@ public class TransactionManager implements Serializable
 	    if(toPrepare != null) {
 	    	// makes copy of array list to avoid concurrent exception
 	    	ArrayList<RMEnum> temp = new ArrayList<RMEnum>();
-	    	for(RMEnum rm : toPrepare.activeRMs) {
+	    	for(RMEnum rm : toPrepare.activeRMs) {+
 	    		temp.add(rm);
 	    	}
 		    for(RMEnum rm :temp) {
@@ -121,7 +125,6 @@ public class TransactionManager implements Serializable
 			}
 			if (!result)
 				return false;
-			 
 			return true;
 		}
 		else
@@ -137,7 +140,7 @@ public class TransactionManager implements Serializable
 		if(!transaction.activeRMs.contains(rm)) {
 			rms.get(rm).start(id);
 			transaction.add(rm);
-		}	
+		}
 		transaction.setTime((new Date()).getTime());
 	}
 
@@ -166,5 +169,9 @@ public class TransactionManager implements Serializable
 
 	public int getCounter() {
 		return this.transactionCounter;
+	}
+
+	public boolean ping() {
+			rm.getBanner();
 	}
 }
