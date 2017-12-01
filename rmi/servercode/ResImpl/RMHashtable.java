@@ -36,23 +36,4 @@ public class RMHashtable extends Hashtable {
 		System.out.println( toString() );
   }
 
-
-  // public void store(String filename) {
-  //   try {
-
-  //       // Initialize File/Serailization Streams
-		//     FileOutputStream file_pipe = new FileOutputStream(new File("shadows/" + filename));
-		//     ObjectOutputStream object_pipe = new ObjectOutputStream(file_pipe);
-
-		//     // Serializes RM to file
-		//     object_pipe.writeObject(this);
-
-  //       file_pipe.close();
-  //       object_pipe.close();
-	 //  }
-  //   catch (IOException e) {
-		//      System.out.println("Error initializing stream");
-  //        e.printStackTrace();
-	 //  }
-  // }
 }

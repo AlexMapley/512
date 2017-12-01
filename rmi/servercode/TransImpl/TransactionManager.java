@@ -8,7 +8,7 @@ import java.util.*;
 import java.io.*;
 import java.rmi.RemoteException;
 
-public class TransactionManager
+public class TransactionManager implements Serializable
 {
 	private static volatile int transactionCounter;
 	private static volatile int hashKey;
@@ -19,13 +19,20 @@ public class TransactionManager
 
 	// Hashmap of ongoing transactions, compared to key value
 	public static HashMap<Integer, Transaction> transactions = new HashMap<Integer, Transaction>();
-	private CrashDetection CD;
+	// private CrashDetection CD;
 
+	HashMap<RMEnum, ResourceManager> rms;
 	//Instantiate with access to MiddleWareImpl
 	public TransactionManager() {
 		transactionCounter = 0;
+<<<<<<< HEAD
 		hashKey = hashKey_index_start;
 
+=======
+		this.rms = rms;
+
+		// CD = new CrashDetection(this);
+>>>>>>> 0756f233f267080eb7eb98f8b2ea02e8cebc67a7
 		// startDetector();
 		CD = new CrashDetection(this);
 		System.out.println("Transaction Manager Started...");
@@ -69,6 +76,7 @@ public class TransactionManager
 	 	return transactionCounter;
 	}
 
+<<<<<<< HEAD
 	public boolean abort(int id) throws InvalidTransactionException, TransactionAbortedException {
 		Transaction toCommit = transactions.get(id);
 		if(toCommit.status == 1) {
@@ -83,22 +91,40 @@ public class TransactionManager
 					catch (Exception e) {
 						throw new TransactionAbortedException(id, "RM abort encountered an error");
 					}
-				}
-				System.out.println("Transaction " + transactionCounter + " Aborted in Manager");
-				// throw new TransactionAbortedException(id, "Transaction: " + id + "aborted in Transaction manager");
-				return true;
+=======
+	public boolean abort(int id, HashMap<RMEnum, ResourceManager> rms) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
+		Transaction toAbort = transactions.get(id);
+		if(toAbort != null) {
+			// makes copy of array list to avoid concurrent exception
+			ArrayList<RMEnum> temp = new ArrayList<RMEnum>();
+			for(RMEnum rm : toAbort.activeRMs) {
+				temp.add(rm);
 			}
-			else
-				throw new InvalidTransactionException(id, "Transaction not found for abort");
-		}
-		else {
-			System.out.println("Transaction " + transactionCounter + " Aborted in Manager");
+			for(RMEnum rm : temp) {
+				try {
+					rms.get(rm).abort(id);
+
+					// delete rm from transaction list if abort was succesfull
+					toAbort.activeRMs.remove(rm);
+				}
+				catch (RemoteException e) {
+					throw e;
+>>>>>>> 0756f233f267080eb7eb98f8b2ea02e8cebc67a7
+				}
+			}
+
+			System.out.println("Transaction " + transactionCounter + " Aborted in TM");
 			return true;
 		}
+		else
+			throw new InvalidTransactionException(id, "Transaction not found for abort");
+	
 	}
 
-	public boolean commit(int id) throws InvalidTransactionException, TransactionAbortedException {
+	public boolean commit(int id, HashMap<RMEnum, ResourceManager> rms) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
+		System.out.println("Transaction " + transactionCounter + " starting commit");
 		Transaction toCommit = transactions.get(id);
+<<<<<<< HEAD
 		if(toCommit.status == 1) {
 			toCommit.status = 0;
 			boolean result = true;
@@ -117,36 +143,24 @@ public class TransactionManager
 					if (!result) {
 						break;
 					}
-
-				}
-				if (!result)
-					return false;
-				System.out.println("Transaction " + transactionCounter + " Committed in Manager");
-				return true;
+=======
+		boolean result = true;
+		if(toCommit != null) {
+			// makes copy of array list to avoid concurrent exception
+			ArrayList<RMEnum> temp = new ArrayList<RMEnum>();
+			for(RMEnum rm : toCommit.activeRMs) {
+				temp.add(rm);
 			}
-			else
-				throw new InvalidTransactionException(id, "Transaction not found for commit");
-		}
-		else {
-			System.out.println("Transaction " + transactionCounter + " Committed in Manager");
-			return true;
-		}
-	}
 
-	public boolean prepare(int id) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
-	    Transaction toPrepare = transactions.get(id);
-	    boolean result = true;
-
-	    if(toPrepare != null) {
-		    Iterator<ResourceManager> rm_Iterator = toPrepare.activeRMs.iterator();
-			while(rm_Iterator.hasNext()) {
+			for(RMEnum rm : temp) {
 				try {
-					ResourceManager rm_pointer = rm_Iterator.next();
-					//accumulate votes
-					result = result && rm_pointer.vote(id);
-				} catch (Exception e) {
-					System.out.println("Transaction " + transactionCounter + " Error while receiving votes");
-					return false;
+					result = result && rms.get(rm).commit(id);
+>>>>>>> 0756f233f267080eb7eb98f8b2ea02e8cebc67a7
+
+					// delete rm from transaction list if commit was succesfull
+					toCommit.activeRMs.remove(rm);
+				} catch (RemoteException e) {
+					throw e;
 				}
 				if (!result) {
 					break;
@@ -154,8 +168,44 @@ public class TransactionManager
 			}
 			if (!result)
 				return false;
+			System.out.println("Transaction " + transactionCounter + " Committed in Manager");
+			return true;
+		}
+		else
+			throw new InvalidTransactionException(id, "Transaction not found for commit");
+	
+	}
+
+	public boolean prepare(int id, HashMap<RMEnum, ResourceManager> rms) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
+	    Transaction toPrepare = transactions.get(id);
+	    boolean result = true;
+
+	    if(toPrepare != null) {
+	    	// makes copy of array list to avoid concurrent exception
+	    	ArrayList<RMEnum> temp = new ArrayList<RMEnum>();
+	    	for(RMEnum rm : toPrepare.activeRMs) {
+	    		temp.add(rm);
+	    	}
+		    for(RMEnum rm :temp) {
+				try {
+					//accumulate votes
+					result = result && rms.get(rm).vote(id);
+				} catch (RemoteException e) {
+					throw e;
+				}
+				if (!result) {
+					break;
+				}
+			}
+			if (!result)
+				return false;
+<<<<<<< HEAD
 			else
 				return true;
+=======
+			 
+			return true;
+>>>>>>> 0756f233f267080eb7eb98f8b2ea02e8cebc67a7
 		}
 		else
 			throw new InvalidTransactionException(id, "Transaction not found for prepare");
@@ -165,36 +215,42 @@ public class TransactionManager
 		// CD.start();
 	}
 
-	public void enlist(int id, ResourceManager rm) throws RemoteException, TransactionAbortedException {
+	public void enlist(int id, RMEnum rm, HashMap<RMEnum, ResourceManager> rms) throws RemoteException, TransactionAbortedException {
 		Transaction transaction = transactions.get(id);
+<<<<<<< HEAD
 
 		// Add rm to transaction, with it's associated Vault hash key
 		transaction.add(rm, hashKey++);
+=======
+		if(!transaction.activeRMs.contains(rm)) {
+			rms.get(rm).start(id);
+			transaction.add(rm);
+		}	
+>>>>>>> 0756f233f267080eb7eb98f8b2ea02e8cebc67a7
 		transaction.setTime((new Date()).getTime());
-		rm.start(id);
 	}
 
 	public Set<ResourceManager> checkActive() {
-		Set<ResourceManager> active = new HashSet<ResourceManager>();
+		// Set<ResourceManager> active = new HashSet<ResourceManager>();
 
-		// Iterator<Transaction> transIterator = transactions.iterator();
-		for (Transaction transaction : transactions.values()) {
-			if(transaction.status == 1) {
-				Iterator<ResourceManager> rmIterator = transaction.activeRMs.iterator();
-				while(rmIterator.hasNext()) {
-					active.add(rmIterator.next());
-				}
-			}
-			else
-				continue;
-		}
-		return active;
+		// // Iterator<Transaction> transIterator = transactions.iterator();
+		// for (Transaction transaction : transactions.values()) {
+		// 	if(transaction.status == 1) {
+		// 		Iterator<ResourceManager> rmIterator = transaction.activeRMs.iterator();
+		// 		while(rmIterator.hasNext()) {
+		// 			active.add(rmIterator.next());
+		// 		}
+		// 	}
+		// 	else
+		// 		continue;
+		// }
+		return null;
 	}
 
 	public void restart() {
 		this.transactionCounter = 0;
 		this.transactions.clear();
-		CD = new CrashDetection(this);
+		// /CD = new CrashDetection(this);
 	}
 
 	public int getCounter() {

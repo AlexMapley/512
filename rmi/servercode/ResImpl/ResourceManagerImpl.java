@@ -8,6 +8,7 @@ import ResInterface.*;
 import LockImpl.*;
 import TransImpl.*;
 import java.util.*;
+import java.io.*;
 
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
@@ -22,12 +23,29 @@ public class ResourceManagerImpl implements ResourceManager
     public static RMHashtable m_itemHT = new RMHashtable();
     private static LockManager LM = new LockManager();
     private static HashMap<Integer, RMHashtable> transactionImages = new HashMap<Integer, RMHashtable>();
+    
+    // references to shadow files
+    private static File master;
+    private static File transactions;
+    private static File locks;
+
+    // special attribute for a "null" RMItem
+    private final RMItem nullItem = new Customer(Integer.MIN_VALUE);
 
     public static void main(String args[]) {
         // Figure out where server is running
         String server = "localhost";
         int port = 5959;
 
+<<<<<<< HEAD
+=======
+        if (args.length == 1) {
+            banner = args[0].trim();
+        } else {
+          System.out.println("Only one argument: name of RM server being created");
+        }
+
+>>>>>>> 0756f233f267080eb7eb98f8b2ea02e8cebc67a7
         try {
             // create a new Server object
             ResourceManagerImpl obj = new ResourceManagerImpl();
@@ -46,6 +64,19 @@ public class ResourceManagerImpl implements ResourceManager
         if (System.getSecurityManager() == null) {
             System.setSecurityManager(new RMISecurityManager());
         }
+
+        String path = "Shadows/" + banner + "/";
+        master = new File(path + "master.ser");
+        transactions = new File(path + "transactions.ser");
+        locks = new File(path + "locks.ser");
+
+        // Attempt recovery
+        if(recover()) {
+            System.out.println(banner + " RM recovered it's state");
+        }
+        else {
+            System.out.println(banner + " RM started fresh");
+        }
     }
 
     public ResourceManagerImpl() throws RemoteException {
@@ -57,7 +88,28 @@ public class ResourceManagerImpl implements ResourceManager
     {
         try {
             LM.Lock(id, key, LM.READ);
-            return (RMItem) m_itemHT.get(key);
+            writeFile(locks, LM);
+            RMHashtable table = (RMHashtable) transactionImages.get(id);
+            RMItem item;
+
+            RMHashtable masterTable = (RMHashtable) readFile(master);
+            if(table.containsKey(key)) {
+                item = (RMItem) table.get(key);
+            }
+            else {
+                if(!masterTable.containsKey(key))
+                    return null;
+                else
+                    item = (RMItem) masterTable.get(key);
+            }
+
+            if(item == nullItem) {
+                // was a deleted item
+                System.out.println("someone tried to read a deleted object");
+                return null;
+            }
+
+            return item;
         } catch (DeadlockException e) {
             throw new TransactionAbortedException(id, "");
         }
@@ -68,11 +120,15 @@ public class ResourceManagerImpl implements ResourceManager
     {
         try {
             LM.Lock(id, key, LM.WRITE);
-            m_itemHT.put(key, value);
+            writeFile(locks, LM);
+            // write to hashmap in memory
+            transactionImages.get(id).put(key, value);
+            // write to hashtable in file    
+            writeFile(transactions, transactionImages);
+
         } catch (DeadlockException e) {
             throw new TransactionAbortedException(id, "");
         }
-
     }
 
     // Remove the item out of storage
@@ -80,7 +136,17 @@ public class ResourceManagerImpl implements ResourceManager
     {
         try {
             LM.Lock(id, key, LM.WRITE);
-            return (RMItem)m_itemHT.remove(key);
+            writeFile(locks, LM);
+            // write to hashmap in memory
+            RMHashtable table = (RMHashtable) transactionImages.get(id);
+            RMItem delete = (RMItem) table.put(key, nullItem);
+            // item = (RMItem) table.remove(key);
+            // instead make a "null" RMItem value with that key and push to local t table
+
+            // write to hashtable in file    
+            writeFile(transactions, transactionImages);
+
+            return delete;
         } catch (DeadlockException e) {
             throw new TransactionAbortedException(id, "");
         }
@@ -113,7 +179,13 @@ public class ResourceManagerImpl implements ResourceManager
     // query the number of available seats/rooms/cars
     protected int queryNum(int id, String key) throws TransactionAbortedException {
         Trace.info("RM::queryNum(" + id + ", " + key + ") called" );
-        ReservableItem curObj = (ReservableItem) readData( id, key);
+        ReservableItem curObj;
+        try {
+            curObj = (ReservableItem) readData( id, key);
+        } catch (ClassCastException e) {
+            System.out.println("This item was probably deleted");
+            curObj = null;
+        }
         int value = 0;
         if ( curObj != null ) {
             value = curObj.getCount();
@@ -125,7 +197,13 @@ public class ResourceManagerImpl implements ResourceManager
     // query the price of an item
     protected int queryPrice(int id, String key) throws TransactionAbortedException {
         Trace.info("RM::queryCarsPrice(" + id + ", " + key + ") called" );
-        ReservableItem curObj = (ReservableItem) readData( id, key);
+        ReservableItem curObj;
+        try {
+            curObj = (ReservableItem) readData( id, key);
+        } catch (ClassCastException e) {
+            System.out.println("This item was probably deleted");
+            curObj = null;
+        }
         int value = 0;
         if ( curObj != null ) {
             value = curObj.getPrice();
@@ -145,7 +223,13 @@ public class ResourceManagerImpl implements ResourceManager
         }
 
         // check if the item is available
-        ReservableItem item = (ReservableItem)readData(id, key);
+        ReservableItem item;
+        try {
+            item = (ReservableItem) readData( id, key);
+        } catch (ClassCastException e) {
+            System.out.println("This item was probably deleted");
+            item = null;
+        }
         if ( item == null ) {
             Trace.warn("RM::reserveItem( " + id + ", " + customerID + ", " + key+", " +location+") failed--item doesn't exist" );
             return false;
@@ -256,14 +340,12 @@ public class ResourceManagerImpl implements ResourceManager
         return(true);
     }
 
-
     // Delete cars from a location
     public boolean deleteCars(int id, String location)
         throws RemoteException, TransactionAbortedException
     {
         return deleteItem(id, Car.getKey(location));
     }
-
 
 
     // Returns the number of empty seats on this flight
@@ -273,27 +355,12 @@ public class ResourceManagerImpl implements ResourceManager
         return queryNum(id, Flight.getKey(flightNum));
     }
 
-    // Returns the number of reservations for this flight.
-//    public int queryFlightReservations(int id, int flightNum)
-//        throws RemoteException
-//    {
-//        Trace.info("RM::queryFlightReservations(" + id + ", #" + flightNum + ") called" );
-//        RMInteger numReservations = (RMInteger) readData( id, Flight.getNumReservationsKey(flightNum) );
-//        if ( numReservations == null ) {
-//            numReservations = new RMInteger(0);
-//        } // if
-//        Trace.info("RM::queryFlightReservations(" + id + ", #" + flightNum + ") returns " + numReservations );
-//        return numReservations.getValue();
-//    }
-
-
     // Returns price of this flight
     public int queryFlightPrice(int id, int flightNum )
         throws RemoteException, TransactionAbortedException
     {
         return queryPrice(id, Flight.getKey(flightNum));
     }
-
 
     // Returns the number of rooms available at a location
     public int queryRooms(int id, String location)
@@ -302,9 +369,6 @@ public class ResourceManagerImpl implements ResourceManager
         return queryNum(id, Hotel.getKey(location));
     }
 
-
-
-
     // Returns room price at this location
     public int queryRoomsPrice(int id, String location)
         throws RemoteException, TransactionAbortedException
@@ -312,14 +376,12 @@ public class ResourceManagerImpl implements ResourceManager
         return queryPrice(id, Hotel.getKey(location));
     }
 
-
     // Returns the number of cars available at a location
     public int queryCars(int id, String location)
         throws RemoteException, TransactionAbortedException
     {
         return queryNum(id, Car.getKey(location));
     }
-
 
     // Returns price of cars at this location
     public int queryCarsPrice(int id, String location)
@@ -454,24 +516,33 @@ public class ResourceManagerImpl implements ResourceManager
         return false;
     }
 
-    public void spamAllNewItem(int transactionId) throws RemoteException, TransactionAbortedException {
-
-    }
-
-    public void spamFlightNewItem(int transactionId) throws RemoteException, TransactionAbortedException {
-
-    }
-
     public int start(int transactionId) throws RemoteException {
-        // Copy the hashtable and use is as a backup
-        transactionImages.put(transactionId, (RMHashtable) m_itemHT.clone());
-        System.out.println("Transaction: " + transactionId + " Started");
+        // Place an empty hashtable for that tid
+        if(!transactionImages.containsKey(transactionId)) {
+            transactionImages.put(transactionId, new RMHashtable());
+            System.out.println("Transaction: " + transactionId + " Started");
+        }
+        else
+            System.out.println("Transaction: " + transactionId + " submits an operation");
         return 0;
     }
 
     public boolean commit(int transactionId) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
         // Release transaction locks
         if(LM.UnlockAll(transactionId)) {
+            writeFile(locks, LM);
+
+            // push changes to in memory and file master hashtables
+            update(transactionId);
+            writeFile(master, m_itemHT);
+
+            // // reset in memory master
+            // m_itemHT = (RMHashtable) readFile(master);
+
+            // delete transaction from memory and file hashmap
+            transactionImages.remove(transactionId);
+            writeFile(transactions, transactionImages);
+
             System.out.println("Transaction: " + transactionId + " Commited");
             return true;
         }
@@ -482,13 +553,14 @@ public class ResourceManagerImpl implements ResourceManager
     public void abort(int transactionId) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
         // Release transaction locks
         if(LM.UnlockAll(transactionId)) {
+            writeFile(locks, LM);
+            // delete transaction from memory and file hashmap
+            transactionImages.remove(transactionId);
+            writeFile(transactions, transactionImages);
 
-            // Reset DB from transaction image
-            RMHashtable reset = transactionImages.get(transactionId);
-            if(reset != null) {
-                // System.out.println("reseting transaction: "+ transactionId);
-                m_itemHT = (RMHashtable) reset.clone();
-            }
+            //update in memory hashtable
+            // m_itemHT = (RMHashtable) readFile(master);
+
             System.out.println("Transaction: " + transactionId + " Aborted");
         }
         else
@@ -505,11 +577,126 @@ public class ResourceManagerImpl implements ResourceManager
 
     public boolean vote(int transactionId) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
         // Do something more here??
-        System.out.println("Sending NO vote for transaction: " + transactionId);
-        return false;
-    }
+        // check if that transaction has a table
+        // if not throw exception
 
+<<<<<<< HEAD
     public RMHashtable getHash() {
       return m_itemHT;
     }
+=======
+        System.out.println("Sending Yes vote for transaction: " + transactionId);
+        return true;
+    }
+
+    public String getBanner() {
+      return banner;
+    }
+
+    public static boolean recover() {
+        // Assumes if master exists the rest do
+        if(master.exists()) {
+                System.out.println("recovery files found, recovering...");
+
+                // recover transactionImages hash map
+                transactionImages = (HashMap<Integer, RMHashtable>) readFile(transactions);
+
+                // recover lock table
+                LM = (LockManager) readFile(locks);
+
+                // recovering m_itemHT not necessary as it happens in a commit
+            return true;
+        }
+        else {
+            // create master, transactions, history files
+            System.out.println("recovery files not found, creating new ones...");
+            
+            try {
+                master.createNewFile();
+                transactions.createNewFile();
+                locks.createNewFile();
+
+                // write empty hash table into master class file
+                writeFile(master, m_itemHT);
+                // write empty hash map into transactions class file
+                writeFile(transactions, transactionImages);
+                // write empty lock manager class file
+                writeFile(locks, LM);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+    }
+
+    public static Object readFile(File file) {
+        // helper function that returns a input stream 
+        // "master" for master file
+        // "transactions" for transaction file
+        // "history" for log file
+        try {
+            FileInputStream pipe = new FileInputStream(file.getAbsolutePath());
+            InputStream buffer = new BufferedInputStream(pipe);
+            ObjectInputStream object_pipe = new ObjectInputStream(buffer);
+            
+            Object object = object_pipe.readObject();
+
+            pipe.close();
+            buffer.close();
+            object_pipe.close();
+            return object;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static void writeFile(File file, Object object) {
+        // helper function that writes an object to a file
+        // "master" for master file
+        // "transactions" for transaction file
+        // "history" for log file
+
+        try {
+            FileOutputStream pipe = new FileOutputStream(file.getAbsolutePath());
+            ObjectOutputStream object_pipe = new ObjectOutputStream(pipe);
+            
+            object_pipe.writeObject(object);
+
+            pipe.close();
+            object_pipe.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void update(int id) {
+        // retrieve working set
+        RMHashtable transaction = (RMHashtable) transactionImages.get(id);
+        
+        // Update in memory master hash table
+        synchronized(m_itemHT) {
+            m_itemHT = (RMHashtable) readFile(master);
+            Set<String> keys = transaction.keySet();
+            for(String key : keys) {
+                if(transaction.get(key) == nullItem) {
+                    if(m_itemHT.containsKey(key)) {
+                        m_itemHT.remove(key);
+                    }
+                }
+                else
+                    m_itemHT.put(key, transaction.get(key));
+            }
+        }
+    }   
+>>>>>>> 0756f233f267080eb7eb98f8b2ea02e8cebc67a7
 }

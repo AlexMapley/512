@@ -136,12 +136,6 @@ public interface ResourceManager extends Remote
     public boolean itinerary(int id,int customer,Vector<Integer> flightNumbers,String location, boolean Car, boolean Room)
 	throws RemoteException, TransactionAbortedException;
 
-	public void spamAllNewItem(int transactionId)
-  throws RemoteException, TransactionAbortedException;
-
-  	public void spamFlightNewItem(int transactionId)
-  throws RemoteException, TransactionAbortedException;
-
     public int start(int transactionId)
   throws RemoteException, TransactionAbortedException;
 
@@ -157,6 +151,12 @@ public interface ResourceManager extends Remote
     public boolean vote(int transactionId)
   throws RemoteException, InvalidTransactionException, TransactionAbortedException;
 
+<<<<<<< HEAD
     public RMHashtable getHash()
   throws RemoteException, IOException;
+=======
+    public String getBanner()
+  throws RemoteException;
+  
+>>>>>>> 0756f233f267080eb7eb98f8b2ea02e8cebc67a7
 }

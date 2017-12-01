@@ -1,55 +1,79 @@
-// -------------------------------// Kevin T. Manley// CSE 593// -------------------------------
-package ResImpl;
-import java.io.*;
+// -------------------------------
+// Kevin T. Manley
+// CSE 593
+// -------------------------------
+package ResImpl;
+
+import java.io.*;
+
 
 // Superclass for the three reservable items, Flight, Car, and Hotel
-public abstract class ReservableItem extends RMItem implements Serializable {
+public abstract class ReservableItem extends RMItem
+ {
   private int m_nCount;
   private int m_nPrice;
   private int m_nReserved;
   private String m_strLocation;
-  
+  
+
+
   public ReservableItem(String location, int count, int price) {
     super();
     m_strLocation=location;
     m_nCount=count;
     m_nPrice=price;
     m_nReserved=0;
-  }
+  }
 
-  public void setCount(int count)  {
+
+  public void setCount(int count)
+  {
     m_nCount = count;
-  }
+  }
 
-  public int getCount() {
+
+  public int getCount()
+ {
     return m_nCount;
-  }
+  }
 
-  public void setPrice(int price) {
+
+  public void setPrice(int price)
+ {
     m_nPrice = price;
   }
 
-  public int getPrice()  {
+  public int getPrice()
+  {
     return m_nPrice;
   }
 
-  public void setReserved(int r) {
+  public void setReserved(int r)
+ {
     m_nReserved = r;
-  }
+  }
 
-  public int getReserved() {
+
+
+  public int getReserved()
+ {
     return m_nReserved;
-  }
+  }
 
-  public String getLocation()  {
+
+  public String getLocation()
+  {
     return m_strLocation;
-  }
+  }
 
-  public String toString() {
+
+  public String toString()
+ {
     return "RESERVABLEITEM key='" + getKey() + "', location='" + getLocation() +
     "', count='" + getCount() + "', price='" + getPrice() + "'";
   }
 
   public abstract String getKey();
 
-}
+
+}
