@@ -525,40 +525,40 @@ public class ResourceManagerImpl implements ResourceManager
     }
 
     public boolean commit(int transactionId) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
-        // Release transaction locks
-        if(LM.UnlockAll(transactionId)) {
-            writeFile(locks, LM);
+        if (transactionImages.get(transactionId) != null) {
+            // Release transaction locks
+            if(LM.UnlockAll(transactionId)) {
+                writeFile(locks, LM);
 
-            // push changes to in memory and file master hashtables
-            update(transactionId);
-            writeFile(master, m_itemHT);
+                // push changes to in memory and file master hashtables
+                update(transactionId);
+                writeFile(master, m_itemHT);
 
-            // // reset in memory master
-            // m_itemHT = (RMHashtable) readFile(master);
+                // delete transaction from memory and file hashmap
+                transactionImages.remove(transactionId);
+                writeFile(transactions, transactionImages);
 
-            // delete transaction from memory and file hashmap
-            transactionImages.remove(transactionId);
-            writeFile(transactions, transactionImages);
-
-            System.out.println("Transaction: " + transactionId + " Commited");
-            return true;
+                System.out.println("Transaction: " + transactionId + " Commited");
+                return true;
+            }
+            else
+                return false;
         }
-
-        throw new TransactionAbortedException(transactionId, "Error during commit on transaction: " + transactionId);
+        else
+            throw new TransactionAbortedException(transactionId, "No such transaction at this RM: " + transactionId);
     }
 
     public void abort(int transactionId) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
-        // Release transaction locks
-        if(LM.UnlockAll(transactionId)) {
-            writeFile(locks, LM);
-            // delete transaction from memory and file hashmap
-            transactionImages.remove(transactionId);
-            writeFile(transactions, transactionImages);
+        if (transactionImages.get(transactionId) != null) {
+            // Release transaction locks
+            if(LM.UnlockAll(transactionId)) {
+                writeFile(locks, LM);
+                // delete transaction from memory and file hashmap
+                transactionImages.remove(transactionId);
+                writeFile(transactions, transactionImages);
 
-            //update in memory hashtable
-            // m_itemHT = (RMHashtable) readFile(master);
-
-            System.out.println("Transaction: " + transactionId + " Aborted");
+                System.out.println("Transaction: " + transactionId + " Aborted");
+            }
         }
         else
             throw new TransactionAbortedException(transactionId, "Locks could not be released");
@@ -575,7 +575,6 @@ public class ResourceManagerImpl implements ResourceManager
     public boolean vote(int transactionId) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
         // check if that transaction has a table
         // if not throw exception
-
         if(transactionImages.get(transactionId) != null) {
             System.out.println("Sending Yes vote for transaction: " + transactionId);
             return true;
@@ -584,7 +583,7 @@ public class ResourceManagerImpl implements ResourceManager
             throw new InvalidTransactionException(transactionId, "Transaction does not exist at this RM");
     }
 
-    public String getBanner() {
+    public String getBanner() throws RemoteException {
       return banner;
     }
 
