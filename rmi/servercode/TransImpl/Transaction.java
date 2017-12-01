@@ -5,19 +5,17 @@ import java.util.*;
 import java.io.*;
 import java.rmi.RemoteException;
 
-public class Transaction
+public class Transaction implements Serializable
 {
 	public static final int TIME2LIVE = 1000; // 1s in ms
 	public int id;
-	public ArrayList<Integer> activeRM_Ids;
-	public ArrayList<ResourceManager> activeRMs;
+	public ArrayList<RMEnum> activeRMs;
 	public int status; // 1 for active, 0 for finished
 	private long time;
 
 	public Transaction(int id) {
 	 	this.id = id;
-		this.activeRM_Ids = new ArrayList<Integer>();
-	 	this.activeRMs = new ArrayList<ResourceManager>();
+	 	this.activeRMs = new ArrayList<RMEnum>();
 	 	this.status = 1;
 	 	this.time = (new Date()).getTime();
 	}
@@ -34,7 +32,9 @@ public class Transaction
 		both indexed as well as iterable.
 		*/
 		this.activeRMs.add(rm);
-		this.activeRM_Ids.add(hashKey);
+
+	public void add(RMEnum rm) {
+		this.activeRMs.add(rm);
 	}
 
 	public void setTime(long time) {
