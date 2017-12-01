@@ -23,7 +23,7 @@ public class ResourceManagerImpl implements ResourceManager
     public static RMHashtable m_itemHT = new RMHashtable();
     private static LockManager LM = new LockManager();
     private static HashMap<Integer, RMHashtable> transactionImages = new HashMap<Integer, RMHashtable>();
-    
+
     // references to shadow files
     private static File master;
     private static File transactions;
@@ -37,15 +37,12 @@ public class ResourceManagerImpl implements ResourceManager
         String server = "localhost";
         int port = 5959;
 
-<<<<<<< HEAD
-=======
         if (args.length == 1) {
             banner = args[0].trim();
         } else {
           System.out.println("Only one argument: name of RM server being created");
         }
 
->>>>>>> 0756f233f267080eb7eb98f8b2ea02e8cebc67a7
         try {
             // create a new Server object
             ResourceManagerImpl obj = new ResourceManagerImpl();
@@ -123,7 +120,7 @@ public class ResourceManagerImpl implements ResourceManager
             writeFile(locks, LM);
             // write to hashmap in memory
             transactionImages.get(id).put(key, value);
-            // write to hashtable in file    
+            // write to hashtable in file
             writeFile(transactions, transactionImages);
 
         } catch (DeadlockException e) {
@@ -143,7 +140,7 @@ public class ResourceManagerImpl implements ResourceManager
             // item = (RMItem) table.remove(key);
             // instead make a "null" RMItem value with that key and push to local t table
 
-            // write to hashtable in file    
+            // write to hashtable in file
             writeFile(transactions, transactionImages);
 
             return delete;
@@ -579,12 +576,6 @@ public class ResourceManagerImpl implements ResourceManager
         // Do something more here??
         // check if that transaction has a table
         // if not throw exception
-
-<<<<<<< HEAD
-    public RMHashtable getHash() {
-      return m_itemHT;
-    }
-=======
         System.out.println("Sending Yes vote for transaction: " + transactionId);
         return true;
     }
@@ -610,7 +601,7 @@ public class ResourceManagerImpl implements ResourceManager
         else {
             // create master, transactions, history files
             System.out.println("recovery files not found, creating new ones...");
-            
+
             try {
                 master.createNewFile();
                 transactions.createNewFile();
@@ -631,7 +622,7 @@ public class ResourceManagerImpl implements ResourceManager
     }
 
     public static Object readFile(File file) {
-        // helper function that returns a input stream 
+        // helper function that returns a input stream
         // "master" for master file
         // "transactions" for transaction file
         // "history" for log file
@@ -639,7 +630,7 @@ public class ResourceManagerImpl implements ResourceManager
             FileInputStream pipe = new FileInputStream(file.getAbsolutePath());
             InputStream buffer = new BufferedInputStream(pipe);
             ObjectInputStream object_pipe = new ObjectInputStream(buffer);
-            
+
             Object object = object_pipe.readObject();
 
             pipe.close();
@@ -666,7 +657,7 @@ public class ResourceManagerImpl implements ResourceManager
         try {
             FileOutputStream pipe = new FileOutputStream(file.getAbsolutePath());
             ObjectOutputStream object_pipe = new ObjectOutputStream(pipe);
-            
+
             object_pipe.writeObject(object);
 
             pipe.close();
@@ -682,7 +673,7 @@ public class ResourceManagerImpl implements ResourceManager
     public void update(int id) {
         // retrieve working set
         RMHashtable transaction = (RMHashtable) transactionImages.get(id);
-        
+
         // Update in memory master hash table
         synchronized(m_itemHT) {
             m_itemHT = (RMHashtable) readFile(master);
@@ -697,6 +688,5 @@ public class ResourceManagerImpl implements ResourceManager
                     m_itemHT.put(key, transaction.get(key));
             }
         }
-    }   
->>>>>>> 0756f233f267080eb7eb98f8b2ea02e8cebc67a7
+    }
 }
