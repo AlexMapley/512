@@ -5,36 +5,23 @@ import java.util.*;
 import java.io.*;
 import java.rmi.RemoteException;
 
-public class Transaction
+public class Transaction implements Serializable
 {
 	public static final int TIME2LIVE = 1000; // 1s in ms
 	public int id;
-	public Set<ResourceManager> activeRMs;
+	public ArrayList<RMEnum> activeRMs;
 	public int status; // 1 for active, 0 for finished
 	private long time;
 
 	public Transaction(int id) {
 	 	this.id = id;
-	 	this.activeRMs = new HashSet<ResourceManager>();
+	 	this.activeRMs = new ArrayList<RMEnum>();
 	 	this.status = 1;
 	 	this.time = (new Date()).getTime();
 	}
 
-	public void add(ResourceManager rm) {
+	public void add(RMEnum rm) {
 		this.activeRMs.add(rm);
-
-		// Create temporary rm shadow file:
-		// name should be `id``banner`.ser,
-		// where `id` is our transaction id,
-		// and banner is the name of our rm.
-		// try {
-		// 		String filename = this.id + rm.getBanner() + ".ser";
-		// 		rm.store(filename);
-		// }
-		// catch (Exception e) {
-		// 	e.printStackTrace();
-		// }
-
 	}
 
 	public void setTime(long time) {

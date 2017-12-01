@@ -1,9 +1,5 @@
 TODO:
 
-- MW needs to try to rebind with a RM if remote exception is thrown
-- MW runs transaction recovery after trying to rebind
-	- if successfull send send exact same call
-	- if unsuccessfull full system shut down
 - Handle RM crash cases
 	- RM crashes after voting yes
 - handle MW crash cases
@@ -11,3 +7,5 @@ TODO:
 - MW recovery
 	- add attributes to transaction so that all cases can be covered upon recovery
 	- transaction manager needs to be its own file so that it can recover
+	- transactions need to be resolved upon recovery
+- Client needs to be able to reconnect with MW after MW crashes

@@ -672,6 +672,7 @@ public class client
 			} catch (Exception e) {
 				System.out.println("Transaction error: " + Id + " commit error " + e);
 				System.out.println("Client should abort");
+				e.printStackTrace();
 			}
 			break;
 

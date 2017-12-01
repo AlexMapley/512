@@ -86,7 +86,6 @@ public class ResourceManagerImpl implements ResourceManager
         try {
             LM.Lock(id, key, LM.READ);
             writeFile(locks, LM);
-
             RMHashtable table = (RMHashtable) transactionImages.get(id);
             RMItem item;
 
@@ -575,7 +574,8 @@ public class ResourceManagerImpl implements ResourceManager
 
     public boolean vote(int transactionId) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
         // Do something more here??
-        // Add more logging?
+        // check if that transaction has a table
+        // if not throw exception
 
         System.out.println("Sending Yes vote for transaction: " + transactionId);
         return true;
@@ -632,7 +632,12 @@ public class ResourceManagerImpl implements ResourceManager
             InputStream buffer = new BufferedInputStream(pipe);
             ObjectInputStream object_pipe = new ObjectInputStream(buffer);
             
-            return object_pipe.readObject();
+            Object object = object_pipe.readObject();
+
+            pipe.close();
+            buffer.close();
+            object_pipe.close();
+            return object;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
