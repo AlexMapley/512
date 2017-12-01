@@ -621,15 +621,20 @@ public class MiddleWareImpl implements ResourceManager
     }
 
     public boolean commit(int transactionId) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
-        boolean result = TM.prepare(transactionId, rms);
+        boolean result;
         
-        if(result) {
+        try {
+            boolean result = TM.prepare(transactionId, rms);
             TM.commit(transactionId, rms);
+        } catch (RemoteException e) {
+            for(RMEnum rm : TM.transactions.get(transactionId).activeRMs) {
+                rebind(rm);
+            }
+            return commit(transactionId);
+        } catch (InvalidTransactionException e) {
+            return false;
         }
-        else {
-            throw new TransactionAbortedException(transactionId, "Unable to commit");
-        }
-        return result;
+        return true;
     }
 
     public void abort(int transactionId) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
