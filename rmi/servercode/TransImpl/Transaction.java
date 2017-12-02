@@ -7,7 +7,7 @@ import java.rmi.RemoteException;
 
 public class Transaction implements Serializable
 {
-	public static final int TIME2LIVE = 1000; // 1s in ms
+	public static final int TIME2LIVE = 10000; // 1s in ms
 	public int id;
 	public ArrayList<RMEnum> activeRMs;
 	public int status; // 1 for active, 0 for finished
