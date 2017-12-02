@@ -164,7 +164,6 @@ public class client
 				  else
 					System.out.println("Flight could not be added");
 				} catch(Exception e){
-				  e.printStackTrace();
 				  rebind(server);
 				  System.out.println("Please enter your command again");
 				  break;
@@ -193,9 +192,8 @@ public class client
 				}
 
 				catch(Exception e){
-				  System.out.println("EXCEPTION:");
-				  System.out.println(e.getMessage());
-				  e.printStackTrace();
+				  rebind(server);
+				  System.out.println("Please enter your command again");
 				}
 				break;
 
@@ -220,9 +218,8 @@ public class client
 					System.out.println("Rooms could not be added");
 				}
 				catch(Exception e){
-				  System.out.println("EXCEPTION:");
-				  System.out.println(e.getMessage());
-				  e.printStackTrace();
+				  rebind(server);
+				  System.out.println("Please enter your command again");
 				}
 				break;
 
@@ -239,9 +236,8 @@ public class client
 				  System.out.println("new customer id:"+customer);
 				}
 				catch(Exception e){
-				  System.out.println("EXCEPTION:");
-				  System.out.println(e.getMessage());
-				  e.printStackTrace();
+				  rebind(server);
+				  System.out.println("Please enter your command again");
 				}
 				break;
 
@@ -262,9 +258,8 @@ public class client
 					System.out.println("Flight could not be deleted");
 				}
 				catch(Exception e){
-				  System.out.println("EXCEPTION:");
-				  System.out.println(e.getMessage());
-				  e.printStackTrace();
+				  rebind(server);
+				  System.out.println("Please enter your command again");
 				}
 				break;
 
@@ -286,9 +281,8 @@ public class client
 					System.out.println("Cars could not be deleted");
 				}
 				catch(Exception e){
-				  System.out.println("EXCEPTION:");
-				  System.out.println(e.getMessage());
-				  e.printStackTrace();
+				  rebind(server);
+				  System.out.println("Please enter your command again");
 				}
 				break;
 
@@ -309,9 +303,8 @@ public class client
 					System.out.println("Rooms could not be deleted");
 				}
 				catch(Exception e){
-				  System.out.println("EXCEPTION:");
-				  System.out.println(e.getMessage());
-				  e.printStackTrace();
+				  rebind(server);
+				  System.out.println("Please enter your command again");
 				}
 				break;
 
@@ -332,9 +325,8 @@ public class client
 					System.out.println("Customer could not be deleted");
 				}
 				catch(Exception e){
-				  System.out.println("EXCEPTION:");
-				  System.out.println(e.getMessage());
-				  e.printStackTrace();
+				  rebind(server);
+				  System.out.println("Please enter your command again");
 				}
 				break;
 
@@ -353,9 +345,8 @@ public class client
 				  System.out.println("Number of seats available:"+seats);
 				}
 				catch(Exception e){
-				  System.out.println("EXCEPTION:");
-				  System.out.println(e.getMessage());
-				  e.printStackTrace();
+				  rebind(server);
+				  System.out.println("Please enter your command again");
 				}
 				break;
 
@@ -374,9 +365,8 @@ public class client
 				  System.out.println("number of Cars at this location:"+numCars);
 				}
 				catch(Exception e){
-				  System.out.println("EXCEPTION:");
-				  System.out.println(e.getMessage());
-				  e.printStackTrace();
+				  rebind(server);
+				  System.out.println("Please enter your command again");
 				}
 				break;
 
@@ -395,9 +385,8 @@ public class client
 				  System.out.println("number of Rooms at this location:"+numRooms);
 				}
 				catch(Exception e){
-				  System.out.println("EXCEPTION:");
-				  System.out.println(e.getMessage());
-				  e.printStackTrace();
+				  rebind(server);
+				  System.out.println("Please enter your command again");
 				}
 				break;
 
@@ -416,9 +405,8 @@ public class client
 				  System.out.println("Customer info:"+bill);
 				}
 				catch(Exception e){
-				  System.out.println("EXCEPTION:");
-				  System.out.println(e.getMessage());
-				  e.printStackTrace();
+				  rebind(server);
+				  System.out.println("Please enter your command again");
 				}
 				break;
 
@@ -437,9 +425,8 @@ public class client
 				  System.out.println("Price of a seat:"+price);
 				}
 				catch(Exception e){
-				  System.out.println("EXCEPTION:");
-				  System.out.println(e.getMessage());
-				  e.printStackTrace();
+				  rebind(server);
+				  System.out.println("Please enter your command again");
 				}
 				break;
 
@@ -458,9 +445,8 @@ public class client
 				  System.out.println("Price of a car at this location:"+price);
 				}
 				catch(Exception e){
-				  System.out.println("EXCEPTION:");
-				  System.out.println(e.getMessage());
-				  e.printStackTrace();
+				  rebind(server);
+				  System.out.println("Please enter your command again");
 				}
 				break;
 
@@ -479,9 +465,8 @@ public class client
 				  System.out.println("Price of Rooms at this location:"+price);
 				}
 				catch(Exception e){
-				  System.out.println("EXCEPTION:");
-				  System.out.println(e.getMessage());
-				  e.printStackTrace();
+				 rebind(server);
+				 System.out.println("Please enter your command again");
 				}
 				break;
 
@@ -504,9 +489,8 @@ public class client
 					System.out.println("Flight could not be reserved.");
 				}
 				catch(Exception e){
-				  System.out.println("EXCEPTION:");
-				  System.out.println(e.getMessage());
-				  e.printStackTrace();
+				  rebind(server);
+				  System.out.println("Please enter your command again");
 				}
 				break;
 
@@ -529,9 +513,8 @@ public class client
 					System.out.println("Car could not be reserved.");
 				}
 				catch(Exception e){
-				  System.out.println("EXCEPTION:");
-				  System.out.println(e.getMessage());
-				  e.printStackTrace();
+				  rebind(server);
+				  System.out.println("Please enter your command again");
 				}
 				break;
 
@@ -554,9 +537,8 @@ public class client
 					System.out.println("Room could not be reserved.");
 				}
 				catch(Exception e){
-				 	System.out.println("EXCEPTION:");
-				 	System.out.println(e.getMessage());
-				 	e.printStackTrace();
+				 	rebind(server);
+				 	System.out.println("Please enter your command again");
 				}
 				break;
 
@@ -592,9 +574,8 @@ public class client
 						System.out.println("Itinerary could not be reserved.");
 				}
 				catch(Exception e){
-				 	System.out.println("EXCEPTION:");
-				 	System.out.println(e.getMessage());
-				 	e.printStackTrace();
+				 	rebind(server);
+				 	System.out.println("Please enter your command again");
 				}
 				break;
 
@@ -621,9 +602,8 @@ public class client
 					System.out.println("new customer id:"+Cid);
 				}
 				catch(Exception e){
-					System.out.println("EXCEPTION:");
-					System.out.println(e.getMessage());
-					e.printStackTrace();
+					rebind(server);
+					System.out.println("Please enter your command again");
 				}
 				break;
 
@@ -634,9 +614,8 @@ public class client
 					rm.shutdown();
 				}
 				catch(Exception e) {
-					System.out.println("EXCEPTION:");
-					System.out.println(e.getMessage());
-					e.printStackTrace();
+					rebind(server);
+					System.out.println("Please enter your command again");
 				}
 				break;
 
@@ -646,7 +625,8 @@ public class client
 					started = true;
 					System.out.println("\nStarting Transaction " + Id + "\n");
 				} catch(Exception e){
-					System.out.println("Error starting a transaction, please try again");
+					rebind(server);
+					System.out.println("Please enter your command again");
 				}
 				break;
 
@@ -662,9 +642,8 @@ public class client
 					}
 					started = false;
 				} catch (Exception e) {
-					System.out.println("Transaction error: " + Id + " commit error " + e);
-					System.out.println("Client should abort");
-					e.printStackTrace();
+					rebind(server);
+					System.out.println("Please enter your command again");
 				}
 				break;
 
@@ -674,8 +653,8 @@ public class client
 					rm.abort(Id);
 					started = false;
 				} catch(Exception e) {
-					System.out.println("Transaction error: " + Id + " abort error " + e);
-					System.out.println("Please try again");
+					rebind(server);
+				  	System.out.println("Please enter your command again");
 				}
 				break;
 
