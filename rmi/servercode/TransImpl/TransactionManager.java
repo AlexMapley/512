@@ -20,10 +20,7 @@ public class TransactionManager implements Serializable
 	//Instantiate with access to MiddleWareImpl
 	public TransactionManager() {
 		transactionCounter = 0;
-		this.rms = rms;
 
-		// CD = new CrashDetection(this);
-		// startDetector();
 		System.out.println("Transaction Manager Started...");
 	}
 
@@ -56,6 +53,7 @@ public class TransactionManager implements Serializable
 				}
 			}
 
+			transactions.remove(id);
 			System.out.println("Transaction " + transactionCounter + " Aborted in TM");
 			return true;
 		}
@@ -90,6 +88,8 @@ public class TransactionManager implements Serializable
 			}
 			if (!result)
 				return false;
+			// success
+			transactions.remove(id);
 			System.out.println("Transaction " + transactionCounter + " Committed in Manager");
 			return true;
 		}
