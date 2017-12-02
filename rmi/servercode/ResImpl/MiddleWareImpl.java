@@ -21,6 +21,7 @@ public class MiddleWareImpl implements ResourceManager
     public static HashMap<RMEnum, ResourceManager> rms;
     public static HashMap<RMEnum, String> hostnames = new HashMap<RMEnum, String>();
     private static TransactionManager TM;
+    private static ResourceManager mw;
     private static File master;
 
     public static void main(String[] args) {
@@ -83,9 +84,6 @@ public class MiddleWareImpl implements ResourceManager
             System.setSecurityManager(new RMISecurityManager());
         }
 
-        // Setup transaction manager
-        TM = new TransactionManager();
-
         String path = "Shadows/" + banner + "/";
         master = new File(path + "master.ser");
 
@@ -99,7 +97,10 @@ public class MiddleWareImpl implements ResourceManager
     }
 
     public MiddleWareImpl() throws RemoteException {
+        // Setup transaction manager
+        TM = new TransactionManager();
 
+        // timeToLive();
     }
 
 
@@ -673,7 +674,7 @@ public class MiddleWareImpl implements ResourceManager
         return false;
     }
 
-    public String getBanner() {
+    public String getBanner() throws RemoteException {
       return null;
     }
 
@@ -775,5 +776,34 @@ public class MiddleWareImpl implements ResourceManager
             }
             return false;
         }
+    }
+
+    private void timeToLive() {
+        Thread timeToLive = new Thread() {
+
+          public void run() {
+            while(true) {
+              for (Transaction transaction : TM.transactions.values()) {
+                long current = (new Date()).getTime();
+
+                if((current - transaction.getTime()) >= transaction.TIME2LIVE) {
+                  System.out.println("Transaction: " + transaction.id + " hanging, aborting...");
+                  try {
+                    abort(transaction.id);
+                  } catch (Exception e) {
+                    System.out.println(e);
+                  }
+                }
+              }
+
+              try {
+                Thread.currentThread().sleep(1000);
+              } catch (InterruptedException e) {
+                e.printStackTrace();
+              }
+            }
+          }
+        };
+    timeToLive.start();
     }
 }

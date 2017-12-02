@@ -1,7 +1,5 @@
 TODO:
 
-- Handle RM crash cases
-	- RM crashes after voting yes
 - handle MW crash cases
 	- MW crashes at various points in commit process
 - MW recovery
