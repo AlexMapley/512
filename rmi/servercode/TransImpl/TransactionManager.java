@@ -10,17 +10,15 @@ import java.rmi.RemoteException;
 
 public class TransactionManager implements Serializable
 {
-	private static volatile int transactionCounter;
+	private volatile int transactionCounter;
 
 	// Hashmap of ongoing transactions, compared to key value
-	public static HashMap<Integer, Transaction> transactions = new HashMap<Integer, Transaction>();
-	// private CrashDetection CD;
+	public HashMap<Integer, Transaction> transactions;
 
-	// HashMap<RMEnum, ResourceManager> rms;
 	//Instantiate with access to MiddleWareImpl
-	public TransactionManager() {
+	public TransactionManager(HashMap<Integer, Transaction> transactions) {
 		transactionCounter = 0;
-
+		this.transactions = transactions;
 		System.out.println("Transaction Manager Started...");
 	}
 
