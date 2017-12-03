@@ -621,7 +621,17 @@ public class client
 
 			case 24: // start
 				try {
-					Id = rm.start(0);
+
+					// Crash Case for Testing
+					if (arguments.size() == 2) {
+						int useCase = obj.getInt(arguments.elementAt(1));
+						System.out.println("\nCrash Case: " + useCase);
+						Id = rm.start(0, useCase);
+					}
+					// Normal Use Case
+					else {
+						Id = rm.start(0, 0);
+					}
 					started = true;
 					System.out.println("\nStarting Transaction " + Id + "\n");
 				} catch(Exception e){
@@ -638,7 +648,7 @@ public class client
 						System.out.println("Transaction " + Id + " Committed Successfully");
 					}
 					else {
-						System.out.println("Transaction " + Id + " Had nothing to commit and terminated");
+						System.out.println("Either Transaction " + Id + " had nothing to commit, or a halted commit has been finished");
 					}
 					started = false;
 				} catch (Exception e) {
@@ -1009,7 +1019,7 @@ public class client
 	        try {
 	            Registry registry = LocateRegistry.getRegistry(hostname, port);
 	            rm = (ResourceManager) registry.lookup("group_21");
-	            
+
 	            rm.getBanner(); // ping mw
 
 	            System.out.println("MW successfully reconnected!");
@@ -1021,7 +1031,7 @@ public class client
 	            try {
 	                Thread.sleep(3000); // sleep for 3 seconds
 	            } catch(InterruptedException ee) {
-	                
+
 	            }
 	        }
 	    }

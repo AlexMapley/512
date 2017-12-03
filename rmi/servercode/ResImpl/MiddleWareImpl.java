@@ -17,12 +17,14 @@ public class MiddleWareImpl implements ResourceManager
 
     private static String banner = "MW";
     private static final int port = 5959;
+    private static int useCase = 0;
 
     public static HashMap<RMEnum, ResourceManager> rms;
     public static HashMap<RMEnum, String> hostnames = new HashMap<RMEnum, String>();
     private static TransactionManager TM;
     private static ResourceManager mw;
     private static File master;
+
 
     public static Boolean crash[];
 
@@ -39,10 +41,10 @@ public class MiddleWareImpl implements ResourceManager
                 for(int i=0; i<3;i++) {
                     // get a reference to the rmiregistry
                     Registry registry = LocateRegistry.getRegistry(args[i], port);
-                    
+
                     // get the proxy and the remote reference by rmiregistry lookup
                     ResourceManager rm = (ResourceManager) registry.lookup("group_21");
-                    
+
                     rm.getBanner();
                     rms.put(remotes[i], rm);
                     hostnames.put(remotes[i], args[i]);
@@ -99,8 +101,8 @@ public class MiddleWareImpl implements ResourceManager
             System.out.println(banner + " started fresh");
         }
 
-        
-        
+
+
     }
 
     public MiddleWareImpl() throws RemoteException {
@@ -206,7 +208,7 @@ public class MiddleWareImpl implements ResourceManager
             rebind(RMEnum.HOTEL);
             return addRooms(id, location, count, price);
         }
-            
+
         return(true);
     }
 
@@ -245,7 +247,7 @@ public class MiddleWareImpl implements ResourceManager
             rebind(RMEnum.CAR);
             return addCars(id, location, count, price);
         }
-        
+
         return(true);
     }
 
@@ -385,7 +387,7 @@ public class MiddleWareImpl implements ResourceManager
     {
         String c,f,h;
         Trace.info("RM::queryCustomerInfo(" + id + ", " + customerID + ") called" );
-        try { 
+        try {
             TM.enlist(id, RMEnum.CAR,rms);
             writeFile(master, TM);
             // Do this for each RM and concat the strings for return
@@ -394,7 +396,7 @@ public class MiddleWareImpl implements ResourceManager
             System.out.println("Car server crashed");
             rebind(RMEnum.CAR);
             return queryCustomerInfo(id, customerID);
-        }    
+        }
         try {
             TM.enlist(id, RMEnum.FLIGHT, rms);
             writeFile(master, TM);
@@ -402,7 +404,7 @@ public class MiddleWareImpl implements ResourceManager
         } catch (RemoteException e) {
             System.out.println("Flight server crashed");
             rebind(RMEnum.FLIGHT);
-            return queryCustomerInfo(id, customerID);        } 
+            return queryCustomerInfo(id, customerID);        }
         try {
             TM.enlist(id, RMEnum.HOTEL, rms);
             writeFile(master, TM);
@@ -411,7 +413,7 @@ public class MiddleWareImpl implements ResourceManager
             System.out.println("Hotel server crashed");
             rebind(RMEnum.HOTEL);
             return queryCustomerInfo(id, customerID);
-        }     
+        }
         Trace.info("RM::queryCustomerInfo(" + id + ", " + customerID + "), bill follows..." );
 
         // Could make this look nicer
@@ -436,7 +438,7 @@ public class MiddleWareImpl implements ResourceManager
             } catch (RemoteException e) {
                 System.out.println("Car server crashed");
                 rebind(RMEnum.CAR);
-                return newCustomer(id);          
+                return newCustomer(id);
             }
             try {
                 TM.enlist(id, RMEnum.FLIGHT, rms);
@@ -601,7 +603,7 @@ public class MiddleWareImpl implements ResourceManager
     {
         Trace.info("RM::itinerary(" + id + ", " + customer + ") called" );
         boolean success = true;
-        
+
         if(!flightNumbers.isEmpty()) {
             Iterator<Integer> flights = flightNumbers.iterator();
             while(flights.hasNext()) {
@@ -650,14 +652,23 @@ public class MiddleWareImpl implements ResourceManager
         return success;
     }
 
-    public int start(int transactionId) throws RemoteException {
-        transactionId = TM.start();
+    public int start(int transactionId, int crashCase) throws RemoteException {
+        useCase = crashCase;
+        if (crashCase != 0) {
+          System.out.println("Attempting Crash Case #" + useCase + "!!!");
+        }
+        transactionId = TM.start(useCase);
         writeFile(master, TM);
         return transactionId;
     }
 
-    public boolean commit(int transactionId) throws RemoteException, TransactionAbortedException, InvalidTransactionException {  
+    public boolean commit(int transactionId) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
+
         // CRASH CASE 11
+        if (useCase == 11) {
+  				crash();
+  			}
+
         try {
             TM.prepare(transactionId, rms);
             TM.commit(transactionId, rms);
@@ -674,7 +685,12 @@ public class MiddleWareImpl implements ResourceManager
     }
 
     public void abort(int transactionId) throws InvalidTransactionException, TransactionAbortedException {
+
         // CRASH CASE 11
+        if (useCase == 1) {
+  				crash();
+  			}
+
         try {
             TM.abort(transactionId, rms);
             writeFile(master, TM);
@@ -725,7 +741,7 @@ public class MiddleWareImpl implements ResourceManager
             try {
                 Registry registry = LocateRegistry.getRegistry(hostnames.get(en), port);
                 ResourceManager rm = (ResourceManager) registry.lookup("group_21");
-                
+
                 rm.getBanner(); // ping rm
                 rms.put(en, rm); // reset rm object to new connected one
 
@@ -738,14 +754,14 @@ public class MiddleWareImpl implements ResourceManager
                 try {
                     Thread.sleep(3000); // sleep for 3 seconds
                 } catch(InterruptedException ee) {
-                    
+
                 }
             }
         }
     }
 
     public static Object readFile(File file) {
-        // helper function that returns a input stream 
+        // helper function that returns a input stream
         // "master" for master file
         // "transactions" for transaction file
         // "history" for log file
@@ -753,7 +769,7 @@ public class MiddleWareImpl implements ResourceManager
             FileInputStream pipe = new FileInputStream(file.getAbsolutePath());
             InputStream buffer = new BufferedInputStream(pipe);
             ObjectInputStream object_pipe = new ObjectInputStream(buffer);
-            
+
             Object object = object_pipe.readObject();
 
             pipe.close();
@@ -780,7 +796,7 @@ public class MiddleWareImpl implements ResourceManager
         try {
             FileOutputStream pipe = new FileOutputStream(file.getAbsolutePath());
             ObjectOutputStream object_pipe = new ObjectOutputStream(pipe);
-            
+
             object_pipe.writeObject(object);
 
             pipe.close();
@@ -794,19 +810,24 @@ public class MiddleWareImpl implements ResourceManager
 
     public static boolean recover() {
         // Assumes if master exists the rest do
-        // CRASH CASE 7
+
+        // CRASH CASE 8
+        if (useCase == 8) {
+  				crash();
+  			}
+
         if(master.exists()) {
                 System.out.println("recovery files found, recovering...");
-                // recover TM 
+                // recover TM
                 TM = (TransactionManager) readFile(master);
-                
+
                 // reset all time to lives
             return true;
         }
         else {
             // create master, transactions, history files
             System.out.println("recovery files not found, creating new ones...");
-            
+
             try {
                 master.createNewFile();
 
@@ -867,5 +888,9 @@ public class MiddleWareImpl implements ResourceManager
           }
         };
     timeToLive.start();
+    }
+
+    public static void crash() {
+      System.exit(0);
     }
 }

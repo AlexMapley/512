@@ -11,7 +11,7 @@ import java.rmi.RemoteException;
 public class TransactionManager implements Serializable
 {
 	private volatile int transactionCounter;
-
+	private static int useCase = 0;
 	// Hashmap of ongoing transactions, compared to key value
 	public HashMap<Integer, Transaction> transactions;
 
@@ -22,7 +22,9 @@ public class TransactionManager implements Serializable
 		System.out.println("Transaction Manager Started...");
 	}
 
-	public synchronized int start() {
+	public synchronized int start(int crashCase) {
+		useCase = crashCase;
+		System.out.println("TM: Use case: " + useCase);
 		transactionCounter++;
 		synchronized(transactions) {
 	 		transactions.put(transactionCounter, new Transaction(transactionCounter));
@@ -58,7 +60,7 @@ public class TransactionManager implements Serializable
 		}
 		else
 			throw new InvalidTransactionException(id, "Transaction not found for abort");
-	
+
 	}
 
 	public boolean commit(int id, HashMap<RMEnum, ResourceManager> rms) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
@@ -76,7 +78,12 @@ public class TransactionManager implements Serializable
 			for(RMEnum rm : temp) {
 				try {
 					result = result && rms.get(rm).commit(id);
+
 					// CRASH CASE 6
+					if (useCase == 6) {
+						crash();
+					}
+
 					// delete rm from transaction list if commit was succesfull
 					toCommit.activeRMs.remove(rm);
 				} catch (RemoteException e) {
@@ -86,6 +93,28 @@ public class TransactionManager implements Serializable
 					break;
 				}
 			}
+			// delete rms from transaction list if commit was succesfull
+			if (result) {
+				for(RMEnum rm : temp) {
+
+					toCommit.activeRMs.remove(rm);
+
+					// CRASH CASE 6
+					if (useCase == 6) {
+						crash();
+					}
+
+					if (!result) {
+						break;
+					}
+				}
+			}
+
+			// CRASH CASE 7
+			if (useCase == 7) {
+				crash();
+			}
+
 			if (!result)
 				return false;
 			// success
@@ -95,13 +124,18 @@ public class TransactionManager implements Serializable
 		}
 		else
 			throw new InvalidTransactionException(id, "Transaction not found for commit");
-	
+
 	}
 
 	public boolean prepare(int id, HashMap<RMEnum, ResourceManager> rms) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
 	    Transaction toPrepare = transactions.get(id);
 	    toPrepare.status = StatusEnum.PREPARED;
+
 	    // CRASH CASE 1
+			if (useCase == 1) {
+				crash();
+			}
+
 	    boolean result = true;
 	    if(toPrepare != null) {
 	    	// makes copy of array list to avoid concurrent exception
@@ -113,8 +147,12 @@ public class TransactionManager implements Serializable
 				try {
 					//accumulate votes
 					result = result && rms.get(rm).vote(id);
-					// CRASH CASE 10
-					// CRASH CASE 3 (2?)
+
+					// CRASH CASE 2,3,10
+					if (useCase == 2 || useCase == 3 || useCase == 10) {
+						crash();
+					}
+
 				} catch (RemoteException e) {
 					throw e;
 				}
@@ -122,10 +160,16 @@ public class TransactionManager implements Serializable
 					break;
 				}
 			}
+
+			// CRASH CASE 4 + 5
+			if (useCase == 4 || useCase == 5) {
+				crash();
+			}
+
 			if (!result)
 				return false;
-			
-			// CRASH CASE 4 + 5
+
+
 
 			return true;
 		}
@@ -140,9 +184,9 @@ public class TransactionManager implements Serializable
 	public void enlist(int id, RMEnum rm, HashMap<RMEnum, ResourceManager> rms) throws RemoteException, TransactionAbortedException {
 		Transaction transaction = transactions.get(id);
 		if(!transaction.activeRMs.contains(rm)) {
-			rms.get(rm).start(id);
+			rms.get(rm).start(id, useCase);
 			transaction.add(rm);
-		}	
+		}
 		transaction.setTime((new Date()).getTime());
 	}
 
@@ -171,5 +215,9 @@ public class TransactionManager implements Serializable
 
 	public int getCounter() {
 		return this.transactionCounter;
+	}
+
+	public void crash() {
+		System.exit(0);
 	}
 }
