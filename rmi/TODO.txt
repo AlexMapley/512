@@ -7,3 +7,16 @@ TODO:
 	- transaction manager needs to be its own file so that it can recover
 	- transactions need to be resolved upon recovery
 - Client needs to be able to reconnect with MW after MW crashes
+
+- MW recovery
+	- Make status enum that takes on either ACTIVE, PREPARED, COMMITED, ABORTED
+	- TM will have a list of all active transactions
+	- iterate over these transactions
+	- if status ACTIVE
+		- do nothing
+	- if status PREPARED
+		- call prepare again
+	- if status COMMITED
+		- try commit again
+	- if status was ABORTED
+		- try abort again

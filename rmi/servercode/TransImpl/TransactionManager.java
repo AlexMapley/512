@@ -33,6 +33,7 @@ public class TransactionManager implements Serializable
 
 	public boolean abort(int id, HashMap<RMEnum, ResourceManager> rms) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
 		Transaction toAbort = transactions.get(id);
+		toAbort.status = StatusEnum.ABORTED;
 		if(toAbort != null) {
 			// makes copy of array list to avoid concurrent exception
 			ArrayList<RMEnum> temp = new ArrayList<RMEnum>();
@@ -63,6 +64,7 @@ public class TransactionManager implements Serializable
 	public boolean commit(int id, HashMap<RMEnum, ResourceManager> rms) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
 		System.out.println("Transaction " + transactionCounter + " starting commit");
 		Transaction toCommit = transactions.get(id);
+		toCommit.status = StatusEnum.COMMITED;
 		boolean result = true;
 		if(toCommit != null) {
 			// makes copy of array list to avoid concurrent exception
@@ -74,7 +76,7 @@ public class TransactionManager implements Serializable
 			for(RMEnum rm : temp) {
 				try {
 					result = result && rms.get(rm).commit(id);
-
+					// CRASH CASE 6
 					// delete rm from transaction list if commit was succesfull
 					toCommit.activeRMs.remove(rm);
 				} catch (RemoteException e) {
@@ -98,8 +100,9 @@ public class TransactionManager implements Serializable
 
 	public boolean prepare(int id, HashMap<RMEnum, ResourceManager> rms) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
 	    Transaction toPrepare = transactions.get(id);
+	    toPrepare.status = StatusEnum.PREPARED;
+	    // CRASH CASE 1
 	    boolean result = true;
-
 	    if(toPrepare != null) {
 	    	// makes copy of array list to avoid concurrent exception
 	    	ArrayList<RMEnum> temp = new ArrayList<RMEnum>();
@@ -110,6 +113,8 @@ public class TransactionManager implements Serializable
 				try {
 					//accumulate votes
 					result = result && rms.get(rm).vote(id);
+					// CRASH CASE 10
+					// CRASH CASE 3 (2?)
 				} catch (RemoteException e) {
 					throw e;
 				}
@@ -119,7 +124,9 @@ public class TransactionManager implements Serializable
 			}
 			if (!result)
 				return false;
-			 
+			
+			// CRASH CASE 4 + 5
+
 			return true;
 		}
 		else

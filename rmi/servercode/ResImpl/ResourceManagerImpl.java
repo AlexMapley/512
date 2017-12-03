@@ -545,7 +545,7 @@ public class ResourceManagerImpl implements ResourceManager
                 return false;
         }
         else
-            throw new TransactionAbortedException(transactionId, "No such transaction at this RM: " + transactionId);
+            throw new InvalidTransactionException(transactionId, "No such transaction at this RM: " + transactionId);
     }
 
     public void abort(int transactionId) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
@@ -561,7 +561,7 @@ public class ResourceManagerImpl implements ResourceManager
             }
         }
         else
-            throw new TransactionAbortedException(transactionId, "Locks could not be released");
+            throw new InvalidTransactionException(transactionId, "Locks could not be released");
     }
 
     public boolean shutdown() throws RemoteException {
@@ -573,8 +573,9 @@ public class ResourceManagerImpl implements ResourceManager
     }
 
     public boolean vote(int transactionId) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
-        // check if that transaction has a table
-        // if not throw exception
+        // check if that transaction has a table if not throw exception
+
+        // CRASH CASE 8 + 9
         if(transactionImages.get(transactionId) != null) {
             System.out.println("Sending Yes vote for transaction: " + transactionId);
             return true;

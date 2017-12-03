@@ -657,6 +657,7 @@ public class MiddleWareImpl implements ResourceManager
     }
 
     public boolean commit(int transactionId) throws RemoteException, TransactionAbortedException, InvalidTransactionException {  
+        // CRASH CASE 11
         try {
             TM.prepare(transactionId, rms);
             TM.commit(transactionId, rms);
@@ -672,7 +673,8 @@ public class MiddleWareImpl implements ResourceManager
         return true;
     }
 
-    public void abort(int transactionId) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
+    public void abort(int transactionId) throws InvalidTransactionException, TransactionAbortedException {
+        // CRASH CASE 11
         try {
             TM.abort(transactionId, rms);
             writeFile(master, TM);
@@ -792,10 +794,12 @@ public class MiddleWareImpl implements ResourceManager
 
     public static boolean recover() {
         // Assumes if master exists the rest do
+        // CRASH CASE 7
         if(master.exists()) {
                 System.out.println("recovery files found, recovering...");
                 // recover TM 
                 TM = (TransactionManager) readFile(master);
+                
                 // reset all time to lives
             return true;
         }
@@ -814,6 +818,25 @@ public class MiddleWareImpl implements ResourceManager
                 e.printStackTrace();
             }
             return false;
+        }
+    }
+
+    public void resolve() {
+        for(Transaction t : TM.transactions.values()) {
+            try {
+                if(t.status == StatusEnum.ACTIVE)
+                    continue;
+                if(t.status == StatusEnum.PREPARED)
+                    commit(t.id);
+                if(t.status == StatusEnum.COMMITED)
+                    commit(t.id);
+                if(t.status == StatusEnum.ABORTED)
+                    abort(t.id);
+            } catch(InvalidTransactionException | TransactionAbortedException e) {
+                System.out.println("Transaction " + t.id + "could not be resolved");
+            } catch(RemoteException e) {
+                System.out.println("Unknown error called while resolving transaction " + t.id);
+            }
         }
     }
 
