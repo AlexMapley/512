@@ -20,10 +20,11 @@ public class ResourceManagerImpl implements ResourceManager
 {
 
     private static String banner = "default_banner";
+    private static int useCase = 0;
     public static RMHashtable m_itemHT = new RMHashtable();
     private static LockManager LM = new LockManager();
     private static HashMap<Integer, RMHashtable> transactionImages = new HashMap<Integer, RMHashtable>();
-    
+
     // references to shadow files
     private static File master;
     private static File transactions;
@@ -120,7 +121,7 @@ public class ResourceManagerImpl implements ResourceManager
             writeFile(locks, LM);
             // write to hashmap in memory
             transactionImages.get(id).put(key, value);
-            // write to hashtable in file    
+            // write to hashtable in file
             writeFile(transactions, transactionImages);
 
         } catch (DeadlockException e) {
@@ -140,7 +141,7 @@ public class ResourceManagerImpl implements ResourceManager
             // item = (RMItem) table.remove(key);
             // instead make a "null" RMItem value with that key and push to local t table
 
-            // write to hashtable in file    
+            // write to hashtable in file
             writeFile(transactions, transactionImages);
 
             return delete;
@@ -513,7 +514,8 @@ public class ResourceManagerImpl implements ResourceManager
         return false;
     }
 
-    public int start(int transactionId) throws RemoteException {
+    public int start(int transactionId, int crashCase) throws RemoteException {
+        useCase = crashCase;
         // Place an empty hashtable for that tid
         if(!transactionImages.containsKey(transactionId)) {
             transactionImages.put(transactionId, new RMHashtable());
@@ -525,6 +527,12 @@ public class ResourceManagerImpl implements ResourceManager
     }
 
     public boolean commit(int transactionId) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
+
+        // CRASH CASE 12
+        if (useCase == 12) {
+          crash();
+        }
+
         if (transactionImages.get(transactionId) != null) {
             // Release transaction locks
             if(LM.UnlockAll(transactionId)) {
@@ -549,6 +557,12 @@ public class ResourceManagerImpl implements ResourceManager
     }
 
     public void abort(int transactionId) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
+
+      // CRASH CASE 12
+      if (useCase == 12) {
+        crash();
+      }
+
         if (transactionImages.get(transactionId) != null) {
             // Release transaction locks
             if(LM.UnlockAll(transactionId)) {
@@ -575,7 +589,11 @@ public class ResourceManagerImpl implements ResourceManager
     public boolean vote(int transactionId) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
         // check if that transaction has a table if not throw exception
 
-        // CRASH CASE 8 + 9
+        // CRASH CASE 9 + 10
+        if (useCase == 9 || useCase == 10) {
+  				crash();
+  			}
+
         if(transactionImages.get(transactionId) != null) {
             System.out.println("Sending Yes vote for transaction: " + transactionId);
             return true;
@@ -605,7 +623,7 @@ public class ResourceManagerImpl implements ResourceManager
         else {
             // create master, transactions, history files
             System.out.println("recovery files not found, creating new ones...");
-            
+
             try {
                 master.createNewFile();
                 transactions.createNewFile();
@@ -626,7 +644,7 @@ public class ResourceManagerImpl implements ResourceManager
     }
 
     public static Object readFile(File file) {
-        // helper function that returns a input stream 
+        // helper function that returns a input stream
         // "master" for master file
         // "transactions" for transaction file
         // "history" for log file
@@ -634,7 +652,7 @@ public class ResourceManagerImpl implements ResourceManager
             FileInputStream pipe = new FileInputStream(file.getAbsolutePath());
             InputStream buffer = new BufferedInputStream(pipe);
             ObjectInputStream object_pipe = new ObjectInputStream(buffer);
-            
+
             Object object = object_pipe.readObject();
 
             pipe.close();
@@ -661,7 +679,7 @@ public class ResourceManagerImpl implements ResourceManager
         try {
             FileOutputStream pipe = new FileOutputStream(file.getAbsolutePath());
             ObjectOutputStream object_pipe = new ObjectOutputStream(pipe);
-            
+
             object_pipe.writeObject(object);
 
             pipe.close();
@@ -677,7 +695,7 @@ public class ResourceManagerImpl implements ResourceManager
     public void update(int id) {
         // retrieve working set
         RMHashtable transaction = (RMHashtable) transactionImages.get(id);
-        
+
         // Update in memory master hash table
         synchronized(m_itemHT) {
             m_itemHT = (RMHashtable) readFile(master);
@@ -692,5 +710,9 @@ public class ResourceManagerImpl implements ResourceManager
                     m_itemHT.put(key, transaction.get(key));
             }
         }
-    }   
+    }
+
+    public static void crash() {
+      System.exit(0);
+    }
 }

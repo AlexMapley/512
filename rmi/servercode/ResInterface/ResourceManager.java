@@ -136,7 +136,7 @@ public interface ResourceManager extends Remote
     public boolean itinerary(int id,int customer,Vector<Integer> flightNumbers,String location, boolean Car, boolean Room)
 	throws RemoteException, TransactionAbortedException;
 
-    public int start(int transactionId)
+    public int start(int transactionId, int crashCase)
   throws RemoteException, TransactionAbortedException;
 
     public boolean commit(int transactionId)
@@ -153,5 +153,4 @@ public interface ResourceManager extends Remote
 
     public String getBanner()
   throws RemoteException;
-  
 }
