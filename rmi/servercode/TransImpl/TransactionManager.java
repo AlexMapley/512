@@ -220,4 +220,15 @@ public class TransactionManager implements Serializable
 	public void crash() {
 		System.exit(0);
 	}
+
+	public void resetTimeStamps() {
+
+		HashMap<Integer, Transaction> transactions;
+
+		for (Map.Entry<Integer, Transaction> transaction : transactions.entrySet()) {
+    		transaction.getValue().setTime((new Date()).getTime());
+		}
+
+	}
+
 }
