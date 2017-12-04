@@ -225,7 +225,7 @@ public class TransactionManager implements Serializable
 
 		HashMap<Integer, Transaction> transactions;
 
-		for (Map.Entry<Integer, Transaction> transaction : transactions.entrySet()) {
+		for (Transaction transaction : transactions) {
     		transaction.getValue().setTime((new Date()).getTime());
 		}
 
