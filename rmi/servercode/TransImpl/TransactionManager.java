@@ -222,13 +222,14 @@ public class TransactionManager implements Serializable
 	}
 
 	public void resetTimeStamps() {
-
-		HashMap<Integer, Transaction> transactions;
-
-		for (Transaction transaction : transactions) {
-    		transaction.getValue().setTime((new Date()).getTime());
+		if(transactions == null)
+			return;
+		for (Map.Entry<Integer, Transaction> transaction : transactions.entrySet()) {
+			System.out.println("Transaction #" + transaction.getKey());
+			System.out.println("Transaction number (real) : " + transaction.getKey());
+			System.out.println("Transaction time (old): " + transaction.getValue().getTime());
+			transaction.getValue().setTime( (new Date()).getTime() );
+			System.out.println("Transaction time now: " + transaction.getValue().getTime());
 		}
-
 	}
-
 }
