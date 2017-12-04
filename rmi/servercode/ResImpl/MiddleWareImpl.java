@@ -821,6 +821,9 @@ public class MiddleWareImpl implements ResourceManager
                 // recover TM
                 TM = (TransactionManager) readFile(master);
 
+                //Updates transaction timestamps
+                TM.resetTimeStamps();
+
                 // reset all time to lives
             return true;
         }
