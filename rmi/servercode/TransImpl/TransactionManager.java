@@ -226,10 +226,16 @@ public class TransactionManager implements Serializable
 			return;
 		for (Map.Entry<Integer, Transaction> transaction : transactions.entrySet()) {
 			System.out.println("Transaction #" + transaction.getKey());
-			System.out.println("Transaction number (real) : " + transaction.getKey());
-			System.out.println("Transaction time (old): " + transaction.getValue().getTime());
+			System.out.println("Transaction time (old)        : " + transaction.getValue().getTime());
+			
+			Transaction t = transaction.getValue();
+			t.setTime((new Date()).getTime());
+			transaction.setValue(t);
+	
+
+
 			transaction.getValue().setTime( (new Date()).getTime() );
-			System.out.println("Transaction time now: " + transaction.getValue().getTime());
+			System.out.println("Transaction time (updated)    : " + transaction.getValue().getTime());
 		}
 	}
 }
