@@ -223,9 +223,13 @@ public class TransactionManager implements Serializable
 
 	public void resetTimeStamps() {
 
+		if(transactions == null)
+			return
+
 		HashMap<Integer, Transaction> transactions;
 
-		for (Transaction transaction : transactions) {
+		for (Map.Entry<Integer, Transaction>  transaction : transactions) {
+				System.out.println("Transaction #" + transaction.getValue().id);
     		transaction.getValue().setTime((new Date()).getTime());
 		}
 
